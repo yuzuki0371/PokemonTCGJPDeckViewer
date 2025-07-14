@@ -279,8 +279,8 @@ function App() {
   }, [enlargedImage])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+      <div className="container mx-auto px-4 max-w-7xl py-8 flex-grow">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             ポケモンカード デッキビューアー
@@ -608,6 +608,21 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* フッター */}
+      <footer className="bg-white border-t border-gray-200 mt-auto">
+        <div className="container mx-auto px-4 max-w-7xl py-3">
+          <div className="text-left">
+            <p className="text-sm text-gray-600">
+              © 2025 yuzuki0371. All rights reserved.
+            </p>
+            <p className="text-[10px] text-gray-500 mt-1">
+              本ウェブサイトに掲載されているポケモントカードゲームに関する画像情報の著作権は、（株）クリーチャーズ、（株）ポケモンに帰属します。<br />
+              本ウェブサイトは、（株）クリーチャーズ、（株）ポケモンによって制作、推奨、支援、または関連付けられたものではありません。
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
