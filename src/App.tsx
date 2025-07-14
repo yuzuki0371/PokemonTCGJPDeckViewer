@@ -19,6 +19,45 @@ function App() {
   const [processingProgress, setProcessingProgress] = useState<{current: number, total: number} | null>(null)
   const [enlargedImage, setEnlargedImage] = useState<{url: string, deckCode: string, playerName?: string, index: number} | null>(null)
 
+  // localStorage保存用のキー
+  const STORAGE_KEY = 'pokemonTcgDeckList'
+
+  // localStorageからデータを読み込む
+  const loadFromStorage = (): DeckData[] => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return parsed.map((deck: any) => ({
+          ...deck,
+          addedAt: new Date(deck.addedAt)
+        }))
+      }
+    } catch (error) {
+      console.error('Failed to load from localStorage:', error)
+    }
+    return []
+  }
+
+  // localStorageにデータを保存する
+  const saveToStorage = (decks: DeckData[]) => {
+    try {
+      const serialized = decks.map(deck => ({
+        ...deck,
+        addedAt: deck.addedAt.toISOString()
+      }))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized))
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error)
+    }
+  }
+
+  // 初期化時にlocalStorageからデータを読み込む
+  useEffect(() => {
+    const savedDecks = loadFromStorage()
+    setDeckList(savedDecks)
+  }, [])
+
   const addSingleDeck = (code: string, playerName?: string): DeckData | null => {
     const trimmedCode = code.trim()
     const trimmedPlayerName = playerName?.trim()
@@ -75,7 +114,9 @@ function App() {
     try {
       const newDeck = addSingleDeck(trimmedCode, playerName)
       if (newDeck) {
-        setDeckList(prev => [newDeck, ...prev])
+        const updatedList = [newDeck, ...deckList]
+        setDeckList(updatedList)
+        saveToStorage(updatedList)
         setDeckCode('')
         setPlayerName('')
       }
@@ -153,7 +194,9 @@ function App() {
       }
       
       if (newDecks.length > 0) {
-        setDeckList(prev => [...newDecks, ...prev])
+        const updatedList = [...newDecks, ...deckList]
+        setDeckList(updatedList)
+        saveToStorage(updatedList)
       }
       
       let message = ''
@@ -183,11 +226,14 @@ function App() {
   }
 
   const handleRemoveDeck = (id: string) => {
-    setDeckList(prev => prev.filter(deck => deck.id !== id))
+    const updatedList = deckList.filter(deck => deck.id !== id)
+    setDeckList(updatedList)
+    saveToStorage(updatedList)
   }
 
   const handleClearAll = () => {
     setDeckList([])
+    saveToStorage([])
     setDeckCode('')
     setPlayerName('')
     setBulkInput('')
