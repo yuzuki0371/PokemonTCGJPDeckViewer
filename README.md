@@ -1,4 +1,7 @@
-# Pokemon Deck Viewer
+# PokemonTCGJPDeckViewer
+
+[![Deploy to GitHub Pages](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml)
+![GitHub License](https://img.shields.io/github/license/yuzuki0371/PokemonTCGJPDeckViewer)
 
 ポケモンカードゲームのデッキコードを入力して、公式サイトのデッキレシピ画像を表示するWebアプリケーションです。
 

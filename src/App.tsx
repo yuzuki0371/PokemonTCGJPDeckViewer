@@ -19,6 +19,45 @@ function App() {
   const [processingProgress, setProcessingProgress] = useState<{current: number, total: number} | null>(null)
   const [enlargedImage, setEnlargedImage] = useState<{url: string, deckCode: string, playerName?: string, index: number} | null>(null)
 
+  // localStorage保存用のキー
+  const STORAGE_KEY = 'pokemonTcgDeckList'
+
+  // localStorageからデータを読み込む
+  const loadFromStorage = (): DeckData[] => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return parsed.map((deck: any) => ({
+          ...deck,
+          addedAt: new Date(deck.addedAt)
+        }))
+      }
+    } catch (error) {
+      console.error('Failed to load from localStorage:', error)
+    }
+    return []
+  }
+
+  // localStorageにデータを保存する
+  const saveToStorage = (decks: DeckData[]) => {
+    try {
+      const serialized = decks.map(deck => ({
+        ...deck,
+        addedAt: deck.addedAt.toISOString()
+      }))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized))
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error)
+    }
+  }
+
+  // 初期化時にlocalStorageからデータを読み込む
+  useEffect(() => {
+    const savedDecks = loadFromStorage()
+    setDeckList(savedDecks)
+  }, [])
+
   const addSingleDeck = (code: string, playerName?: string): DeckData | null => {
     const trimmedCode = code.trim()
     const trimmedPlayerName = playerName?.trim()
@@ -75,7 +114,9 @@ function App() {
     try {
       const newDeck = addSingleDeck(trimmedCode, playerName)
       if (newDeck) {
-        setDeckList(prev => [newDeck, ...prev])
+        const updatedList = [newDeck, ...deckList]
+        setDeckList(updatedList)
+        saveToStorage(updatedList)
         setDeckCode('')
         setPlayerName('')
       }
@@ -153,7 +194,9 @@ function App() {
       }
       
       if (newDecks.length > 0) {
-        setDeckList(prev => [...newDecks, ...prev])
+        const updatedList = [...newDecks, ...deckList]
+        setDeckList(updatedList)
+        saveToStorage(updatedList)
       }
       
       let message = ''
@@ -183,11 +226,14 @@ function App() {
   }
 
   const handleRemoveDeck = (id: string) => {
-    setDeckList(prev => prev.filter(deck => deck.id !== id))
+    const updatedList = deckList.filter(deck => deck.id !== id)
+    setDeckList(updatedList)
+    saveToStorage(updatedList)
   }
 
   const handleClearAll = () => {
     setDeckList([])
+    saveToStorage([])
     setDeckCode('')
     setPlayerName('')
     setBulkInput('')
@@ -279,8 +325,8 @@ function App() {
   }, [enlargedImage])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+      <div className="container mx-auto px-4 max-w-7xl py-8 flex-grow">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             ポケモンカード デッキビューアー
@@ -608,6 +654,21 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* フッター */}
+      <footer className="bg-white border-t border-gray-200 mt-auto">
+        <div className="container mx-auto px-4 max-w-7xl py-3">
+          <div className="text-left">
+            <p className="text-sm text-gray-600">
+              © 2025 yuzuki0371. All rights reserved.
+            </p>
+            <p className="text-[10px] text-gray-500 mt-1">
+              本ウェブサイトに掲載されているポケモントカードゲームに関する画像情報の著作権は、（株）クリーチャーズ、（株）ポケモンに帰属します。<br />
+              本ウェブサイトは、（株）クリーチャーズ、（株）ポケモンによって制作、推奨、支援、または関連付けられたものではありません。
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
