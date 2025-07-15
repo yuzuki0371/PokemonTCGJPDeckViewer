@@ -29,6 +29,7 @@ The app uses React hooks for state management:
 - Image enlargement modal with navigation
 - Form validation and error handling
 - Progress tracking for bulk operations
+- LocalStorage persistence for deck data
 
 ### Key Data Flow
 1. **Deck Code Input**: Users input deck codes either individually or in bulk (supports Excel tab-separated format)
@@ -37,6 +38,7 @@ The app uses React hooks for state management:
    - Details: `https://www.pokemon-card.com/deck/confirm.html/deckID/{deckCode}`
 3. **Grid Display**: Responsive grid layout shows deck images with player names and codes
 4. **Modal Navigation**: Click-to-enlarge with keyboard/button navigation between decks
+5. **Data Persistence**: Deck data is automatically saved to localStorage and restored on page reload
 
 ### Responsive Grid Configuration
 Uses Tailwind CSS breakpoints for responsive columns:
@@ -75,6 +77,12 @@ Uses Tailwind CSS breakpoints for responsive columns:
 - Base path configured for proper asset loading
 - Automatic deployment on push to main branch
 
+### Data Persistence
+- Deck data is stored in localStorage with key `pokemonTcgDeckList`
+- Date objects are serialized/deserialized properly for JSON storage
+- Data is automatically saved on all deck operations (add, remove, clear)
+- Initial data load happens on component mount
+
 ## Development Considerations
 
 When modifying this application:
@@ -83,3 +91,4 @@ When modifying this application:
 - Test bulk input with various formats (Excel tab-separated, comma-separated, etc.)
 - Verify keyboard navigation works properly in modal view
 - Check duplicate detection logic when adding new deck management features
+- When adding new deck operations, ensure localStorage is updated via `saveToStorage()`
