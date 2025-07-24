@@ -115,3 +115,5 @@ export const useFormState = (): [FormState, FormActions] => {
 
   return [formState, actions];
 };
+
+export type { FormState, FormActions };
