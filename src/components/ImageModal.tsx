@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { generateDeckUrls } from '../constants'
 
 interface ModalImage {
   url: string
@@ -184,7 +185,7 @@ export const ImageModal = ({
             <div className="text-sm">
               デッキコード:{' '}
               <a
-                href={`https://www.pokemon-card.com/deck/confirm.html/deckID/${modalState.enlargedImage.deckCode}`}
+                href={generateDeckUrls(modalState.enlargedImage.deckCode).confirm}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono text-blue-300 hover:text-blue-100 hover:underline"

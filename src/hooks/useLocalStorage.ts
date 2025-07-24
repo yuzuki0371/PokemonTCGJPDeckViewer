@@ -1,12 +1,11 @@
 import type { DeckData } from "./useAppState";
-
-const STORAGE_KEY = "pokemonTcgDeckList";
+import { STORAGE_KEYS } from "../constants";
 
 export const useLocalStorage = () => {
   // localStorageからデータを読み込む
   const loadDeckList = (): DeckData[] => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE_KEYS.DECK_LIST);
       if (stored) {
         const parsed = JSON.parse(stored);
         return parsed.map(
@@ -35,7 +34,7 @@ export const useLocalStorage = () => {
         ...deck,
         addedAt: deck.addedAt.toISOString(),
       }));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
+      localStorage.setItem(STORAGE_KEYS.DECK_LIST, JSON.stringify(serialized));
     } catch (error) {
       console.error("Failed to save to localStorage:", error);
     }

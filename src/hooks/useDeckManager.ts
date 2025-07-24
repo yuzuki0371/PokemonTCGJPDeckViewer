@@ -1,5 +1,6 @@
 import type { DeckData, AppState, AppActions } from "./useAppState";
 import type { FormState, FormActions } from "./useFormState";
+import { generateDeckUrls } from "../constants";
 
 interface ParsedLine {
   playerName?: string;
@@ -35,7 +36,7 @@ export const useDeckManager = (
       return null;
     }
 
-    const imageUrl = `https://www.pokemon-card.com/deck/deckView.php/deckID/${trimmedCode}`;
+    const imageUrl = generateDeckUrls(trimmedCode).view;
     return {
       id: `${Date.now()}-${Math.random()}`,
       code: trimmedCode,

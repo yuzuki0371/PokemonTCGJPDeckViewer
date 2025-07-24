@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { DeckData } from '../hooks/useAppState'
+import { generateDeckUrls } from '../constants'
 
 interface DeckCardProps {
   deck: DeckData
@@ -94,7 +95,7 @@ export const DeckCard = ({ deck, onImageClick, onRemove }: DeckCardProps) => {
           <p className="truncate" title={deck.code}>
             コード:{' '}
             <a
-              href={`https://www.pokemon-card.com/deck/confirm.html/deckID/${deck.code}`}
+              href={generateDeckUrls(deck.code).confirm}
               target="_blank"
               rel="noopener noreferrer"
               className="font-mono text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
