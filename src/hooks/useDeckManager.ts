@@ -1,17 +1,13 @@
 import type { DeckData, AppState, AppActions } from "./useAppState";
 import type { FormState, FormActions } from "./useFormState";
-import { generateDeckUrls } from "../constants";
+import {
+  parseBulkInputLine,
+  checkDuplicate,
+  createDeckData,
+  generateResultMessage,
+  type BulkProcessResult
+} from "../utils/deckUtils";
 
-interface ParsedLine {
-  playerName?: string;
-  code: string;
-}
-
-interface BulkProcessResult {
-  newDecks: DeckData[];
-  duplicates: string[];
-  errors: string[];
-}
 
 export const useDeckManager = (
   appState: AppState,
@@ -21,81 +17,9 @@ export const useDeckManager = (
   saveDeckList: (decks: DeckData[]) => void
 ) => {
 
-  // 単一デッキデータの生成
-  const addSingleDeck = (
-    code: string,
-    playerName?: string
-  ): DeckData | null => {
-    const trimmedCode = code.trim();
-    const trimmedPlayerName = playerName?.trim();
 
-    if (!trimmedCode) return null;
 
-    // 重複チェック
-    if (appState.deckList.some((deck) => deck.code === trimmedCode)) {
-      return null;
-    }
 
-    const imageUrl = generateDeckUrls(trimmedCode).view;
-    return {
-      id: `${Date.now()}-${Math.random()}`,
-      code: trimmedCode,
-      playerName: trimmedPlayerName || undefined,
-      imageUrl,
-      addedAt: new Date(),
-    };
-  };
-
-  // 一括入力の行解析
-  const parseBulkInputLine = (line: string): ParsedLine => {
-    let playerName: string | undefined;
-    let code: string;
-
-    // タブ区切りかどうかチェック（Excelからのコピー）
-    if (line.includes("\t")) {
-      const parts = line.split("\t");
-      playerName = parts[0]?.trim();
-      code = parts[1]?.trim() || "";
-    } else {
-      // 他の区切り文字で分割を試す
-      const parts = line.split(/[,;\s]+/);
-      if (parts.length >= 2) {
-        playerName = parts[0]?.trim();
-        code = parts[1]?.trim() || "";
-      } else {
-        // 単一のデッキコードとして処理
-        code = parts[0]?.trim() || "";
-      }
-    }
-
-    return { playerName, code };
-  };
-
-  // 重複チェック
-  const checkDuplicate = (code: string, newDecks: DeckData[]): boolean => {
-    return (
-      appState.deckList.some((deck) => deck.code === code) ||
-      newDecks.some((deck) => deck.code === code)
-    );
-  };
-
-  // 結果メッセージの生成
-  const generateResultMessage = (result: BulkProcessResult): string => {
-    const { newDecks, duplicates, errors } = result;
-    let message = "";
-    
-    if (newDecks.length > 0) {
-      message += `${newDecks.length}件を追加しました。`;
-    }
-    if (duplicates.length > 0) {
-      message += ` ${duplicates.length}件のデッキコードは既に追加済みのためスキップしました。`;
-    }
-    if (errors.length > 0) {
-      message += ` ${errors.length}件でエラーが発生しました。`;
-    }
-
-    return message;
-  };
 
   // フォーム送信のメインハンドラー
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,7 +56,7 @@ export const useDeckManager = (
     appActions.setError(null);
 
     try {
-      const newDeck = addSingleDeck(
+      const newDeck = createDeckData(
         trimmedCode,
         formState.singleMode.playerName
       );
@@ -184,12 +108,12 @@ export const useDeckManager = (
         }
 
         // 重複チェック
-        if (checkDuplicate(parsed.code, result.newDecks)) {
+        if (checkDuplicate(parsed.code, appState.deckList, result.newDecks)) {
           result.duplicates.push(parsed.code);
           continue;
         }
 
-        const newDeck = addSingleDeck(parsed.code, parsed.playerName);
+        const newDeck = createDeckData(parsed.code, parsed.playerName);
         if (newDeck) {
           result.newDecks.push(newDeck);
         }
