@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useFormState } from "./hooks/useFormState";
 import { useAppState, type DeckData } from "./hooks/useAppState";
 import { useModalState } from "./hooks/useModalState";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 import { DeckCard } from "./components/DeckCard";
 import { FormInput } from "./components/FormInput";
 import { ImageModal } from "./components/ImageModal";
@@ -10,51 +11,11 @@ function App() {
   const [formState, formActions] = useFormState();
   const [appState, appActions] = useAppState();
   const [modalState, modalActions] = useModalState(appState.deckList);
-
-  // localStorage保存用のキー
-  const STORAGE_KEY = "pokemonTcgDeckList";
-
-  // localStorageからデータを読み込む
-  const loadFromStorage = (): DeckData[] => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return parsed.map(
-          (deck: {
-            id: string;
-            code: string;
-            playerName?: string;
-            imageUrl: string;
-            addedAt: string;
-          }) => ({
-            ...deck,
-            addedAt: new Date(deck.addedAt),
-          })
-        );
-      }
-    } catch (error) {
-      console.error("Failed to load from localStorage:", error);
-    }
-    return [];
-  };
-
-  // localStorageにデータを保存する
-  const saveToStorage = (decks: DeckData[]) => {
-    try {
-      const serialized = decks.map((deck) => ({
-        ...deck,
-        addedAt: deck.addedAt.toISOString(),
-      }));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
-    } catch (error) {
-      console.error("Failed to save to localStorage:", error);
-    }
-  };
+  const { loadDeckList, saveDeckList } = useLocalStorage();
 
   // 初期化時にlocalStorageからデータを読み込む
   useEffect(() => {
-    const savedDecks = loadFromStorage();
+    const savedDecks = loadDeckList();
     appActions.setDeckList(savedDecks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -123,7 +84,7 @@ function App() {
       if (newDeck) {
         const updatedList = [newDeck, ...appState.deckList];
         appActions.setDeckList(updatedList);
-        saveToStorage(updatedList);
+        saveDeckList(updatedList);
         formActions.resetSingleForm();
       }
     } catch {
@@ -206,7 +167,7 @@ function App() {
       if (newDecks.length > 0) {
         const updatedList = [...newDecks, ...appState.deckList];
         appActions.setDeckList(updatedList);
-        saveToStorage(updatedList);
+        saveDeckList(updatedList);
       }
 
       let message = "";
@@ -242,12 +203,12 @@ function App() {
 
   const handleRemoveDeck = (id: string) => {
     appActions.removeDeck(id);
-    saveToStorage(appState.deckList.filter((deck) => deck.id !== id));
+    saveDeckList(appState.deckList.filter((deck) => deck.id !== id));
   };
 
   const handleClearAll = () => {
     appActions.clearAll();
-    saveToStorage([]);
+    saveDeckList([]);
     formActions.resetForm();
     appActions.setError(null);
   };
