@@ -14,3 +14,6 @@ export const generateDeckUrls = (deckCode: string) => ({
   view: `${POKEMON_CARD_URLS.DECK_VIEW}${deckCode}`,
   confirm: `${POKEMON_CARD_URLS.DECK_CONFIRM}${deckCode}`
 });
+
+// メッセージ定数のre-export
+export { ERROR_MESSAGES, SUCCESS_MESSAGES, UI_MESSAGES } from './messages';

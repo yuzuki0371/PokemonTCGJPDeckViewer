@@ -24,8 +24,11 @@ function App() {
 
   // 初期化時にlocalStorageからデータを読み込む
   useEffect(() => {
-    const savedDecks = loadDeckList();
-    appActions.setDeckList(savedDecks);
+    const { data, error } = loadDeckList();
+    appActions.setDeckList(data);
+    if (error) {
+      appActions.setError(error.message);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

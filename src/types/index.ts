@@ -26,3 +26,15 @@ export type {
   ModalState,
   ModalActions
 } from './modal';
+
+// エラー関連
+export type {
+  AppError
+} from './error';
+
+export {
+  ErrorType,
+  createAppError,
+  isQuotaExceededError,
+  isNetworkError
+} from './error';
