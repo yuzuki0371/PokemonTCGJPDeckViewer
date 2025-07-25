@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useFormState } from "./hooks/useFormState";
-import { useAppState, type DeckData } from "./hooks/useAppState";
+import { useAppState } from "./hooks/useAppState";
 import { useModalState } from "./hooks/useModalState";
+import type { DeckData } from "./types";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useDeckManager } from "./hooks/useDeckManager";
 import { DeckCard } from "./components/DeckCard";

@@ -1,11 +1,9 @@
-import type { DeckData, AppState, AppActions } from "./useAppState";
-import type { FormState, FormActions } from "./useFormState";
+import type { DeckData, AppState, AppActions, FormState, FormActions, BulkProcessResult } from "../types";
 import {
   parseBulkInputLine,
   checkDuplicate,
   createDeckData,
-  generateResultMessage,
-  type BulkProcessResult
+  generateResultMessage
 } from "../utils/deckUtils";
 
 

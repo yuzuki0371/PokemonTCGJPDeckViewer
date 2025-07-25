@@ -1,18 +1,5 @@
-import type { DeckData } from "../hooks/useAppState";
+import type { DeckData, ParsedLine, BulkProcessResult } from "../types";
 import { generateDeckUrls } from "../constants";
-
-// 入力解析の結果型
-export interface ParsedLine {
-  playerName?: string;
-  code: string;
-}
-
-// 一括処理結果型
-export interface BulkProcessResult {
-  newDecks: DeckData[];
-  duplicates: string[];
-  errors: string[];
-}
 
 // 一括入力の行解析
 export const parseBulkInputLine = (line: string): ParsedLine => {

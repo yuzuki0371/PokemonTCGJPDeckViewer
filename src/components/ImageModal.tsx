@@ -1,21 +1,6 @@
 import { useState } from 'react'
 import { generateDeckUrls } from '../constants'
-
-interface ModalImage {
-  url: string
-  deckCode: string
-  playerName?: string
-  index: number
-}
-
-interface ModalState {
-  enlargedImage: ModalImage | null
-}
-
-interface ModalActions {
-  closeModal: () => void
-  navigateModal: (direction: 'prev' | 'next') => void
-}
+import type { ModalState, ModalActions } from '../types'
 
 interface ImageModalProps {
   // モーダル状態

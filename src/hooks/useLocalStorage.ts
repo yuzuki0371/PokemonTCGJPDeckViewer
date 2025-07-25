@@ -1,4 +1,4 @@
-import type { DeckData } from "./useAppState";
+import type { DeckData } from "../types";
 import { STORAGE_KEYS } from "../constants";
 
 export const useLocalStorage = () => {

@@ -1,26 +1,5 @@
 import { useState } from "react";
-
-interface FormState {
-  singleMode: {
-    deckCode: string;
-    playerName: string;
-  };
-  bulkMode: {
-    input: string;
-  };
-  isBulkMode: boolean;
-}
-
-interface FormActions {
-  updateSingleForm: (field: "deckCode" | "playerName", value: string) => void;
-  updateBulkInput: (value: string) => void;
-  toggleMode: () => void;
-  setSingleMode: () => void;
-  setBulkMode: () => void;
-  resetForm: () => void;
-  resetSingleForm: () => void;
-  resetBulkForm: () => void;
-}
+import type { FormState, FormActions } from "../types";
 
 const initialFormState: FormState = {
   singleMode: {
@@ -116,4 +95,3 @@ export const useFormState = (): [FormState, FormActions] => {
   return [formState, actions];
 };
 
-export type { FormState, FormActions };

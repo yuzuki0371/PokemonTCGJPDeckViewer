@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { DeckData } from '../hooks/useAppState'
+import type { DeckData } from '../types'
 import { generateDeckUrls } from '../constants'
 
 interface DeckCardProps {

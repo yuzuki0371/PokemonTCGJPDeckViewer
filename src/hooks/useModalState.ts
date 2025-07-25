@@ -1,22 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { DeckData } from "./useAppState";
-
-interface ModalImage {
-  url: string;
-  deckCode: string;
-  playerName?: string;
-  index: number;
-}
-
-interface ModalState {
-  enlargedImage: ModalImage | null;
-}
-
-interface ModalActions {
-  openModal: (deck: DeckData, index: number) => void;
-  closeModal: () => void;
-  navigateModal: (direction: "prev" | "next") => void;
-}
+import type { DeckData, ModalState, ModalActions } from "../types";
 
 export const useModalState = (
   deckList: DeckData[]

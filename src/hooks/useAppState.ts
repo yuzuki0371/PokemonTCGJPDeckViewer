@@ -1,33 +1,5 @@
 import { useState } from "react";
-
-interface DeckData {
-  id: string;
-  code: string;
-  playerName?: string;
-  imageUrl: string;
-  addedAt: Date;
-}
-
-interface UIState {
-  loading: boolean;
-  error: string | null;
-  processingProgress: { current: number; total: number } | null;
-}
-
-interface AppState {
-  deckList: DeckData[];
-  ui: UIState;
-}
-
-interface AppActions {
-  setDeckList: (decks: DeckData[]) => void;
-  addDecks: (decks: DeckData[]) => void;
-  removeDeck: (id: string) => void;
-  clearAll: () => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  setProgress: (progress: { current: number; total: number } | null) => void;
-}
+import type { DeckData, AppState, AppActions } from "../types";
 
 const initialAppState: AppState = {
   deckList: [],
@@ -112,4 +84,3 @@ export const useAppState = (): [AppState, AppActions] => {
   return [appState, actions];
 };
 
-export type { DeckData, AppState, AppActions };

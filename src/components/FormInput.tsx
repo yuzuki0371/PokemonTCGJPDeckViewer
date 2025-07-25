@@ -1,4 +1,4 @@
-import type { FormState, FormActions } from '../hooks/useFormState'
+import type { FormState, FormActions } from '../types'
 
 interface FormInputProps {
   // フォーム状態
