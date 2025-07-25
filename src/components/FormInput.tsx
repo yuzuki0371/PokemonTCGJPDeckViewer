@@ -1,4 +1,4 @@
-import type { FormState, FormActions } from '../types'
+import type { FormState, FormActions, AppActions } from '../types'
 
 interface FormInputProps {
   // フォーム状態
@@ -10,10 +10,11 @@ interface FormInputProps {
   error: string | null
   processingProgress: { current: number; total: number } | null
   
+  // アプリケーション状態操作
+  appActions: Pick<AppActions, 'setError'>
+  
   // イベントハンドラー
   onSubmit: (e: React.FormEvent) => void
-  onSingleModeSwitch: () => void
-  onBulkModeSwitch: () => void
   onClearAll: () => void
   
   // 条件
@@ -26,19 +27,29 @@ export const FormInput = ({
   loading,
   error,
   processingProgress,
+  appActions,
   onSubmit,
-  onSingleModeSwitch,
-  onBulkModeSwitch,
   onClearAll,
   hasDecks
 }: FormInputProps) => {
+  
+  // モード切り替えハンドラー
+  const handleSingleModeSwitch = () => {
+    formActions.setSingleMode();
+    appActions.setError(null);
+  };
+
+  const handleBulkModeSwitch = () => {
+    formActions.setBulkMode();
+    appActions.setError(null);
+  };
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-4">
           <button
             type="button"
-            onClick={onSingleModeSwitch}
+            onClick={handleSingleModeSwitch}
             className={`px-4 py-2 rounded-md transition-colors ${
               !formState.isBulkMode
                 ? "bg-blue-600 text-white"
@@ -49,7 +60,7 @@ export const FormInput = ({
           </button>
           <button
             type="button"
-            onClick={onBulkModeSwitch}
+            onClick={handleBulkModeSwitch}
             className={`px-4 py-2 rounded-md transition-colors ${
               formState.isBulkMode
                 ? "bg-blue-600 text-white"

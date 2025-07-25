@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useFormState } from "./hooks/useFormState";
 import { useAppState } from "./hooks/useAppState";
 import { useModalState } from "./hooks/useModalState";
-import type { DeckData } from "./types";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useDeckManager } from "./hooks/useDeckManager";
 import { DeckCard } from "./components/DeckCard";
@@ -32,28 +31,6 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  const handleSingleModeSwitch = () => {
-    formActions.setSingleMode();
-    appActions.setError(null);
-  };
-
-  const handleBulkModeSwitch = () => {
-    formActions.setBulkMode();
-    appActions.setError(null);
-  };
-
-  const handleImageClick = (deck: DeckData) => {
-    const index = appState.deckList.findIndex((d) => d.id === deck.id);
-    modalActions.openModal(deck, index);
-  };
-
-  const handleModalBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      modalActions.closeModal();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
       <div className="container mx-auto px-4 max-w-7xl py-8 flex-grow">
@@ -72,9 +49,8 @@ function App() {
           loading={appState.ui.loading}
           error={appState.ui.error}
           processingProgress={appState.ui.processingProgress}
+          appActions={appActions}
           onSubmit={handleSubmit}
-          onSingleModeSwitch={handleSingleModeSwitch}
-          onBulkModeSwitch={handleBulkModeSwitch}
           onClearAll={handleClearAll}
           hasDecks={appState.deckList.length > 0}
         />
@@ -92,7 +68,8 @@ function App() {
                 <DeckCard
                   key={deck.id}
                   deck={deck}
-                  onImageClick={handleImageClick}
+                  deckList={appState.deckList}
+                  modalActions={modalActions}
                   onRemove={handleRemoveDeck}
                 />
               ))}
@@ -128,7 +105,6 @@ function App() {
           modalActions={modalActions}
           hasMultipleDecks={appState.deckList.length > 1}
           totalDecks={appState.deckList.length}
-          onBackdropClick={handleModalBackdropClick}
         />
       </div>
 

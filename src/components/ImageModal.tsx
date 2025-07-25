@@ -10,19 +10,22 @@ interface ImageModalProps {
   // ナビゲーション制御
   hasMultipleDecks: boolean
   totalDecks: number
-  
-  // イベントハンドラー
-  onBackdropClick: (e: React.MouseEvent) => void
 }
 
 export const ImageModal = ({
   modalState,
   modalActions,
   hasMultipleDecks,
-  totalDecks,
-  onBackdropClick
+  totalDecks
 }: ImageModalProps) => {
   const [imageError, setImageError] = useState(false)
+  
+  // バックドロップクリックハンドラー
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      modalActions.closeModal();
+    }
+  };
 
   if (!modalState.enlargedImage) {
     return null
@@ -45,7 +48,7 @@ export const ImageModal = ({
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-      onClick={onBackdropClick}
+      onClick={handleBackdropClick}
     >
       <div className="relative max-w-4xl max-h-full">
         {/* 閉じるボタン */}

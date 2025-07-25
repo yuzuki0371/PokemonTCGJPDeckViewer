@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import type { DeckData } from '../types'
+import type { DeckData, ModalActions } from '../types'
 import { generateDeckUrls } from '../constants'
 
 interface DeckCardProps {
   deck: DeckData
-  onImageClick: (deck: DeckData) => void
+  deckList: DeckData[]
+  modalActions: ModalActions
   onRemove: (id: string) => void
 }
 
-export const DeckCard = ({ deck, onImageClick, onRemove }: DeckCardProps) => {
+export const DeckCard = ({ deck, deckList, modalActions, onRemove }: DeckCardProps) => {
   const [imageError, setImageError] = useState(false)
 
   const handleImageError = () => {
@@ -16,7 +17,8 @@ export const DeckCard = ({ deck, onImageClick, onRemove }: DeckCardProps) => {
   }
 
   const handleImageClick = () => {
-    onImageClick(deck)
+    const index = deckList.findIndex((d) => d.id === deck.id);
+    modalActions.openModal(deck, index);
   }
 
   const handleRemoveClick = () => {
