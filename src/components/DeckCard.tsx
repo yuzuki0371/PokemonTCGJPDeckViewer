@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, memo, useCallback } from 'react'
 import type { DeckData, ModalActions } from '../types'
 import { generateDeckUrls } from '../constants'
 
@@ -9,21 +9,21 @@ interface DeckCardProps {
   onRemove: (id: string) => void
 }
 
-export const DeckCard = ({ deck, deckList, modalActions, onRemove }: DeckCardProps) => {
+const DeckCardComponent = ({ deck, deckList, modalActions, onRemove }: DeckCardProps) => {
   const [imageError, setImageError] = useState(false)
 
-  const handleImageError = () => {
+  const handleImageError = useCallback(() => {
     setImageError(true)
-  }
+  }, [])
 
-  const handleImageClick = () => {
+  const handleImageClick = useCallback(() => {
     const index = deckList.findIndex((d) => d.id === deck.id);
     modalActions.openModal(deck, index);
-  }
+  }, [deck, deckList, modalActions])
 
-  const handleRemoveClick = () => {
+  const handleRemoveClick = useCallback(() => {
     onRemove(deck.id)
-  }
+  }, [deck.id, onRemove])
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
@@ -113,3 +113,17 @@ export const DeckCard = ({ deck, deckList, modalActions, onRemove }: DeckCardPro
     </div>
   )
 }
+
+// React.memo で最適化し、propsの変更時のみ再レンダリング
+export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
+  // deck の内容が同じ場合は再レンダリングを防ぐ
+  return (
+    prevProps.deck.id === nextProps.deck.id &&
+    prevProps.deck.code === nextProps.deck.code &&
+    prevProps.deck.playerName === nextProps.deck.playerName &&
+    prevProps.deck.imageUrl === nextProps.deck.imageUrl &&
+    prevProps.deck.addedAt.getTime() === nextProps.deck.addedAt.getTime() &&
+    prevProps.modalActions === nextProps.modalActions &&
+    prevProps.onRemove === nextProps.onRemove
+  );
+});

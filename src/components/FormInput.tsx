@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import type { FormState, FormActions, AppActions } from '../types'
 
 interface FormInputProps {
@@ -34,15 +35,15 @@ export const FormInput = ({
 }: FormInputProps) => {
   
   // モード切り替えハンドラー
-  const handleSingleModeSwitch = () => {
+  const handleSingleModeSwitch = useCallback(() => {
     formActions.setSingleMode();
     appActions.setError(null);
-  };
+  }, [formActions, appActions]);
 
-  const handleBulkModeSwitch = () => {
+  const handleBulkModeSwitch = useCallback(() => {
     formActions.setBulkMode();
     appActions.setError(null);
-  };
+  }, [formActions, appActions]);
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
@@ -86,9 +87,7 @@ export const FormInput = ({
                 type="text"
                 id="playerName"
                 value={formState.singleMode.playerName}
-                onChange={(e) =>
-                  formActions.updateSingleForm("playerName", e.target.value)
-                }
+                onChange={(e) => formActions.updateSingleForm("playerName", e.target.value)}
                 placeholder="プレイヤー名を入力してください"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -104,9 +103,7 @@ export const FormInput = ({
                 type="text"
                 id="deckCode"
                 value={formState.singleMode.deckCode}
-                onChange={(e) =>
-                  formActions.updateSingleForm("deckCode", e.target.value)
-                }
+                onChange={(e) => formActions.updateSingleForm("deckCode", e.target.value)}
                 placeholder="デッキコードを入力してください"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />

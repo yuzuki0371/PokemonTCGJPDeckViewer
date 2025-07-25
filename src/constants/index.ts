@@ -17,3 +17,6 @@ export const generateDeckUrls = (deckCode: string) => ({
 
 // メッセージ定数のre-export
 export { ERROR_MESSAGES, SUCCESS_MESSAGES, UI_MESSAGES } from './messages';
+
+// UI設定定数のre-export
+export { UI_CONFIG, GRID_CLASSES } from './ui';

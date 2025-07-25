@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useFormState } from "./hooks/useFormState";
 import { useAppState } from "./hooks/useAppState";
 import { useModalState } from "./hooks/useModalState";
@@ -7,6 +7,7 @@ import { useDeckManager } from "./hooks/useDeckManager";
 import { DeckCard } from "./components/DeckCard";
 import { FormInput } from "./components/FormInput";
 import { ImageModal } from "./components/ImageModal";
+import { GRID_CLASSES } from "./constants";
 
 function App() {
   const [formState, formActions] = useFormState();
@@ -20,6 +21,10 @@ function App() {
     formActions,
     saveDeckList
   );
+
+  // handleRemoveDeckとhandleClearAllをuseCallbackでラップして最適化
+  const memoizedHandleRemoveDeck = useCallback(handleRemoveDeck, [handleRemoveDeck]);
+  const memoizedHandleClearAll = useCallback(handleClearAll, [handleClearAll]);
 
   // 初期化時にlocalStorageからデータを読み込む
   useEffect(() => {
@@ -51,7 +56,7 @@ function App() {
           processingProgress={appState.ui.processingProgress}
           appActions={appActions}
           onSubmit={handleSubmit}
-          onClearAll={handleClearAll}
+          onClearAll={memoizedHandleClearAll}
           hasDecks={appState.deckList.length > 0}
         />
 
@@ -63,14 +68,14 @@ function App() {
               </h2>
             </div>
 
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            <div className={`grid gap-4 ${GRID_CLASSES}`}>
               {appState.deckList.map((deck) => (
                 <DeckCard
                   key={deck.id}
                   deck={deck}
                   deckList={appState.deckList}
                   modalActions={modalActions}
-                  onRemove={handleRemoveDeck}
+                  onRemove={memoizedHandleRemoveDeck}
                 />
               ))}
             </div>

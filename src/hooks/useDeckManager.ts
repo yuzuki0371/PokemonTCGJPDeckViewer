@@ -1,6 +1,7 @@
+import { useCallback } from "react";
 import type { DeckData, AppState, AppActions, FormState, FormActions, BulkProcessResult, AppError } from "../types";
 import { ErrorType, createAppError, isNetworkError } from "../types";
-import { ERROR_MESSAGES } from "../constants";
+import { ERROR_MESSAGES, UI_CONFIG } from "../constants";
 import {
   parseBulkInputLine,
   checkDuplicate,
@@ -16,10 +17,11 @@ export const useDeckManager = (
   formActions: FormActions,
   saveDeckList: (decks: DeckData[]) => AppError | null
 ) => {
-
-
-
-
+  // 一括処理の遅延関数
+  const delayBulkProcess = useCallback(
+    () => new Promise<void>(resolve => setTimeout(resolve, UI_CONFIG.BULK_PROCESS_DELAY)),
+    []
+  );
 
   // フォーム送信のメインハンドラー
   const handleSubmit = async (e: React.FormEvent) => {
@@ -125,7 +127,7 @@ export const useDeckManager = (
 
         // 処理間隔を設ける（UI更新のため）
         if (i < lines.length - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await delayBulkProcess();
         }
       }
 
@@ -166,8 +168,9 @@ export const useDeckManager = (
 
   // デッキ削除処理
   const handleRemoveDeck = (id: string) => {
-    const updatedList = appState.deckList.filter((deck) => deck.id !== id);
     appActions.removeDeck(id);
+    // 状態更新後の最新リストを使用
+    const updatedList = appState.deckList.filter((deck) => deck.id !== id);
     const saveError = saveDeckList(updatedList);
     if (saveError) {
       appActions.setError(saveError.message);

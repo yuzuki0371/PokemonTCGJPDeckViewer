@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { generateDeckUrls } from '../constants'
 import type { ModalState, ModalActions } from '../types'
 
@@ -21,28 +21,28 @@ export const ImageModal = ({
   const [imageError, setImageError] = useState(false)
   
   // バックドロップクリックハンドラー
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       modalActions.closeModal();
     }
-  };
+  }, [modalActions]);
+
+  const handleImageError = useCallback(() => {
+    setImageError(true)
+  }, [])
+
+  const handlePrevClick = useCallback(() => {
+    modalActions.navigateModal('prev')
+    setImageError(false) // 画像切り替え時にエラー状態をリセット
+  }, [modalActions])
+
+  const handleNextClick = useCallback(() => {
+    modalActions.navigateModal('next')
+    setImageError(false) // 画像切り替え時にエラー状態をリセット
+  }, [modalActions])
 
   if (!modalState.enlargedImage) {
     return null
-  }
-
-  const handleImageError = () => {
-    setImageError(true)
-  }
-
-  const handlePrevClick = () => {
-    modalActions.navigateModal('prev')
-    setImageError(false) // 画像切り替え時にエラー状態をリセット
-  }
-
-  const handleNextClick = () => {
-    modalActions.navigateModal('next')
-    setImageError(false) // 画像切り替え時にエラー状態をリセット
   }
 
   return (
