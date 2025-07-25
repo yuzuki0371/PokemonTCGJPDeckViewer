@@ -20,23 +20,30 @@ This is a Pokemon Trading Card Game deck viewer application built with React 19,
 
 ## Architecture & Core Concepts
 
-### Layered Hook Architecture (Recently Refactored)
-The application uses a sophisticated layered hook architecture with complete separation of concerns:
+### Layered Hook Architecture with Component Separation
+The application uses a sophisticated layered architecture with complete separation of concerns:
 
 **View Layer:**
-- `src/App.tsx` - Pure orchestration component focused on rendering and UI event handling
-- `src/components/` - Reusable UI components with clear prop interfaces
+- `src/App.tsx` - Slim orchestration component (85 lines) focused on state coordination
+- `src/components/` - Specialized UI components with React.memo optimization:
+  - `DeckCard.tsx` - Individual deck display with performance optimization
+  - `FormInput.tsx` - Form handling with mode switching
+  - `ImageModal.tsx` - Modal viewer with keyboard navigation
+  - `DeckList.tsx` - Deck grid display management
+  - `EmptyState.tsx` - Reusable empty state component
+  - `Footer.tsx` - Static footer component
 
 **Business Logic Layer:**
-- `src/hooks/useDeckManager.ts` - Centralized deck management operations (add, remove, bulk processing)
-- `src/hooks/useAppState.ts` - Application state management (deck list, UI state, CRUD operations)
+- `src/hooks/useDeckManager.ts` - Centralized deck management with error handling
+- `src/hooks/useAppState.ts` - Application state management (deck list, UI state)
 - `src/hooks/useFormState.ts` - Form input state management (single/bulk modes)
 - `src/hooks/useModalState.ts` - Modal state and keyboard navigation logic
 
 **Infrastructure Layer:**
-- `src/hooks/useLocalStorage.ts` - Data persistence operations with proper serialization
+- `src/hooks/useLocalStorage.ts` - Data persistence with comprehensive error handling
 - `src/utils/deckUtils.ts` - Pure utility functions for data processing and validation
-- `src/constants/index.ts` - Centralized configuration and URL management
+- `src/types/` - Centralized type definitions organized by domain
+- `src/constants/` - Configuration, URLs, messages, and UI settings
 
 ### Data Flow Architecture
 The application follows a unidirectional data flow pattern:
@@ -50,6 +57,8 @@ Key architectural decisions:
 - **Single Source of Truth**: AppState manages all deck data centrally
 - **Immutable Updates**: State changes use immutable patterns throughout
 - **Hook Composition**: Complex operations are composed from multiple focused hooks
+- **Performance Optimization**: React.memo and useCallback used strategically
+- **Type Safety**: Centralized type definitions in `src/types/` with domain separation
 
 ### Key Business Operations
 
@@ -66,8 +75,9 @@ Key architectural decisions:
 
 **Data Persistence** (`hooks/useLocalStorage.ts`):
 - Automatic localStorage operations with proper Date object serialization/deserialization
-- Storage key management through centralized constants
-- Error handling for storage quota and parsing failures
+- Storage key management through centralized constants (`STORAGE_KEYS`)
+- Comprehensive error handling for storage quota, parsing failures, and network issues
+- Returns structured `{ data, error }` format for consistent error propagation
 
 ### Responsive Grid Configuration
 Uses Tailwind CSS breakpoints for responsive columns:
@@ -118,6 +128,8 @@ Uses Tailwind CSS breakpoints for responsive columns:
 - **Business Logic**: All domain operations should go through `useDeckManager` or similar hooks
 - **State Management**: Use appropriate state hooks (`useAppState`, `useFormState`, etc.) based on data scope
 - **Utilities**: Extract reusable, pure functions to `utils/` for better testing and reuse
+- **Type Definitions**: Organize types by domain in `src/types/` (deck, ui, form, modal, error)
+- **Constants**: Centralize configuration in `src/constants/` (URLs, messages, UI settings)
 
 ### Key Integration Points
 - **Form Submission**: Always flows through `useDeckManager.handleSubmit`
@@ -125,7 +137,15 @@ Uses Tailwind CSS breakpoints for responsive columns:
 - **URL Generation**: Use `generateDeckUrls()` helper for consistent Pokemon Card URL construction
 - **Input Parsing**: Leverage `deckUtils.parseBulkInputLine()` for consistent input processing
 
+### Recent Refactoring (Completed)
+- **Type Definition Separation**: All types moved to `src/types/` with domain organization
+- **Error Handling Enhancement**: Comprehensive error types and centralized error messages
+- **Component Separation**: App.tsx reduced from 130 to 85 lines with dedicated components
+- **Performance Optimization**: Strategic React.memo and useCallback implementation
+- **Custom Hook Optimization**: Improved useDeckManager with proper state synchronization
+
 ### Testing Considerations
 - Utility functions in `utils/deckUtils.ts` are designed as pure functions for easy unit testing
 - Hook separation allows for independent testing of business logic vs. UI behavior
 - Constants centralization enables easy mocking in tests
+- Component separation improves testability of individual UI components
