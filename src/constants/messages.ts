@@ -4,7 +4,6 @@ export const ERROR_MESSAGES = {
   // デッキ関連エラー
   DECK_FETCH_FAILED: 'デッキレシピの取得に失敗しました',
   DECK_CODE_REQUIRED: 'デッキコードを入力してください',
-  DECK_CODE_DUPLICATE: 'このデッキコードは既に追加されています',
   DECK_CODE_INVALID: '無効なデッキコードです',
   
   // 一括処理エラー

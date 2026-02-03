@@ -4,148 +4,57 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Pokemon Trading Card Game deck viewer application built with React 19, TypeScript, and Vite. The app allows users to input Pokemon deck codes and displays deck recipe images from the official Pokemon Card website. It supports both single deck input and bulk input (including Excel copy-paste functionality with player names).
+ポケモンカードゲームのデッキコードを入力し、公式サイトのデッキレシピ画像を表示するReact 19 + TypeScript + Viteアプリケーション。単体入力とExcelコピー対応の一括入力をサポート。
 
 ## Key Commands
 
-### Development
-- `npm run dev` - Start development server at http://localhost:5173
-- `npm run build` - Build for production (TypeScript compile + Vite build)
-- `npm run lint` - Run ESLint for code quality checks
-- `npm run preview` - Preview production build locally
+- `npm run dev` - 開発サーバー起動 (http://localhost:5173)
+- `npm run build` - 本番ビルド (TypeScript compile + Vite build)
+- `npm run lint` - ESLintチェック
+- `npm run preview` - ビルド後のプレビュー
 
-### Deployment
-- Deployment is handled automatically by GitHub Actions when pushing to main branch
-- Manual deployment can be triggered from GitHub Actions workflow page
+デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行。
 
-## Architecture & Core Concepts
+## Architecture
 
-### Layered Hook Architecture with Component Separation
-The application uses a sophisticated layered architecture with complete separation of concerns:
+### Layered Architecture
+```
+View Layer (src/App.tsx, src/components/)
+    ↓
+Business Logic Layer (src/hooks/useDeckManager.ts, useAppState.ts, useFormState.ts, useModalState.ts)
+    ↓
+Infrastructure Layer (src/hooks/useLocalStorage.ts, src/utils/, src/types/, src/constants/)
+```
 
-**View Layer:**
-- `src/App.tsx` - Slim orchestration component (85 lines) focused on state coordination
-- `src/components/` - Specialized UI components with React.memo optimization:
-  - `DeckCard.tsx` - Individual deck display with performance optimization
-  - `FormInput.tsx` - Form handling with mode switching
-  - `ImageModal.tsx` - Modal viewer with keyboard navigation
-  - `DeckList.tsx` - Deck grid display management
-  - `EmptyState.tsx` - Reusable empty state component
-  - `Footer.tsx` - Static footer component
+### Data Flow
+User Input → FormState → DeckManager → AppState → localStorage → UI Update
 
-**Business Logic Layer:**
-- `src/hooks/useDeckManager.ts` - Centralized deck management with error handling
-- `src/hooks/useAppState.ts` - Application state management (deck list, UI state)
-- `src/hooks/useFormState.ts` - Form input state management (single/bulk modes)
-- `src/hooks/useModalState.ts` - Modal state and keyboard navigation logic
+### Key Files
+- `src/hooks/useDeckManager.ts` - デッキ追加・削除の全操作を集約。フォーム送信は必ずここを通す
+- `src/utils/deckUtils.ts` - 純粋関数のユーティリティ（入力パース、データ生成、メッセージ生成）
+- `src/constants/index.ts` - URL生成(`generateDeckUrls()`)、ストレージキー、エラーメッセージ
+- `src/hooks/useLocalStorage.ts` - localStorage操作。Date型のシリアライズ/デシリアライズ対応
 
-**Infrastructure Layer:**
-- `src/hooks/useLocalStorage.ts` - Data persistence with comprehensive error handling
-- `src/utils/deckUtils.ts` - Pure utility functions for data processing and validation
-- `src/types/` - Centralized type definitions organized by domain
-- `src/constants/` - Configuration, URLs, messages, and UI settings
+### URL Generation
+デッキコードからポケモンカード公式URLを生成：
+- View URL: `deck/deckView.php/deckID/{deckCode}` (画像表示用)
+- Details URL: `deck/confirm.html/deckID/{deckCode}` (外部リンク用)
 
-### Data Flow Architecture
-The application follows a unidirectional data flow pattern:
-
-1. **User Input** → FormState → DeckManager → AppState → localStorage → UI Update
-2. **Data Loading** → localStorage → AppState → Component Re-render
-3. **Business Operations** → DeckManager utilities → State updates → Persistence
-
-Key architectural decisions:
-- **Pure Functions**: All utility functions in `utils/deckUtils.ts` are side-effect free
-- **Single Source of Truth**: AppState manages all deck data centrally
-- **Immutable Updates**: State changes use immutable patterns throughout
-- **Hook Composition**: Complex operations are composed from multiple focused hooks
-- **Performance Optimization**: React.memo and useCallback used strategically
-- **Type Safety**: Centralized type definitions in `src/types/` with domain separation
-
-### Key Business Operations
-
-**Deck Input Processing** (`utils/deckUtils.ts`):
-- **Single Mode**: Individual deck code + optional player name validation
-- **Bulk Mode**: Multi-format parsing supporting Excel tab-separated, comma/semicolon/space-separated, or newline-separated deck codes
-- **Duplicate Detection**: Cross-referencing against existing and newly processed entries
-- **Error Aggregation**: Comprehensive error collection with user-friendly messaging
-
-**URL Generation** (`constants/index.ts`):
-- Deck codes are converted to Pokemon Card official URLs via `generateDeckUrls()` helper
-- View URL: `deck/deckView.php/deckID/{deckCode}` (for image display)
-- Details URL: `deck/confirm.html/deckID/{deckCode}` (for external links)
-
-**Data Persistence** (`hooks/useLocalStorage.ts`):
-- Automatic localStorage operations with proper Date object serialization/deserialization
-- Storage key management through centralized constants (`STORAGE_KEYS`)
-- Comprehensive error handling for storage quota, parsing failures, and network issues
-- Returns structured `{ data, error }` format for consistent error propagation
-
-### Responsive Grid Configuration
-Uses Tailwind CSS breakpoints for responsive columns:
-- Mobile (< 640px): 1 column
-- Small tablet (≥ 640px): 1 column
-- Tablet (≥ 768px): 2 columns
-- Small PC (≥ 1024px): 3 columns
-- Medium PC (≥ 1280px): 4 columns
-- Large PC (≥ 1536px): 5 columns
-
-### Modal Image Viewer
-- **Navigation**: Arrow keys (↑↓←→) and click buttons for prev/next
-- **Keyboard Controls**: ESC to close, prevents default scroll behavior
-- **Accessibility**: Proper focus management and ARIA labels
-- **Position Tracking**: Shows current position (e.g., "2 / 5")
+### Bulk Input Parsing
+`parseBulkInputLine()`が以下の形式に対応：
+- タブ区切り: `プレイヤー名\tデッキコード` (Excel対応)
+- 区切り文字: カンマ/セミコロン/スペース
+- 改行区切り: 1行1コード
 
 ## Configuration Notes
 
-### Vite Configuration
-- Base path set to `/PokemonTCGJPDeckViewer/` for GitHub Pages deployment
-- Standard React plugin configuration
-
-### Tailwind CSS
-- Uses Tailwind CSS v3 (downgraded from v4 due to compatibility issues with responsive classes)
-- PostCSS configured with tailwindcss and autoprefixer
-
-### GitHub Pages Setup
-- Configured for deployment via GitHub Actions
-- Build artifacts go to `dist/` directory
-- Base path configured for proper asset loading
-- Automatic deployment on push to main branch
-
-### Data Persistence
-- Deck data is stored in localStorage using centralized key management (`STORAGE_KEYS.DECK_LIST`)
-- Date objects are properly serialized/deserialized for JSON storage
-- All persistence operations are abstracted through `useLocalStorage` hook
+- **Vite**: Base path `/PokemonTCGJPDeckViewer/` (GitHub Pages用)
+- **Tailwind CSS v3**: v4から互換性問題でダウングレード済み
+- **localStorage key**: `STORAGE_KEYS.DECK_LIST` で管理
 
 ## Development Guidelines
 
-### Architectural Patterns to Follow
-- **Layered Architecture**: Maintain clear separation between View, Business Logic, and Infrastructure layers
-- **Pure Functions**: Keep utility functions in `utils/` free of side effects for testability
-- **Centralized Constants**: Add new URLs, keys, or configuration to `src/constants/index.ts`
-- **Hook Composition**: Compose complex operations from focused, single-responsibility hooks
-
-### Code Organization Principles
-- **View Components**: Should only handle rendering and UI event delegation
-- **Business Logic**: All domain operations should go through `useDeckManager` or similar hooks
-- **State Management**: Use appropriate state hooks (`useAppState`, `useFormState`, etc.) based on data scope
-- **Utilities**: Extract reusable, pure functions to `utils/` for better testing and reuse
-- **Type Definitions**: Organize types by domain in `src/types/` (deck, ui, form, modal, error)
-- **Constants**: Centralize configuration in `src/constants/` (URLs, messages, UI settings)
-
-### Key Integration Points
-- **Form Submission**: Always flows through `useDeckManager.handleSubmit`
-- **Data Persistence**: All storage operations must use `useLocalStorage` hook methods
-- **URL Generation**: Use `generateDeckUrls()` helper for consistent Pokemon Card URL construction
-- **Input Parsing**: Leverage `deckUtils.parseBulkInputLine()` for consistent input processing
-
-### Recent Refactoring (Completed)
-- **Type Definition Separation**: All types moved to `src/types/` with domain organization
-- **Error Handling Enhancement**: Comprehensive error types and centralized error messages
-- **Component Separation**: App.tsx reduced from 130 to 85 lines with dedicated components
-- **Performance Optimization**: Strategic React.memo and useCallback implementation
-- **Custom Hook Optimization**: Improved useDeckManager with proper state synchronization
-
-### Testing Considerations
-- Utility functions in `utils/deckUtils.ts` are designed as pure functions for easy unit testing
-- Hook separation allows for independent testing of business logic vs. UI behavior
-- Constants centralization enables easy mocking in tests
-- Component separation improves testability of individual UI components
+- **新しいURL/キー/設定** → `src/constants/index.ts`に追加
+- **新しい型定義** → `src/types/`にドメイン別で追加
+- **ビジネスロジック** → `useDeckManager`または専用hookを通す
+- **ユーティリティ関数** → 副作用なしの純粋関数として`src/utils/`に配置

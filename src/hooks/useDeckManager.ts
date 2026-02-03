@@ -4,7 +4,6 @@ import { ErrorType, createAppError, isNetworkError } from "../types";
 import { ERROR_MESSAGES, UI_CONFIG } from "../constants";
 import {
   parseBulkInputLine,
-  checkDuplicate,
   createDeckData,
   generateResultMessage
 } from "../utils/deckUtils";
@@ -47,12 +46,6 @@ export const useDeckManager = (
   // 単体追加処理
   const handleSingleSubmit = async () => {
     const trimmedCode = formState.singleMode.deckCode.trim();
-
-    // 重複チェック
-    if (appState.deckList.some((deck) => deck.code === trimmedCode)) {
-      appActions.setError(ERROR_MESSAGES.DECK_CODE_DUPLICATE);
-      return;
-    }
 
     appActions.setLoading(true);
     appActions.setError(null);
@@ -98,7 +91,6 @@ export const useDeckManager = (
 
     const result: BulkProcessResult = {
       newDecks: [],
-      duplicates: [],
       errors: [],
     };
 
@@ -111,12 +103,6 @@ export const useDeckManager = (
 
         if (!parsed.code) {
           result.errors.push(`行 ${i + 1}: デッキコードが見つかりません`);
-          continue;
-        }
-
-        // 重複チェック
-        if (checkDuplicate(parsed.code, appState.deckList, result.newDecks)) {
-          result.duplicates.push(parsed.code);
           continue;
         }
 
@@ -145,14 +131,9 @@ export const useDeckManager = (
       // 結果メッセージの処理
       const message = generateResultMessage(result);
 
-      if (
-        result.newDecks.length === 0 &&
-        (result.duplicates.length > 0 || result.errors.length > 0)
-      ) {
-        appActions.setError(
-          message || ERROR_MESSAGES.BULK_NO_DECKS_ADDED
-        );
-      } else if (result.duplicates.length > 0 || result.errors.length > 0) {
+      if (result.newDecks.length === 0 && result.errors.length > 0) {
+        appActions.setError(message || ERROR_MESSAGES.BULK_NO_DECKS_ADDED);
+      } else if (result.errors.length > 0) {
         appActions.setError(message);
       } else {
         formActions.resetBulkForm();

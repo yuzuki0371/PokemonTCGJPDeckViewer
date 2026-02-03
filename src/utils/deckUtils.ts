@@ -26,18 +26,6 @@ export const parseBulkInputLine = (line: string): ParsedLine => {
   return { playerName, code };
 };
 
-// 重複チェック
-export const checkDuplicate = (
-  code: string,
-  existingDecks: DeckData[],
-  newDecks: DeckData[]
-): boolean => {
-  return (
-    existingDecks.some((deck) => deck.code === code) ||
-    newDecks.some((deck) => deck.code === code)
-  );
-};
-
 // デッキデータ生成
 export const createDeckData = (
   code: string,
@@ -60,14 +48,11 @@ export const createDeckData = (
 
 // 結果メッセージの生成
 export const generateResultMessage = (result: BulkProcessResult): string => {
-  const { newDecks, duplicates, errors } = result;
+  const { newDecks, errors } = result;
   let message = "";
 
   if (newDecks.length > 0) {
     message += `${newDecks.length}件を追加しました。`;
-  }
-  if (duplicates.length > 0) {
-    message += ` ${duplicates.length}件のデッキコードは既に追加済みのためスキップしました。`;
   }
   if (errors.length > 0) {
     message += ` ${errors.length}件でエラーが発生しました。`;

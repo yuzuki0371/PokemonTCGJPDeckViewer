@@ -17,6 +17,5 @@ export interface ParsedLine {
 // 一括処理結果型
 export interface BulkProcessResult {
   newDecks: DeckData[];
-  duplicates: string[];
   errors: string[];
 }
