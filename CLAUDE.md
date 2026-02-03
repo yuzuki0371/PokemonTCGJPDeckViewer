@@ -4,91 +4,57 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Pokemon Trading Card Game deck viewer application built with React, TypeScript, and Vite. The app allows users to input Pokemon deck codes and displays deck recipe images from the official Pokemon Card website. It supports both single deck input and bulk input (including Excel copy-paste functionality with player names).
+ポケモンカードゲームのデッキコードを入力し、公式サイトのデッキレシピ画像を表示するReact 19 + TypeScript + Viteアプリケーション。単体入力とExcelコピー対応の一括入力をサポート。
 
 ## Key Commands
 
-### Development
-- `npm run dev` - Start development server
-- `npm run build` - Build for production (TypeScript compile + Vite build)
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build locally
+- `npm run dev` - 開発サーバー起動 (http://localhost:5173)
+- `npm run build` - 本番ビルド (TypeScript compile + Vite build)
+- `npm run lint` - ESLintチェック
+- `npm run preview` - ビルド後のプレビュー
 
-### Deployment
-- Deployment is handled automatically by GitHub Actions when pushing to main branch
+デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行。
 
-## Architecture & Core Concepts
+## Architecture
 
-### Single-File Application Structure
-The entire application logic is contained in `src/App.tsx` as a single React component with multiple state management hooks. This monolithic approach was chosen for simplicity given the relatively small scope.
+### Layered Architecture
+```
+View Layer (src/App.tsx, src/components/)
+    ↓
+Business Logic Layer (src/hooks/useDeckManager.ts, useAppState.ts, useFormState.ts, useModalState.ts)
+    ↓
+Infrastructure Layer (src/hooks/useLocalStorage.ts, src/utils/, src/types/, src/constants/)
+```
 
-### State Management
-The app uses React hooks for state management:
-- Deck input modes (single vs bulk)
-- Deck list management with DeckData interface
-- Image enlargement modal with navigation
-- Form validation and error handling
-- Progress tracking for bulk operations
-- LocalStorage persistence for deck data
+### Data Flow
+User Input → FormState → DeckManager → AppState → localStorage → UI Update
 
-### Key Data Flow
-1. **Deck Code Input**: Users input deck codes either individually or in bulk (supports Excel tab-separated format)
-2. **Image URL Generation**: Deck codes are converted to Pokemon Card official URLs:
-   - Display: `https://www.pokemon-card.com/deck/deckView.php/deckID/{deckCode}`
-   - Details: `https://www.pokemon-card.com/deck/confirm.html/deckID/{deckCode}`
-3. **Grid Display**: Responsive grid layout shows deck images with player names and codes
-4. **Modal Navigation**: Click-to-enlarge with keyboard/button navigation between decks
-5. **Data Persistence**: Deck data is automatically saved to localStorage and restored on page reload
+### Key Files
+- `src/hooks/useDeckManager.ts` - デッキ追加・削除の全操作を集約。フォーム送信は必ずここを通す
+- `src/utils/deckUtils.ts` - 純粋関数のユーティリティ（入力パース、データ生成、メッセージ生成）
+- `src/constants/index.ts` - URL生成(`generateDeckUrls()`)、ストレージキー、エラーメッセージ
+- `src/hooks/useLocalStorage.ts` - localStorage操作。Date型のシリアライズ/デシリアライズ対応
 
-### Responsive Grid Configuration
-Uses Tailwind CSS breakpoints for responsive columns:
-- Mobile (< 640px): 1 column
-- Small tablet (≥ 640px): 1 column
-- Tablet (≥ 768px): 2 columns
-- Small PC (≥ 1024px): 3 columns
-- Medium PC (≥ 1280px): 4 columns
-- Large PC (≥ 1536px): 5 columns
+### URL Generation
+デッキコードからポケモンカード公式URLを生成：
+- View URL: `deck/deckView.php/deckID/{deckCode}` (画像表示用)
+- Details URL: `deck/confirm.html/deckID/{deckCode}` (外部リンク用)
 
-### Input Processing
-- **Single Mode**: Individual deck code + optional player name
-- **Bulk Mode**: Supports Excel copy-paste (tab-separated), comma/semicolon/space-separated, or newline-separated deck codes
-- **Duplicate Detection**: Prevents adding duplicate deck codes
-- **Error Handling**: Validates input and provides user feedback
-
-### Modal Image Viewer
-- **Navigation**: Arrow keys (↑↓←→) and click buttons for prev/next
-- **Keyboard Controls**: ESC to close, prevents default scroll behavior
-- **Accessibility**: Proper focus management and ARIA labels
-- **Position Tracking**: Shows current position (e.g., "2 / 5")
+### Bulk Input Parsing
+`parseBulkInputLine()`が以下の形式に対応：
+- タブ区切り: `プレイヤー名\tデッキコード` (Excel対応)
+- 区切り文字: カンマ/セミコロン/スペース
+- 改行区切り: 1行1コード
 
 ## Configuration Notes
 
-### Vite Configuration
-- Base path set to `/PokemonTCGJPDeckViewer/` for GitHub Pages deployment
-- Standard React plugin configuration
+- **Vite**: Base path `/PokemonTCGJPDeckViewer/` (GitHub Pages用)
+- **Tailwind CSS v3**: v4から互換性問題でダウングレード済み
+- **localStorage key**: `STORAGE_KEYS.DECK_LIST` で管理
 
-### Tailwind CSS
-- Uses Tailwind CSS v3 (downgraded from v4 due to compatibility issues with responsive classes)
-- PostCSS configured with tailwindcss and autoprefixer
+## Development Guidelines
 
-### GitHub Pages Setup
-- Configured for deployment via GitHub Actions
-- Build artifacts go to `dist/` directory
-- Base path configured for proper asset loading
-- Automatic deployment on push to main branch
-
-### Data Persistence
-- Deck data is stored in localStorage with key `pokemonTcgDeckList`
-- Date objects are serialized/deserialized properly for JSON storage
-- Data is automatically saved on all deck operations (add, remove, clear)
-- Initial data load happens on component mount
-
-## Development Considerations
-
-When modifying this application:
-- Maintain the single-component structure unless complexity significantly increases
-- Ensure responsive grid classes are properly generated (use Tailwind v3)
-- Test bulk input with various formats (Excel tab-separated, comma-separated, etc.)
-- Verify keyboard navigation works properly in modal view
-- Check duplicate detection logic when adding new deck management features
-- When adding new deck operations, ensure localStorage is updated via `saveToStorage()`
+- **新しいURL/キー/設定** → `src/constants/index.ts`に追加
+- **新しい型定義** → `src/types/`にドメイン別で追加
+- **ビジネスロジック** → `useDeckManager`または専用hookを通す
+- **ユーティリティ関数** → 副作用なしの純粋関数として`src/utils/`に配置

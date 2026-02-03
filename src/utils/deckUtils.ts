@@ -1,0 +1,62 @@
+import type { DeckData, ParsedLine, BulkProcessResult } from "../types";
+import { generateDeckUrls } from "../constants";
+
+// 一括入力の行解析
+export const parseBulkInputLine = (line: string): ParsedLine => {
+  let playerName: string | undefined;
+  let code: string;
+
+  // タブ区切りかどうかチェック（Excelからのコピー）
+  if (line.includes("\t")) {
+    const parts = line.split("\t");
+    playerName = parts[0]?.trim();
+    code = parts[1]?.trim() || "";
+  } else {
+    // 他の区切り文字で分割を試す
+    const parts = line.split(/[,;\s]+/);
+    if (parts.length >= 2) {
+      playerName = parts[0]?.trim();
+      code = parts[1]?.trim() || "";
+    } else {
+      // 単一のデッキコードとして処理
+      code = parts[0]?.trim() || "";
+    }
+  }
+
+  return { playerName, code };
+};
+
+// デッキデータ生成
+export const createDeckData = (
+  code: string,
+  playerName?: string
+): DeckData | null => {
+  const trimmedCode = code.trim();
+  const trimmedPlayerName = playerName?.trim();
+
+  if (!trimmedCode) return null;
+
+  const imageUrl = generateDeckUrls(trimmedCode).view;
+  return {
+    id: `${Date.now()}-${Math.random()}`,
+    code: trimmedCode,
+    playerName: trimmedPlayerName || undefined,
+    imageUrl,
+    addedAt: new Date(),
+  };
+};
+
+// 結果メッセージの生成
+export const generateResultMessage = (result: BulkProcessResult): string => {
+  const { newDecks, errors } = result;
+  let message = "";
+
+  if (newDecks.length > 0) {
+    message += `${newDecks.length}件を追加しました。`;
+  }
+  if (errors.length > 0) {
+    message += ` ${errors.length}件でエラーが発生しました。`;
+  }
+
+  return message;
+};
