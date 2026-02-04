@@ -1,17 +1,31 @@
-import type { DeckData, ModalActions } from '../types'
+import type { DeckData, ModalActions, ViewSettings, ViewSettingsActions } from '../types'
 import { DeckCard } from './DeckCard'
-import { GRID_CLASSES } from '../constants'
+import { ViewToggle } from './ViewToggle'
+import { GRID_SIZE_CLASSES, LIST_LAYOUT_CLASS } from '../constants'
 
 interface DeckListProps {
   deckList: DeckData[]
   modalActions: ModalActions
   onRemove: (id: string) => void
+  viewSettings: ViewSettings
+  viewSettingsActions: ViewSettingsActions
 }
 
-export const DeckList = ({ deckList, modalActions, onRemove }: DeckListProps) => {
+export const DeckList = ({
+  deckList,
+  modalActions,
+  onRemove,
+  viewSettings,
+  viewSettingsActions
+}: DeckListProps) => {
   if (deckList.length === 0) {
     return null
   }
+
+  // レイアウトクラスの決定
+  const layoutClasses = viewSettings.viewMode === 'grid'
+    ? `grid gap-4 ${GRID_SIZE_CLASSES[viewSettings.cardSize]}`
+    : LIST_LAYOUT_CLASS
 
   return (
     <div className="mb-6">
@@ -19,9 +33,10 @@ export const DeckList = ({ deckList, modalActions, onRemove }: DeckListProps) =>
         <h2 className="text-2xl font-semibold text-gray-800">
           デッキレシピ一覧 ({deckList.length}件)
         </h2>
+        <ViewToggle settings={viewSettings} actions={viewSettingsActions} />
       </div>
 
-      <div className={`grid gap-4 ${GRID_CLASSES}`}>
+      <div className={layoutClasses}>
         {deckList.map((deck) => (
           <DeckCard
             key={deck.id}
@@ -29,6 +44,8 @@ export const DeckList = ({ deckList, modalActions, onRemove }: DeckListProps) =>
             deckList={deckList}
             modalActions={modalActions}
             onRemove={onRemove}
+            viewMode={viewSettings.viewMode}
+            cardSize={viewSettings.cardSize}
           />
         ))}
       </div>

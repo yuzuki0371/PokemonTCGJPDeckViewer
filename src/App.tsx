@@ -4,6 +4,7 @@ import { useAppState } from "./hooks/useAppState";
 import { useModalState } from "./hooks/useModalState";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { useDeckManager } from "./hooks/useDeckManager";
+import { useViewSettings } from "./hooks/useViewSettings";
 import { FormInput } from "./components/FormInput";
 import { ImageModal } from "./components/ImageModal";
 import { DeckList } from "./components/DeckList";
@@ -14,6 +15,7 @@ function App() {
   const [formState, formActions] = useFormState();
   const [appState, appActions] = useAppState();
   const [modalState, modalActions] = useModalState(appState.deckList);
+  const [viewSettings, viewSettingsActions] = useViewSettings();
   const { loadDeckList, saveDeckList } = useLocalStorage();
   const { handleSubmit, handleRemoveDeck, handleClearAll } = useDeckManager(
     appState,
@@ -65,6 +67,8 @@ function App() {
           deckList={appState.deckList}
           modalActions={modalActions}
           onRemove={memoizedHandleRemoveDeck}
+          viewSettings={viewSettings}
+          viewSettingsActions={viewSettingsActions}
         />
 
         {appState.deckList.length === 0 && <EmptyState />}

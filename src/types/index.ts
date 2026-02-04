@@ -38,3 +38,11 @@ export {
   isQuotaExceededError,
   isNetworkError
 } from './error';
+
+// 表示設定関連
+export type {
+  ViewMode,
+  CardSize,
+  ViewSettings,
+  ViewSettingsActions
+} from './viewSettings';

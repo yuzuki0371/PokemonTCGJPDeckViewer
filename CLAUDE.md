@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Key Commands
 
-- `npm run dev` - 開発サーバー起動 (http://localhost:5173)
+- `npm run dev` - 開発サーバー起動 (http://localhost:5173/PokemonTCGJPDeckViewer/)
 - `npm run build` - 本番ビルド (TypeScript compile + Vite build)
 - `npm run lint` - ESLintチェック
 - `npm run preview` - ビルド後のプレビュー
@@ -21,22 +21,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 View Layer (src/App.tsx, src/components/)
     ↓
-Business Logic Layer (src/hooks/useDeckManager.ts, useAppState.ts, useFormState.ts, useModalState.ts)
+Business Logic Layer (src/hooks/)
     ↓
-Infrastructure Layer (src/hooks/useLocalStorage.ts, src/utils/, src/types/, src/constants/)
+Infrastructure Layer (src/utils/, src/types/, src/constants/)
 ```
 
 ### Data Flow
 User Input → FormState → DeckManager → AppState → localStorage → UI Update
 
-### Key Files
-- `src/hooks/useDeckManager.ts` - デッキ追加・削除の全操作を集約。フォーム送信は必ずここを通す
-- `src/utils/deckUtils.ts` - 純粋関数のユーティリティ（入力パース、データ生成、メッセージ生成）
-- `src/constants/index.ts` - URL生成(`generateDeckUrls()`)、ストレージキー、エラーメッセージ
-- `src/hooks/useLocalStorage.ts` - localStorage操作。Date型のシリアライズ/デシリアライズ対応
+### Hooks Pattern
+全てのhooksは `[State, Actions]` タプルを返す設計パターンに従う:
+- `useAppState` - アプリ全体の状態（デッキリスト、UI状態）
+- `useFormState` - フォーム入力状態（単体/一括モード）
+- `useModalState` - モーダル表示状態とナビゲーション
+- `useViewSettings` - 表示設定（グリッド/リスト、カードサイズ）+ localStorage永続化
+- `useDeckManager` - デッキ追加・削除の全操作を集約
+- `useLocalStorage` - localStorage操作、Date型のシリアライズ対応
 
 ### URL Generation
-デッキコードからポケモンカード公式URLを生成：
+デッキコードからポケモンカード公式URLを生成（`generateDeckUrls()`）:
 - View URL: `deck/deckView.php/deckID/{deckCode}` (画像表示用)
 - Details URL: `deck/confirm.html/deckID/{deckCode}` (外部リンク用)
 
@@ -50,11 +53,12 @@ User Input → FormState → DeckManager → AppState → localStorage → UI Up
 
 - **Vite**: Base path `/PokemonTCGJPDeckViewer/` (GitHub Pages用)
 - **Tailwind CSS v3**: v4から互換性問題でダウングレード済み
-- **localStorage key**: `STORAGE_KEYS.DECK_LIST` で管理
+- **localStorage keys**: `STORAGE_KEYS`で管理（デッキリスト、表示設定）
 
 ## Development Guidelines
 
-- **新しいURL/キー/設定** → `src/constants/index.ts`に追加
-- **新しい型定義** → `src/types/`にドメイン別で追加
+- **新しいURL/キー/設定** → `src/constants/`に追加し、`index.ts`でre-export
+- **新しい型定義** → `src/types/`にドメイン別で追加し、`index.ts`でre-export
 - **ビジネスロジック** → `useDeckManager`または専用hookを通す
 - **ユーティリティ関数** → 副作用なしの純粋関数として`src/utils/`に配置
+- **新しいhook** → `[State, Actions]`タプルを返すパターンに従う
