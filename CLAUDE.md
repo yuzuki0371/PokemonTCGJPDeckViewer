@@ -59,6 +59,9 @@ User Input (Forms)
 - 1列: デッキコードのみ
 - 区切り文字: タブ/カンマ/セミコロン/スペース
 
+### Clipboard Export
+`generateDeckListTsv()`でデッキ一覧をタブ区切りテキストに変換し、クリップボードにコピー。Excelにそのまま貼り付け可能。列順は一括入力と同じ（プレイヤー名/デッキコード/デッキ名）。
+
 ### Inline Editing
 DeckCardとImageModalでプレイヤー名・デッキ名のインライン編集が可能:
 - クリックで編集モード開始、Enter/blurで保存、Escapeでキャンセル
