@@ -43,7 +43,7 @@ User Input (Forms)
 - `useAppState` - アプリ全体の状態（デッキリスト、UI状態）。`updateDeck`でインライン編集対応
 - `useFormState` - フォーム入力状態（単体/一括モード、playerName/deckName/deckCode）
 - `useModalState` - モーダル表示状態、ナビゲーション、`updateModalImage`でモーダル内編集対応
-- `useViewSettings` - 表示設定（グリッド/リスト、カードサイズ）+ localStorage永続化
+- `useViewSettings` - 表示設定（グリッド/リスト、カードサイズ、タブ切り替え）+ localStorage永続化
 - `useDeckManager` - デッキ追加・更新・削除の全操作を集約。`handleUpdateDeck`でインライン編集の永続化を担当
 - `useLocalStorage` - localStorage操作、Date型のシリアライズ対応
 
@@ -58,6 +58,12 @@ User Input (Forms)
 - 2列: `プレイヤー名\tデッキコード` (Excel 2列対応)
 - 1列: デッキコードのみ
 - 区切り文字: タブ/カンマ/セミコロン/スペース
+
+### Tab Navigation
+App.tsxで「デッキ一覧」と「デッキ集計」のタブ切り替えUI。`ViewSettings.activeTab`（`TabMode = 'deckList' | 'summary'`）で管理し、localStorageに永続化。デッキがある場合のみタブ表示。
+
+### Deck Name Summary
+`DeckNameSummary`コンポーネントがデッキ名ごとの集計テーブルを表示。`aggregateDeckNames()`（`src/utils/deckUtils.ts`）で件数・割合(%)を算出。デッキ名未設定は「未設定」にまとめ、件数降順ソート。
 
 ### Clipboard Export
 `generateDeckListTsv()`でデッキ一覧をタブ区切りテキストに変換し、クリップボードにコピー。Excelにそのまま貼り付け可能。列順は一括入力と同じ（プレイヤー名/デッキコード/デッキ名）。
