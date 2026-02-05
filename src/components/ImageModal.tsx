@@ -145,7 +145,7 @@ export const ImageModal = ({
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="relative max-w-4xl max-h-full">
+      <div className="relative flex flex-col max-w-4xl max-h-full">
         {/* 閉じるボタン */}
         <button
           onClick={modalActions.closeModal}
@@ -218,12 +218,12 @@ export const ImageModal = ({
           <img
             src={modalState.enlargedImage.url}
             alt={`デッキコード: ${modalState.enlargedImage.deckCode}`}
-            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            className="max-w-full object-contain rounded-t-lg shadow-2xl min-h-0 flex-shrink"
             onError={handleImageError}
           />
         ) : (
           <div
-            className="p-8 bg-gray-200 text-center text-gray-600 rounded-lg"
+            className="p-8 bg-gray-200 text-center text-gray-600 rounded-t-lg"
             style={{ minHeight: '300px' }}
           >
             <div className="flex items-center justify-center h-full">
@@ -248,7 +248,7 @@ export const ImageModal = ({
         )}
 
         {/* 情報表示エリア */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4 rounded-b-lg">
+        <div className="bg-gray-900 text-white p-4 rounded-b-lg flex-shrink-0">
           <div className="text-center">
             {/* 現在位置表示 */}
             {hasMultipleDecks && (
