@@ -42,11 +42,11 @@ export const DeckList = ({
 
   return (
     <div className="mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            デッキレシピ一覧 ({deckList.length}件)
-          </h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          デッキレシピ一覧 ({deckList.length}件)
+        </h2>
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={handleCopy}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
@@ -58,8 +58,8 @@ export const DeckList = ({
           >
             {copied ? 'コピー済み' : '一覧をコピー'}
           </button>
+          <ViewToggle settings={viewSettings} actions={viewSettingsActions} />
         </div>
-        <ViewToggle settings={viewSettings} actions={viewSettingsActions} />
       </div>
 
       <div className={layoutClasses}>
