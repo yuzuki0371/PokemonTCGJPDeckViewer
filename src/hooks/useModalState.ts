@@ -14,6 +14,7 @@ export const useModalState = (
         url: deck.imageUrl,
         deckCode: deck.code,
         playerName: deck.playerName,
+        deckName: deck.deckName,
         index,
       },
     });
@@ -44,6 +45,7 @@ export const useModalState = (
           url: newDeck.imageUrl,
           deckCode: newDeck.code,
           playerName: newDeck.playerName,
+          deckName: newDeck.deckName,
           index: newIndex,
         },
       });

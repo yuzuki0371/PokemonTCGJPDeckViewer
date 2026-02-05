@@ -4,17 +4,31 @@ import { generateDeckUrls } from "../constants";
 // 一括入力の行解析
 export const parseBulkInputLine = (line: string): ParsedLine => {
   let playerName: string | undefined;
+  let deckName: string | undefined;
   let code: string;
 
   // タブ区切りかどうかチェック（Excelからのコピー）
   if (line.includes("\t")) {
     const parts = line.split("\t");
-    playerName = parts[0]?.trim();
-    code = parts[1]?.trim() || "";
+    if (parts.length >= 3) {
+      // 3列: プレイヤー名、デッキ名、デッキコード
+      playerName = parts[0]?.trim();
+      deckName = parts[1]?.trim();
+      code = parts[2]?.trim() || "";
+    } else {
+      // 2列: プレイヤー名、デッキコード
+      playerName = parts[0]?.trim();
+      code = parts[1]?.trim() || "";
+    }
   } else {
     // 他の区切り文字で分割を試す
     const parts = line.split(/[,;\s]+/);
-    if (parts.length >= 2) {
+    if (parts.length >= 3) {
+      // 3要素: プレイヤー名、デッキ名、デッキコード
+      playerName = parts[0]?.trim();
+      deckName = parts[1]?.trim();
+      code = parts[2]?.trim() || "";
+    } else if (parts.length >= 2) {
       playerName = parts[0]?.trim();
       code = parts[1]?.trim() || "";
     } else {
@@ -23,16 +37,18 @@ export const parseBulkInputLine = (line: string): ParsedLine => {
     }
   }
 
-  return { playerName, code };
+  return { playerName, deckName, code };
 };
 
 // デッキデータ生成
 export const createDeckData = (
   code: string,
-  playerName?: string
+  playerName?: string,
+  deckName?: string
 ): DeckData | null => {
   const trimmedCode = code.trim();
   const trimmedPlayerName = playerName?.trim();
+  const trimmedDeckName = deckName?.trim();
 
   if (!trimmedCode) return null;
 
@@ -41,6 +57,7 @@ export const createDeckData = (
     id: `${Date.now()}-${Math.random()}`,
     code: trimmedCode,
     playerName: trimmedPlayerName || undefined,
+    deckName: trimmedDeckName || undefined,
     imageUrl,
     addedAt: new Date(),
   };

@@ -4,6 +4,7 @@ export interface FormState {
   singleMode: {
     deckCode: string;
     playerName: string;
+    deckName: string;
   };
   bulkMode: {
     input: string;
@@ -12,7 +13,7 @@ export interface FormState {
 }
 
 export interface FormActions {
-  updateSingleForm: (field: "deckCode" | "playerName", value: string) => void;
+  updateSingleForm: (field: "deckCode" | "playerName" | "deckName", value: string) => void;
   updateBulkInput: (value: string) => void;
   toggleMode: () => void;
   setSingleMode: () => void;

@@ -53,7 +53,8 @@ export const useDeckManager = (
     try {
       const newDeck = createDeckData(
         trimmedCode,
-        formState.singleMode.playerName
+        formState.singleMode.playerName,
+        formState.singleMode.deckName
       );
       if (newDeck) {
         const updatedList = [newDeck, ...appState.deckList];
@@ -106,7 +107,7 @@ export const useDeckManager = (
           continue;
         }
 
-        const newDeck = createDeckData(parsed.code, parsed.playerName);
+        const newDeck = createDeckData(parsed.code, parsed.playerName, parsed.deckName);
         if (newDeck) {
           result.newDecks.push(newDeck);
         }

@@ -103,10 +103,18 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onRemove, viewMode }:
           <div className="flex-1">
             {deck.playerName && (
               <div
-                className="text-base font-semibold text-gray-800 mb-2 truncate"
+                className="text-base font-semibold text-gray-800 mb-1 truncate"
                 title={deck.playerName}
               >
                 {deck.playerName}
+              </div>
+            )}
+            {deck.deckName && (
+              <div
+                className="text-sm text-gray-700 mb-2 truncate"
+                title={deck.deckName}
+              >
+                {deck.deckName}
               </div>
             )}
             <div className="text-sm text-gray-600 mb-1">
@@ -153,6 +161,14 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onRemove, viewMode }:
             {deck.playerName}
           </div>
         )}
+        {deck.deckName && (
+          <div
+            className="text-xs text-gray-700 mb-1 truncate"
+            title={deck.deckName}
+          >
+            {deck.deckName}
+          </div>
+        )}
         <div className="text-xs text-gray-600 mb-1">
           <p className="truncate" title={deck.code}>
             コード:{' '}
@@ -181,6 +197,7 @@ export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
     prevProps.deck.id === nextProps.deck.id &&
     prevProps.deck.code === nextProps.deck.code &&
     prevProps.deck.playerName === nextProps.deck.playerName &&
+    prevProps.deck.deckName === nextProps.deck.deckName &&
     prevProps.deck.imageUrl === nextProps.deck.imageUrl &&
     prevProps.deck.addedAt.getTime() === nextProps.deck.addedAt.getTime() &&
     prevProps.modalActions === nextProps.modalActions &&

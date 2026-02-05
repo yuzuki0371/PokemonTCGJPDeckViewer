@@ -6,6 +6,7 @@ export interface ModalImage {
   url: string;
   deckCode: string;
   playerName?: string;
+  deckName?: string;
   index: number;
 }
 

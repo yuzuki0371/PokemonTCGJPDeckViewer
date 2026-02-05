@@ -169,6 +169,13 @@ export const ImageModal = ({
               </div>
             )}
 
+            {/* デッキ名 */}
+            {modalState.enlargedImage.deckName && (
+              <div className="text-sm text-gray-200 mb-1">
+                {modalState.enlargedImage.deckName}
+              </div>
+            )}
+
             {/* デッキコード */}
             <div className="text-sm">
               デッキコード:{' '}

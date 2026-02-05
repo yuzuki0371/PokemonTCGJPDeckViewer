@@ -4,6 +4,7 @@ export interface DeckData {
   id: string;
   code: string;
   playerName?: string;
+  deckName?: string;
   imageUrl: string;
   addedAt: Date;
 }
@@ -11,6 +12,7 @@ export interface DeckData {
 // 入力解析の結果型
 export interface ParsedLine {
   playerName?: string;
+  deckName?: string;
   code: string;
 }
 
