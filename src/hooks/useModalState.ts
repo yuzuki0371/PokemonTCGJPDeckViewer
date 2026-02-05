@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { DeckData, ModalState, ModalActions } from "../types";
+import type { DeckData, ModalState, ModalActions, ModalImage } from "../types";
 
 export const useModalState = (
   deckList: DeckData[]
@@ -11,6 +11,7 @@ export const useModalState = (
   const openModal = (deck: DeckData, index: number) => {
     setModalState({
       enlargedImage: {
+        deckId: deck.id,
         url: deck.imageUrl,
         deckCode: deck.code,
         playerName: deck.playerName,
@@ -42,6 +43,7 @@ export const useModalState = (
       const newDeck = deckList[newIndex];
       setModalState({
         enlargedImage: {
+          deckId: newDeck.id,
           url: newDeck.imageUrl,
           deckCode: newDeck.code,
           playerName: newDeck.playerName,
@@ -56,6 +58,10 @@ export const useModalState = (
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!modalState.enlargedImage) return;
+
+      // 入力フィールドにフォーカス中はモーダルのキーボードショートカットを無効化
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
 
       switch (e.key) {
         case "Escape":
@@ -87,10 +93,23 @@ export const useModalState = (
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  const updateModalImage = useCallback(
+    (updates: Partial<Pick<ModalImage, 'playerName' | 'deckName'>>) => {
+      setModalState((prev) => {
+        if (!prev.enlargedImage) return prev;
+        return {
+          enlargedImage: { ...prev.enlargedImage, ...updates },
+        };
+      });
+    },
+    []
+  );
+
   const actions: ModalActions = {
     openModal,
     closeModal,
     navigateModal,
+    updateModalImage,
   };
 
   return [modalState, actions];

@@ -1,4 +1,4 @@
-import type { DeckData, ModalActions, ViewSettings, ViewSettingsActions } from '../types'
+import type { DeckData, ModalActions, ViewSettings, ViewSettingsActions, AppActions } from '../types'
 import { DeckCard } from './DeckCard'
 import { ViewToggle } from './ViewToggle'
 import { GRID_SIZE_CLASSES, LIST_LAYOUT_CLASS } from '../constants'
@@ -6,6 +6,7 @@ import { GRID_SIZE_CLASSES, LIST_LAYOUT_CLASS } from '../constants'
 interface DeckListProps {
   deckList: DeckData[]
   modalActions: ModalActions
+  onUpdateDeck: AppActions['updateDeck']
   onRemove: (id: string) => void
   viewSettings: ViewSettings
   viewSettingsActions: ViewSettingsActions
@@ -14,6 +15,7 @@ interface DeckListProps {
 export const DeckList = ({
   deckList,
   modalActions,
+  onUpdateDeck,
   onRemove,
   viewSettings,
   viewSettingsActions
@@ -43,6 +45,7 @@ export const DeckList = ({
             deck={deck}
             deckList={deckList}
             modalActions={modalActions}
+            onUpdateDeck={onUpdateDeck}
             onRemove={onRemove}
             viewMode={viewSettings.viewMode}
             cardSize={viewSettings.cardSize}

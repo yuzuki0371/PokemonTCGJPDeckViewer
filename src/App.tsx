@@ -17,7 +17,7 @@ function App() {
   const [modalState, modalActions] = useModalState(appState.deckList);
   const [viewSettings, viewSettingsActions] = useViewSettings();
   const { loadDeckList, saveDeckList } = useLocalStorage();
-  const { handleSubmit, handleRemoveDeck, handleClearAll } = useDeckManager(
+  const { handleSubmit, handleUpdateDeck, handleRemoveDeck, handleClearAll } = useDeckManager(
     appState,
     appActions,
     formState,
@@ -25,7 +25,8 @@ function App() {
     saveDeckList
   );
 
-  // handleRemoveDeckとhandleClearAllをuseCallbackでラップして最適化
+  // コールバックをuseCallbackでラップして最適化
+  const memoizedHandleUpdateDeck = useCallback(handleUpdateDeck, [handleUpdateDeck]);
   const memoizedHandleRemoveDeck = useCallback(handleRemoveDeck, [handleRemoveDeck]);
   const memoizedHandleClearAll = useCallback(handleClearAll, [handleClearAll]);
 
@@ -66,6 +67,7 @@ function App() {
         <DeckList
           deckList={appState.deckList}
           modalActions={modalActions}
+          onUpdateDeck={memoizedHandleUpdateDeck}
           onRemove={memoizedHandleRemoveDeck}
           viewSettings={viewSettings}
           viewSettingsActions={viewSettingsActions}
@@ -76,6 +78,7 @@ function App() {
         <ImageModal
           modalState={modalState}
           modalActions={modalActions}
+          onUpdateDeck={memoizedHandleUpdateDeck}
           hasMultipleDecks={appState.deckList.length > 1}
           totalDecks={appState.deckList.length}
         />

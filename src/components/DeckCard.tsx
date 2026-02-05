@@ -1,18 +1,30 @@
-import { useState, memo, useCallback } from 'react'
-import type { DeckData, ModalActions, ViewMode, CardSize } from '../types'
+import { useState, useRef, useEffect, memo, useCallback } from 'react'
+import type { DeckData, ModalActions, ViewMode, CardSize, AppActions } from '../types'
 import { generateDeckUrls } from '../constants'
 
 interface DeckCardProps {
   deck: DeckData
   deckList: DeckData[]
   modalActions: ModalActions
+  onUpdateDeck: AppActions['updateDeck']
   onRemove: (id: string) => void
   viewMode: ViewMode
   cardSize: CardSize
 }
 
-const DeckCardComponent = ({ deck, deckList, modalActions, onRemove, viewMode }: DeckCardProps) => {
+type EditableFieldName = 'playerName' | 'deckName'
+
+const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemove, viewMode }: DeckCardProps) => {
   const [imageError, setImageError] = useState(false)
+  const [editingField, setEditingField] = useState<EditableFieldName | null>(null)
+  const [editValue, setEditValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editingField && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [editingField])
 
   const handleImageError = useCallback(() => {
     setImageError(true)
@@ -26,6 +38,82 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onRemove, viewMode }:
   const handleRemoveClick = useCallback(() => {
     onRemove(deck.id)
   }, [deck.id, onRemove])
+
+  const startEditing = useCallback((field: EditableFieldName) => {
+    setEditingField(field)
+    setEditValue(deck[field] || '')
+  }, [deck])
+
+  const saveEdit = useCallback(() => {
+    if (editingField) {
+      const trimmed = editValue.trim()
+      onUpdateDeck(deck.id, { [editingField]: trimmed || undefined })
+      setEditingField(null)
+    }
+  }, [editingField, editValue, deck.id, onUpdateDeck])
+
+  const cancelEdit = useCallback(() => {
+    setEditingField(null)
+  }, [])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      saveEdit()
+    } else if (e.key === 'Escape') {
+      cancelEdit()
+    }
+  }, [saveEdit, cancelEdit])
+
+  // 編集可能フィールドの表示
+  const renderEditableField = (
+    field: EditableFieldName,
+    value: string | undefined,
+    placeholder: string,
+    textClass: string,
+    containerClass: string
+  ) => {
+    if (editingField === field) {
+      return (
+        <div className={containerClass}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onBlur={saveEdit}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className={`${textClass} w-full bg-blue-50 border border-blue-300 rounded px-1 py-0.5 outline-none focus:ring-1 focus:ring-blue-500`}
+          />
+        </div>
+      )
+    }
+
+    if (value) {
+      return (
+        <div
+          className={`${containerClass} cursor-pointer hover:bg-gray-50 rounded px-1 -mx-1 transition-colors`}
+          onClick={() => startEditing(field)}
+          title="クリックして編集"
+        >
+          <div className={`${textClass} truncate`} title={value}>
+            {value}
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div
+        className={`${containerClass} cursor-pointer hover:bg-gray-50 rounded px-1 -mx-1 transition-colors`}
+        onClick={() => startEditing(field)}
+      >
+        <div className={`${textClass} text-gray-300 italic`}>
+          {placeholder}
+        </div>
+      </div>
+    )
+  }
 
   // 画像表示部分（共通）
   const renderImage = (className: string) => {
@@ -101,21 +189,19 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onRemove, viewMode }:
         {/* 右: 情報表示エリア */}
         <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
           <div className="flex-1">
-            {deck.playerName && (
-              <div
-                className="text-base font-semibold text-gray-800 mb-1 truncate"
-                title={deck.playerName}
-              >
-                {deck.playerName}
-              </div>
+            {renderEditableField(
+              'playerName',
+              deck.playerName,
+              'プレイヤー名を追加',
+              'text-base font-semibold text-gray-800',
+              'mb-1'
             )}
-            {deck.deckName && (
-              <div
-                className="text-sm text-gray-700 mb-2 truncate"
-                title={deck.deckName}
-              >
-                {deck.deckName}
-              </div>
+            {renderEditableField(
+              'deckName',
+              deck.deckName,
+              'デッキ名を追加',
+              'text-sm text-gray-700',
+              'mb-2'
             )}
             <div className="text-sm text-gray-600 mb-1">
               <span className="truncate" title={deck.code}>
@@ -153,21 +239,19 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onRemove, viewMode }:
       </div>
 
       <div className="p-3">
-        {deck.playerName && (
-          <div
-            className="text-sm font-semibold text-gray-800 mb-1 truncate"
-            title={deck.playerName}
-          >
-            {deck.playerName}
-          </div>
+        {renderEditableField(
+          'playerName',
+          deck.playerName,
+          'プレイヤー名を追加',
+          'text-sm font-semibold text-gray-800',
+          'mb-1'
         )}
-        {deck.deckName && (
-          <div
-            className="text-xs text-gray-700 mb-1 truncate"
-            title={deck.deckName}
-          >
-            {deck.deckName}
-          </div>
+        {renderEditableField(
+          'deckName',
+          deck.deckName,
+          'デッキ名を追加',
+          'text-xs text-gray-700',
+          'mb-1'
         )}
         <div className="text-xs text-gray-600 mb-1">
           <p className="truncate" title={deck.code}>
@@ -201,6 +285,7 @@ export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
     prevProps.deck.imageUrl === nextProps.deck.imageUrl &&
     prevProps.deck.addedAt.getTime() === nextProps.deck.addedAt.getTime() &&
     prevProps.modalActions === nextProps.modalActions &&
+    prevProps.onUpdateDeck === nextProps.onUpdateDeck &&
     prevProps.onRemove === nextProps.onRemove &&
     prevProps.viewMode === nextProps.viewMode &&
     prevProps.cardSize === nextProps.cardSize
