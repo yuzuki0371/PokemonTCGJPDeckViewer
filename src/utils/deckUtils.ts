@@ -1,4 +1,4 @@
-import type { DeckData, ParsedLine, BulkProcessResult } from "../types";
+import type { DeckData, ParsedLine, BulkProcessResult, DeckNameSummaryItem } from "../types";
 import { generateDeckUrls } from "../constants";
 
 // 一括入力の行解析
@@ -68,6 +68,26 @@ export const generateDeckListTsv = (deckList: DeckData[]): string => {
   return deckList
     .map((deck) => `${deck.playerName || ""}\t${deck.code}\t${deck.deckName || ""}`)
     .join("\n");
+};
+
+// デッキ名集計
+export const aggregateDeckNames = (deckList: DeckData[]): DeckNameSummaryItem[] => {
+  const total = deckList.length;
+  if (total === 0) return [];
+
+  const counts = new Map<string, number>();
+  for (const deck of deckList) {
+    const name = deck.deckName?.trim() || "未設定";
+    counts.set(name, (counts.get(name) || 0) + 1);
+  }
+
+  return Array.from(counts.entries())
+    .map(([deckName, count]) => ({
+      deckName,
+      count,
+      percentage: Math.round((count / total) * 1000) / 10,
+    }))
+    .sort((a, b) => b.count - a.count);
 };
 
 // 結果メッセージの生成

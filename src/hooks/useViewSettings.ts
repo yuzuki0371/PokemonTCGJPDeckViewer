@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { ViewSettings, ViewSettingsActions, ViewMode, CardSize } from '../types';
+import type { ViewSettings, ViewSettingsActions, ViewMode, CardSize, TabMode } from '../types';
 import { DEFAULT_VIEW_SETTINGS, VIEW_SETTINGS_STORAGE_KEY } from '../constants';
 
 // localStorageから設定を読み込む関数
@@ -10,7 +10,8 @@ const loadSettingsFromStorage = (): ViewSettings => {
       const parsed = JSON.parse(stored) as Partial<ViewSettings>;
       return {
         viewMode: parsed.viewMode || DEFAULT_VIEW_SETTINGS.viewMode,
-        cardSize: parsed.cardSize || DEFAULT_VIEW_SETTINGS.cardSize
+        cardSize: parsed.cardSize || DEFAULT_VIEW_SETTINGS.cardSize,
+        activeTab: parsed.activeTab || DEFAULT_VIEW_SETTINGS.activeTab
       };
     }
   } catch (error) {
@@ -39,9 +40,14 @@ export const useViewSettings = (): [ViewSettings, ViewSettingsActions] => {
     setSettings(prev => ({ ...prev, cardSize: size }));
   }, []);
 
+  const setActiveTab = useCallback((tab: TabMode) => {
+    setSettings(prev => ({ ...prev, activeTab: tab }));
+  }, []);
+
   const actions: ViewSettingsActions = {
     setViewMode,
-    setCardSize
+    setCardSize,
+    setActiveTab
   };
 
   return [settings, actions];

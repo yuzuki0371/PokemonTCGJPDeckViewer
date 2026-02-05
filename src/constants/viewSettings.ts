@@ -16,5 +16,6 @@ export const VIEW_SETTINGS_STORAGE_KEY = 'pokemonTcgViewSettings';
 // デフォルト設定
 export const DEFAULT_VIEW_SETTINGS: ViewSettings = {
   viewMode: 'grid',
-  cardSize: 'medium'
+  cardSize: 'medium',
+  activeTab: 'deckList'
 };

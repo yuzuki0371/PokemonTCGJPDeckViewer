@@ -21,3 +21,10 @@ export interface BulkProcessResult {
   newDecks: DeckData[];
   errors: string[];
 }
+
+// デッキ名集計結果型
+export interface DeckNameSummaryItem {
+  deckName: string;
+  count: number;
+  percentage: number;
+}

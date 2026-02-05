@@ -4,7 +4,8 @@
 export type {
   DeckData,
   ParsedLine,
-  BulkProcessResult
+  BulkProcessResult,
+  DeckNameSummaryItem
 } from './deck';
 
 // UI状態関連
@@ -43,6 +44,7 @@ export {
 export type {
   ViewMode,
   CardSize,
+  TabMode,
   ViewSettings,
   ViewSettingsActions
 } from './viewSettings';

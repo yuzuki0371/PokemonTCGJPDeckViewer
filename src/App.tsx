@@ -8,8 +8,10 @@ import { useViewSettings } from "./hooks/useViewSettings";
 import { FormInput } from "./components/FormInput";
 import { ImageModal } from "./components/ImageModal";
 import { DeckList } from "./components/DeckList";
+import { DeckNameSummary } from "./components/DeckNameSummary";
 import { EmptyState } from "./components/EmptyState";
 import { Footer } from "./components/Footer";
+import type { TabMode } from "./types";
 
 function App() {
   const [formState, formActions] = useFormState();
@@ -64,14 +66,43 @@ function App() {
           hasDecks={appState.deckList.length > 0}
         />
 
-        <DeckList
-          deckList={appState.deckList}
-          modalActions={modalActions}
-          onUpdateDeck={memoizedHandleUpdateDeck}
-          onRemove={memoizedHandleRemoveDeck}
-          viewSettings={viewSettings}
-          viewSettingsActions={viewSettingsActions}
-        />
+        {appState.deckList.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center gap-1 border-b border-gray-200">
+              {([
+                { key: 'deckList' as TabMode, label: 'デッキ一覧' },
+                { key: 'summary' as TabMode, label: 'デッキ集計' },
+              ]).map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => viewSettingsActions.setActiveTab(key)}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                    viewSettings.activeTab === key
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {viewSettings.activeTab === 'deckList' && (
+          <DeckList
+            deckList={appState.deckList}
+            modalActions={modalActions}
+            onUpdateDeck={memoizedHandleUpdateDeck}
+            onRemove={memoizedHandleRemoveDeck}
+            viewSettings={viewSettings}
+            viewSettingsActions={viewSettingsActions}
+          />
+        )}
+
+        {viewSettings.activeTab === 'summary' && appState.deckList.length > 0 && (
+          <DeckNameSummary deckList={appState.deckList} />
+        )}
 
         {appState.deckList.length === 0 && <EmptyState />}
 
