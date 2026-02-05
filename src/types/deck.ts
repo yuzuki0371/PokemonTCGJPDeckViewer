@@ -4,6 +4,7 @@ export interface DeckData {
   id: string;
   code: string;
   playerName?: string;
+  deckName?: string;
   imageUrl: string;
   addedAt: Date;
 }
@@ -11,6 +12,7 @@ export interface DeckData {
 // 入力解析の結果型
 export interface ParsedLine {
   playerName?: string;
+  deckName?: string;
   code: string;
 }
 
@@ -18,4 +20,11 @@ export interface ParsedLine {
 export interface BulkProcessResult {
   newDecks: DeckData[];
   errors: string[];
+}
+
+// デッキ名集計結果型
+export interface DeckNameSummaryItem {
+  deckName: string;
+  count: number;
+  percentage: number;
 }

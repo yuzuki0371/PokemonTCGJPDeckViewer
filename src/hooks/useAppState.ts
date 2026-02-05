@@ -34,6 +34,15 @@ export const useAppState = (): [AppState, AppActions] => {
     }));
   };
 
+  const updateDeck = (id: string, updates: Partial<Pick<DeckData, 'playerName' | 'deckName'>>) => {
+    setAppState((prev) => ({
+      ...prev,
+      deckList: prev.deckList.map((deck) =>
+        deck.id === id ? { ...deck, ...updates } : deck
+      ),
+    }));
+  };
+
   const clearAll = () => {
     setAppState((prev) => ({
       ...prev,
@@ -75,6 +84,7 @@ export const useAppState = (): [AppState, AppActions] => {
     setDeckList,
     addDecks,
     removeDeck,
+    updateDeck,
     clearAll,
     setLoading,
     setError,

@@ -94,6 +94,22 @@ export const FormInput = ({
             </div>
             <div>
               <label
+                htmlFor="deckName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                デッキ名（任意）
+              </label>
+              <input
+                type="text"
+                id="deckName"
+                value={formState.singleMode.deckName}
+                onChange={(e) => formActions.updateSingleForm("deckName", e.target.value)}
+                placeholder="デッキ名を入力してください"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
                 htmlFor="deckCode"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
@@ -115,26 +131,26 @@ export const FormInput = ({
               htmlFor="bulkInput"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              プレイヤー名＆デッキコード（一括入力）
+              プレイヤー名・デッキ名・デッキコード（一括入力）
             </label>
             <textarea
               id="bulkInput"
               value={formState.bulkMode.input}
               onChange={(e) => formActions.updateBulkInput(e.target.value)}
-              placeholder="Excelからコピー＆ペーストできます&#10;&#10;例（Excelのコピー）：&#10;田中太郎	ABC123&#10;佐藤花子	DEF456&#10;山田次郎	GHI789&#10;&#10;例（手入力）：&#10;田中太郎 ABC123&#10;佐藤花子,DEF456&#10;GHI789（プレイヤー名なし）"
+              placeholder={"Excelからコピー＆ペーストできます\n\n例（3列：プレイヤー名・デッキコード・デッキ名）：\n田中太郎\tABC123\tピカチュウex\n佐藤花子\tDEF456\tリザードン\n\n例（2列：プレイヤー名・デッキコード）：\n田中太郎\tABC123\n佐藤花子\tDEF456\n\n例（手入力）：\n田中太郎 ABC123 ピカチュウex\nGHI789（デッキコードのみ）"}
               rows={10}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical font-mono text-sm"
             />
             <div className="mt-2 text-sm text-gray-500 space-y-1">
               <p>
                 ※
-                Excelの「プレイヤー名」「デッキコード」の2列をコピー＆ペーストできます
+                Excelの「プレイヤー名」「デッキコード」「デッキ名」の2〜3列をコピー＆ペーストできます
               </p>
               <p>
                 ※
                 手入力の場合はスペース、カンマ、セミコロンで区切ってください
               </p>
-              <p>※ デッキコードのみの入力も可能です</p>
+              <p>※ デッキコードのみ、またはプレイヤー名＋デッキコードの入力も可能です</p>
             </div>
           </div>
         )}

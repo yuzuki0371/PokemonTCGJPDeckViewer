@@ -1,12 +1,15 @@
-import { useState, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { generateDeckUrls } from '../constants'
-import type { ModalState, ModalActions } from '../types'
+import type { ModalState, ModalActions, AppActions } from '../types'
+
+type EditableFieldName = 'playerName' | 'deckName'
 
 interface ImageModalProps {
   // モーダル状態
   modalState: ModalState
   modalActions: ModalActions
-  
+  onUpdateDeck: AppActions['updateDeck']
+
   // ナビゲーション制御
   hasMultipleDecks: boolean
   totalDecks: number
@@ -15,11 +18,30 @@ interface ImageModalProps {
 export const ImageModal = ({
   modalState,
   modalActions,
+  onUpdateDeck,
   hasMultipleDecks,
   totalDecks
 }: ImageModalProps) => {
   const [imageError, setImageError] = useState(false)
-  
+  const [editingField, setEditingField] = useState<EditableFieldName | null>(null)
+  const [editValue, setEditValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const prevDeckIdRef = useRef<string | undefined>(undefined)
+  const currentDeckId = modalState.enlargedImage?.deckId
+  if (currentDeckId !== prevDeckIdRef.current) {
+    prevDeckIdRef.current = currentDeckId
+    if (editingField !== null) {
+      setEditingField(null)
+    }
+  }
+
+  useEffect(() => {
+    if (editingField && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [editingField])
+
   // バックドロップクリックハンドラー
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -33,13 +55,86 @@ export const ImageModal = ({
 
   const handlePrevClick = useCallback(() => {
     modalActions.navigateModal('prev')
-    setImageError(false) // 画像切り替え時にエラー状態をリセット
+    setImageError(false)
   }, [modalActions])
 
   const handleNextClick = useCallback(() => {
     modalActions.navigateModal('next')
-    setImageError(false) // 画像切り替え時にエラー状態をリセット
+    setImageError(false)
   }, [modalActions])
+
+  const startEditing = useCallback((field: EditableFieldName) => {
+    if (!modalState.enlargedImage) return
+    setEditingField(field)
+    setEditValue(modalState.enlargedImage[field] || '')
+  }, [modalState.enlargedImage])
+
+  const saveEdit = useCallback(() => {
+    if (editingField && modalState.enlargedImage) {
+      const trimmed = editValue.trim()
+      onUpdateDeck(modalState.enlargedImage.deckId, { [editingField]: trimmed || undefined })
+      modalActions.updateModalImage({ [editingField]: trimmed || undefined })
+      setEditingField(null)
+    }
+  }, [editingField, editValue, modalState.enlargedImage, onUpdateDeck, modalActions])
+
+  const cancelEdit = useCallback(() => {
+    setEditingField(null)
+  }, [])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      saveEdit()
+    } else if (e.key === 'Escape') {
+      cancelEdit()
+    }
+  }, [saveEdit, cancelEdit])
+
+  const renderEditableField = (
+    field: EditableFieldName,
+    value: string | undefined,
+    placeholder: string,
+    textClass: string,
+    containerClass: string
+  ) => {
+    if (editingField === field) {
+      return (
+        <div className={containerClass}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onBlur={saveEdit}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className={`${textClass} bg-white/20 border border-white/40 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-blue-300 text-white placeholder-gray-400 w-64 max-w-full`}
+          />
+        </div>
+      )
+    }
+
+    if (value) {
+      return (
+        <div
+          className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
+          onClick={() => startEditing(field)}
+          title="クリックして編集"
+        >
+          <span className={textClass}>{value}</span>
+        </div>
+      )
+    }
+
+    return (
+      <div
+        className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
+        onClick={() => startEditing(field)}
+      >
+        <span className={`${textClass} text-gray-400 italic`}>{placeholder}</span>
+      </div>
+    )
+  }
 
   if (!modalState.enlargedImage) {
     return null
@@ -50,7 +145,7 @@ export const ImageModal = ({
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="relative max-w-4xl max-h-full">
+      <div className="relative flex flex-col max-w-4xl max-h-full">
         {/* 閉じるボタン */}
         <button
           onClick={modalActions.closeModal}
@@ -123,12 +218,12 @@ export const ImageModal = ({
           <img
             src={modalState.enlargedImage.url}
             alt={`デッキコード: ${modalState.enlargedImage.deckCode}`}
-            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            className="max-w-full object-contain rounded-t-lg shadow-2xl min-h-0 flex-shrink"
             onError={handleImageError}
           />
         ) : (
           <div
-            className="p-8 bg-gray-200 text-center text-gray-600 rounded-lg"
+            className="p-8 bg-gray-200 text-center text-gray-600 rounded-t-lg"
             style={{ minHeight: '300px' }}
           >
             <div className="flex items-center justify-center h-full">
@@ -153,7 +248,7 @@ export const ImageModal = ({
         )}
 
         {/* 情報表示エリア */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4 rounded-b-lg">
+        <div className="bg-gray-900 text-white p-4 rounded-b-lg flex-shrink-0">
           <div className="text-center">
             {/* 現在位置表示 */}
             {hasMultipleDecks && (
@@ -163,10 +258,21 @@ export const ImageModal = ({
             )}
 
             {/* プレイヤー名 */}
-            {modalState.enlargedImage.playerName && (
-              <div className="text-lg font-semibold mb-1">
-                {modalState.enlargedImage.playerName}
-              </div>
+            {renderEditableField(
+              'playerName',
+              modalState.enlargedImage.playerName,
+              'プレイヤー名を追加',
+              'text-lg font-semibold',
+              'mb-1'
+            )}
+
+            {/* デッキ名 */}
+            {renderEditableField(
+              'deckName',
+              modalState.enlargedImage.deckName,
+              'デッキ名を追加',
+              'text-sm text-gray-200',
+              'mb-1'
             )}
 
             {/* デッキコード */}

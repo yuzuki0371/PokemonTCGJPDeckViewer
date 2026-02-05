@@ -17,6 +17,7 @@ export interface AppActions {
   setDeckList: (decks: DeckData[]) => void;
   addDecks: (decks: DeckData[]) => void;
   removeDeck: (id: string) => void;
+  updateDeck: (id: string, updates: Partial<Pick<DeckData, 'playerName' | 'deckName'>>) => void;
   clearAll: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;

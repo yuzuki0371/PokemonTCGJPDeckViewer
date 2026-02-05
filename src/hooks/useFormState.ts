@@ -5,6 +5,7 @@ const initialFormState: FormState = {
   singleMode: {
     deckCode: "",
     playerName: "",
+    deckName: "",
   },
   bulkMode: {
     input: "",
@@ -16,7 +17,7 @@ export const useFormState = (): [FormState, FormActions] => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
 
   const updateSingleForm = (
-    field: "deckCode" | "playerName",
+    field: "deckCode" | "playerName" | "deckName",
     value: string
   ) => {
     setFormState((prev) => ({
@@ -64,6 +65,7 @@ export const useFormState = (): [FormState, FormActions] => {
       singleMode: {
         deckCode: "",
         playerName: "",
+        deckName: "",
       },
     }));
   };

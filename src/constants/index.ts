@@ -20,3 +20,11 @@ export { ERROR_MESSAGES, SUCCESS_MESSAGES, UI_MESSAGES } from './messages';
 
 // UI設定定数のre-export
 export { UI_CONFIG, GRID_CLASSES } from './ui';
+
+// 表示設定定数のre-export
+export {
+  GRID_SIZE_CLASSES,
+  LIST_LAYOUT_CLASS,
+  VIEW_SETTINGS_STORAGE_KEY,
+  DEFAULT_VIEW_SETTINGS
+} from './viewSettings';
