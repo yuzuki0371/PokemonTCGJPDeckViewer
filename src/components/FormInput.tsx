@@ -137,14 +137,14 @@ export const FormInput = ({
               id="bulkInput"
               value={formState.bulkMode.input}
               onChange={(e) => formActions.updateBulkInput(e.target.value)}
-              placeholder={"Excelからコピー＆ペーストできます\n\n例（3列：プレイヤー名・デッキ名・デッキコード）：\n田中太郎\tピカチュウex\tABC123\n佐藤花子\tリザードン\tDEF456\n\n例（2列：プレイヤー名・デッキコード）：\n田中太郎\tABC123\n佐藤花子\tDEF456\n\n例（手入力）：\n田中太郎 ピカチュウex ABC123\nGHI789（デッキコードのみ）"}
+              placeholder={"Excelからコピー＆ペーストできます\n\n例（3列：プレイヤー名・デッキコード・デッキ名）：\n田中太郎\tABC123\tピカチュウex\n佐藤花子\tDEF456\tリザードン\n\n例（2列：プレイヤー名・デッキコード）：\n田中太郎\tABC123\n佐藤花子\tDEF456\n\n例（手入力）：\n田中太郎 ABC123 ピカチュウex\nGHI789（デッキコードのみ）"}
               rows={10}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical font-mono text-sm"
             />
             <div className="mt-2 text-sm text-gray-500 space-y-1">
               <p>
                 ※
-                Excelの「プレイヤー名」「デッキ名」「デッキコード」の2〜3列をコピー＆ペーストできます
+                Excelの「プレイヤー名」「デッキコード」「デッキ名」の2〜3列をコピー＆ペーストできます
               </p>
               <p>
                 ※

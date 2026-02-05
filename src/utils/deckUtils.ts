@@ -11,10 +11,10 @@ export const parseBulkInputLine = (line: string): ParsedLine => {
   if (line.includes("\t")) {
     const parts = line.split("\t");
     if (parts.length >= 3) {
-      // 3列: プレイヤー名、デッキ名、デッキコード
+      // 3列: プレイヤー名、デッキコード、デッキ名
       playerName = parts[0]?.trim();
-      deckName = parts[1]?.trim();
-      code = parts[2]?.trim() || "";
+      code = parts[1]?.trim() || "";
+      deckName = parts[2]?.trim();
     } else {
       // 2列: プレイヤー名、デッキコード
       playerName = parts[0]?.trim();
@@ -24,10 +24,10 @@ export const parseBulkInputLine = (line: string): ParsedLine => {
     // 他の区切り文字で分割を試す
     const parts = line.split(/[,;\s]+/);
     if (parts.length >= 3) {
-      // 3要素: プレイヤー名、デッキ名、デッキコード
+      // 3要素: プレイヤー名、デッキコード、デッキ名
       playerName = parts[0]?.trim();
-      deckName = parts[1]?.trim();
-      code = parts[2]?.trim() || "";
+      code = parts[1]?.trim() || "";
+      deckName = parts[2]?.trim();
     } else if (parts.length >= 2) {
       playerName = parts[0]?.trim();
       code = parts[1]?.trim() || "";
