@@ -13,7 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run lint` - ESLintチェック
 - `npm run preview` - ビルド後のプレビュー
 
-デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行。
+デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行（Node.js 18、`npm ci` → `npm run build` → GitHub Pages）。
 
 ## Architecture
 
@@ -24,18 +24,27 @@ View Layer (src/App.tsx, src/components/)
 Business Logic Layer (src/hooks/)
     ↓
 Infrastructure Layer (src/utils/, src/types/, src/constants/)
+    ↓
+Browser APIs (localStorage, window events)
 ```
 
 ### Data Flow
-User Input → FormState → DeckManager → AppState → localStorage → UI Update
+```
+User Input (Forms)
+  → useFormState (入力状態管理)
+  → useDeckManager (バリデーション + ビジネスロジック)
+  → useAppState (状態更新)
+  → useLocalStorage (永続化)
+  → Component re-renders
+```
 
 ### Hooks Pattern
 全てのhooksは `[State, Actions]` タプルを返す設計パターンに従う:
-- `useAppState` - アプリ全体の状態（デッキリスト、UI状態）
-- `useFormState` - フォーム入力状態（単体/一括モード）
-- `useModalState` - モーダル表示状態とナビゲーション
+- `useAppState` - アプリ全体の状態（デッキリスト、UI状態）。`updateDeck`でインライン編集対応
+- `useFormState` - フォーム入力状態（単体/一括モード、playerName/deckName/deckCode）
+- `useModalState` - モーダル表示状態、ナビゲーション、`updateModalImage`でモーダル内編集対応
 - `useViewSettings` - 表示設定（グリッド/リスト、カードサイズ）+ localStorage永続化
-- `useDeckManager` - デッキ追加・削除の全操作を集約
+- `useDeckManager` - デッキ追加・更新・削除の全操作を集約。`handleUpdateDeck`でインライン編集の永続化を担当
 - `useLocalStorage` - localStorage操作、Date型のシリアライズ対応
 
 ### URL Generation
@@ -45,15 +54,29 @@ User Input → FormState → DeckManager → AppState → localStorage → UI Up
 
 ### Bulk Input Parsing
 `parseBulkInputLine()`が以下の形式に対応：
-- タブ区切り: `プレイヤー名\tデッキコード` (Excel対応)
-- 区切り文字: カンマ/セミコロン/スペース
-- 改行区切り: 1行1コード
+- 3列: `プレイヤー名\tデッキコード\tデッキ名` (Excel 3列対応)
+- 2列: `プレイヤー名\tデッキコード` (Excel 2列対応)
+- 1列: デッキコードのみ
+- 区切り文字: タブ/カンマ/セミコロン/スペース
+
+### Inline Editing
+DeckCardとImageModalでプレイヤー名・デッキ名のインライン編集が可能:
+- クリックで編集モード開始、Enter/blurで保存、Escapeでキャンセル
+- 空欄時はプレースホルダー表示（クリックで入力開始）
+- モーダル編集中はキーボードショートカット（矢印キー/ESC）を無効化（`useModalState`内でINPUT/TEXTAREA検出）
+
+### Error Handling
+- 型付き`AppError`オブジェクト（`ErrorType` enum: NETWORK_ERROR, STORAGE_ERROR, VALIDATION_ERROR等）
+- `createAppError()`, `isQuotaExceededError()`, `isNetworkError()`ヘルパー
+- エラーメッセージは`src/constants/messages.ts`の`ERROR_MESSAGES`で一元管理
 
 ## Configuration Notes
 
 - **Vite**: Base path `/PokemonTCGJPDeckViewer/` (GitHub Pages用)
 - **Tailwind CSS v3**: v4から互換性問題でダウングレード済み
-- **localStorage keys**: `STORAGE_KEYS`で管理（デッキリスト、表示設定）
+- **TypeScript**: ES2022ターゲット、strictモード
+- **ESLint**: Flat config（eslint.config.js）、TypeScript + React Hooks推奨ルール
+- **localStorage keys**: `pokemonTcgDeckList`（デッキリスト）、`pokemonTcgViewSettings`（表示設定）
 
 ## Development Guidelines
 
@@ -62,3 +85,5 @@ User Input → FormState → DeckManager → AppState → localStorage → UI Up
 - **ビジネスロジック** → `useDeckManager`または専用hookを通す
 - **ユーティリティ関数** → 副作用なしの純粋関数として`src/utils/`に配置
 - **新しいhook** → `[State, Actions]`タプルを返すパターンに従う
+- **コンポーネント最適化** → presentationalコンポーネントは`React.memo()`、イベントハンドラーは`useCallback()`を使用
+- **useEffect内でのsetState** → ESLintルール`react-hooks/set-state-in-effect`で禁止。refベースのパターンで代替
