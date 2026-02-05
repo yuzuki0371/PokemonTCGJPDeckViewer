@@ -63,6 +63,13 @@ export const createDeckData = (
   };
 };
 
+// デッキ一覧をタブ区切りテキストに変換（Excel貼り付け用）
+export const generateDeckListTsv = (deckList: DeckData[]): string => {
+  return deckList
+    .map((deck) => `${deck.playerName || ""}\t${deck.code}\t${deck.deckName || ""}`)
+    .join("\n");
+};
+
 // 結果メッセージの生成
 export const generateResultMessage = (result: BulkProcessResult): string => {
   const { newDecks, errors } = result;
