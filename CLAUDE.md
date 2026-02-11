@@ -85,7 +85,9 @@ App.tsxで「デッキ一覧」と「デッキ集計」のタブ切り替えUI�
 DeckCardとImageModalでプレイヤー名・デッキ名のインライン編集が可能:
 - クリックで編集モード開始、Enter/blurで保存、Escapeでキャンセル
 - 空欄時はプレースホルダー表示（クリックで入力開始）
+- モーダル表示中はEnterキーでデッキ名編集を開始可能
 - モーダル編集中はキーボードショートカット（矢印キー/ESC）を無効化（`useModalState`内でINPUT/TEXTAREA検出）
+- モーダルでのデッキ名編集時にオートコンプリート候補を表示（`aggregateDeckNames()`で件数降順、最大10件）。↑↓キーで選択、Enter/クリックで確定
 
 ### Error Handling
 - 型付き`AppError`オブジェクト（`ErrorType` enum: NETWORK_ERROR, STORAGE_ERROR, VALIDATION_ERROR等）
