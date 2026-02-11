@@ -15,7 +15,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run format:check` - フォーマットチェック（CI向け）
 - `npm run preview` - ビルド後のプレビュー
 
-Node.jsバージョンは`.mise.toml`で管理（mise使用）。デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行（`jdx/mise-action`で`.mise.toml`のNode.jsバージョンを使用、`npm ci` → `npm run build` → GitHub Pages）。
+Node.jsバージョンは`.mise.toml`で管理（mise使用）。
+
+### GitHub Actions
+- **CI** (`ci.yml`): mainへのPR時に自動実行。`npm run lint` → `npm run format:check` → `tsc -b`（lint・フォーマット・型チェック）
+- **Deploy** (`deploy.yml`): mainブランチへのpush時に自動実行。`npm ci` → `npm run build` → GitHub Pagesへデプロイ
+
+両ワークフローとも`jdx/mise-action`で`.mise.toml`のNode.jsバージョンを使用。
 
 ## Architecture
 
