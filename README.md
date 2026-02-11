@@ -91,9 +91,17 @@ npm run dev
 - 大画面 (≥ 1280px): 4列
 - 超大画面 (≥ 1536px): 5列
 
-## デプロイ
+## CI / デプロイ
 
-このプロジェクトはGitHub Actionsを使用してGitHub Pagesに自動デプロイされます。
+このプロジェクトはGitHub Actionsを使用してCI（コード品質チェック）と自動デプロイを行います。
+
+### CI（プルリクエスト時）
+
+`main`ブランチへのプルリクエスト時に以下のチェックが自動実行されます：
+
+1. ESLintによるコード検査（`npm run lint`）
+2. Prettierによるフォーマットチェック（`npm run format:check`）
+3. TypeScriptの型チェック（`tsc -b`）
 
 ### 自動デプロイ
 
