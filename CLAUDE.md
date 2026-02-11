@@ -11,9 +11,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` - 開発サーバー起動 (http://localhost:5173/PokemonTCGJPDeckViewer/)
 - `npm run build` - 本番ビルド (TypeScript compile + Vite build)
 - `npm run lint` - ESLintチェック
+- `npm run format` - Prettierでコードフォーマット
+- `npm run format:check` - フォーマットチェック（CI向け）
 - `npm run preview` - ビルド後のプレビュー
 
-デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行（Node.js 18、`npm ci` → `npm run build` → GitHub Pages）。
+Node.jsバージョンは`.mise.toml`で管理（mise使用）。デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行（`jdx/mise-action`で`.mise.toml`のNode.jsバージョンを使用、`npm ci` → `npm run build` → GitHub Pages）。
 
 ## Architecture
 
@@ -84,7 +86,9 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
 - **Vite**: Base path `/PokemonTCGJPDeckViewer/` (GitHub Pages用)
 - **Tailwind CSS v3**: v4から互換性問題でダウングレード済み
 - **TypeScript**: ES2022ターゲット、strictモード
-- **ESLint**: Flat config（eslint.config.js）、TypeScript + React Hooks推奨ルール
+- **ESLint**: Flat config（eslint.config.js）、TypeScript + React Hooks推奨ルール、eslint-config-prettierで競合ルール無効化
+- **Prettier**: コードフォーマッター（`.prettierrc.json`）、セミコロンなし・シングルクォート
+- **mise**: Node.jsバージョン管理（`.mise.toml`）、GitHub Actionsと共有
 - **localStorage keys**: `pokemonTcgDeckList`（デッキリスト）、`pokemonTcgViewSettings`（表示設定）
 
 ## Development Guidelines
