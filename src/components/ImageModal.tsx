@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { generateDeckUrls } from '../constants'
-import type { ModalState, ModalActions, AppActions } from '../types'
+import type { ModalState, ModalActions, AppActions, DeckData } from '../types'
+import { aggregateDeckNames } from '../utils/deckUtils'
 
 type EditableFieldName = 'playerName' | 'deckName'
 
@@ -13,6 +14,9 @@ interface ImageModalProps {
   // ナビゲーション制御
   hasMultipleDecks: boolean
   totalDecks: number
+
+  // デッキ名候補用
+  deckList: DeckData[]
 }
 
 export const ImageModal = ({
@@ -21,13 +25,16 @@ export const ImageModal = ({
   onUpdateDeck,
   hasMultipleDecks,
   totalDecks,
+  deckList,
 }: ImageModalProps) => {
   const [imageError, setImageError] = useState(false)
   const [editingField, setEditingField] = useState<EditableFieldName | null>(
     null
   )
   const [editValue, setEditValue] = useState('')
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
+  const suggestionListRef = useRef<HTMLUListElement>(null)
 
   const prevDeckIdRef = useRef<string | undefined>(undefined)
   const currentDeckId = modalState.enlargedImage?.deckId
@@ -43,6 +50,16 @@ export const ImageModal = ({
       inputRef.current.focus()
     }
   }, [editingField])
+
+  // 候補選択時にスクロール追従
+  useEffect(() => {
+    if (selectedSuggestionIndex >= 0 && suggestionListRef.current) {
+      const item = suggestionListRef.current.children[
+        selectedSuggestionIndex
+      ] as HTMLElement | undefined
+      item?.scrollIntoView({ block: 'nearest' })
+    }
+  }, [selectedSuggestionIndex])
 
   // バックドロップクリックハンドラー
   const handleBackdropClick = useCallback(
@@ -76,6 +93,18 @@ export const ImageModal = ({
     },
     [modalState.enlargedImage]
   )
+
+  // デッキ名の入力候補（件数降順）
+  const suggestions = useMemo(() => {
+    if (editingField !== 'deckName' || deckList.length === 0) return []
+    const trimmed = editValue.trim().toLowerCase()
+    return aggregateDeckNames(deckList)
+      .filter((item) => {
+        if (item.deckName === '未設定') return false
+        return trimmed === '' || item.deckName.toLowerCase().includes(trimmed)
+      })
+      .slice(0, 10)
+  }, [editingField, editValue, deckList])
 
   // Enterキーでデッキ名編集を開始
   useEffect(() => {
@@ -114,13 +143,35 @@ export const ImageModal = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (editingField === 'deckName' && suggestions.length > 0) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault()
+          setSelectedSuggestionIndex((prev) =>
+            prev < suggestions.length - 1 ? prev + 1 : 0
+          )
+          return
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault()
+          setSelectedSuggestionIndex((prev) =>
+            prev > 0 ? prev - 1 : suggestions.length - 1
+          )
+          return
+        }
+        if (e.key === 'Enter' && selectedSuggestionIndex >= 0) {
+          e.preventDefault()
+          setEditValue(suggestions[selectedSuggestionIndex].deckName)
+          setSelectedSuggestionIndex(-1)
+          return
+        }
+      }
       if (e.key === 'Enter') {
         saveEdit()
       } else if (e.key === 'Escape') {
         cancelEdit()
       }
     },
-    [saveEdit, cancelEdit]
+    [saveEdit, cancelEdit, editingField, suggestions, selectedSuggestionIndex]
   )
 
   const renderEditableField = (
@@ -132,17 +183,47 @@ export const ImageModal = ({
   ) => {
     if (editingField === field) {
       return (
-        <div className={containerClass}>
+        <div className={`${containerClass} relative`}>
           <input
             ref={inputRef}
             type="text"
             value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
+            onChange={(e) => {
+              setEditValue(e.target.value)
+              setSelectedSuggestionIndex(-1)
+            }}
             onBlur={saveEdit}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className={`${textClass} bg-white/20 border border-white/40 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-blue-300 text-white placeholder-gray-400 w-64 max-w-full`}
           />
+          {field === 'deckName' && suggestions.length > 0 && (
+            <ul
+              ref={suggestionListRef}
+              className="absolute left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded shadow-lg z-20 max-h-40 overflow-y-auto"
+            >
+              {suggestions.map((item, i) => (
+                <li
+                  key={item.deckName}
+                  className={`px-3 py-1.5 text-sm cursor-pointer flex justify-between items-center ${
+                    i === selectedSuggestionIndex
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-200 hover:bg-gray-700'
+                  }`}
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    setEditValue(item.deckName)
+                    setSelectedSuggestionIndex(-1)
+                  }}
+                >
+                  <span>{item.deckName}</span>
+                  <span className="text-xs text-gray-400 ml-2">
+                    {item.count}件
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )
     }

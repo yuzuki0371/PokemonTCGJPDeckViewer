@@ -133,6 +133,7 @@ function App() {
           onUpdateDeck={memoizedHandleUpdateDeck}
           hasMultipleDecks={filteredDeckList.length > 1}
           totalDecks={filteredDeckList.length}
+          deckList={appState.deckList}
         />
       </div>
 
