@@ -301,6 +301,7 @@ export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
     prevProps.deck.deckName === nextProps.deck.deckName &&
     prevProps.deck.imageUrl === nextProps.deck.imageUrl &&
     prevProps.deck.addedAt.getTime() === nextProps.deck.addedAt.getTime() &&
+    prevProps.deckList === nextProps.deckList &&
     prevProps.modalActions === nextProps.modalActions &&
     prevProps.onUpdateDeck === nextProps.onUpdateDeck &&
     prevProps.onRemove === nextProps.onRemove &&

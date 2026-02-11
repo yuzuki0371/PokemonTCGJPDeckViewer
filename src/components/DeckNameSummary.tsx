@@ -1,13 +1,26 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { DeckData } from '../types'
 import { aggregateDeckNames } from '../utils/deckUtils'
 
 interface DeckNameSummaryProps {
   deckList: DeckData[]
+  onDeckNameClick?: (deckName: string) => void
 }
 
-export const DeckNameSummary = ({ deckList }: DeckNameSummaryProps) => {
+export const DeckNameSummary = ({
+  deckList,
+  onDeckNameClick,
+}: DeckNameSummaryProps) => {
   const summaryItems = useMemo(() => aggregateDeckNames(deckList), [deckList])
+
+  const handleClick = useCallback(
+    (deckName: string) => {
+      if (deckName !== '未設定' && onDeckNameClick) {
+        onDeckNameClick(deckName)
+      }
+    },
+    [onDeckNameClick]
+  )
 
   return (
     <div className="mb-6">
@@ -33,7 +46,12 @@ export const DeckNameSummary = ({ deckList }: DeckNameSummaryProps) => {
                 className="border-b border-gray-100 hover:bg-gray-50"
               >
                 <td
-                  className={`px-4 py-3 text-sm ${item.deckName === '未設定' ? 'text-gray-400 italic' : 'text-gray-800'}`}
+                  className={`px-4 py-3 text-sm ${
+                    item.deckName === '未設定'
+                      ? 'text-gray-400 italic'
+                      : 'text-gray-800 cursor-pointer hover:text-blue-600 hover:underline'
+                  }`}
+                  onClick={() => handleClick(item.deckName)}
                 >
                   {item.deckName}
                 </td>

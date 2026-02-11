@@ -41,4 +41,6 @@ export const UI_MESSAGES = {
   LOADING_SINGLE: '追加中...',
   LOADING_BULK: '一括追加中...',
   PROCESSING: '処理中...',
+  FILTER_PLACEHOLDER: 'プレイヤー名・デッキ名で検索',
+  FILTER_NO_RESULTS: '条件に一致するデッキが見つかりません',
 } as const

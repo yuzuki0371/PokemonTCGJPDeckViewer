@@ -1,10 +1,12 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useMemo } from 'react'
 import { useFormState } from './hooks/useFormState'
 import { useAppState } from './hooks/useAppState'
 import { useModalState } from './hooks/useModalState'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useDeckManager } from './hooks/useDeckManager'
 import { useViewSettings } from './hooks/useViewSettings'
+import { useFilterState } from './hooks/useFilterState'
+import { filterDeckList } from './utils/deckUtils'
 import { FormInput } from './components/FormInput'
 import { ImageModal } from './components/ImageModal'
 import { DeckList } from './components/DeckList'
@@ -16,7 +18,12 @@ import type { TabMode } from './types'
 function App() {
   const [formState, formActions] = useFormState()
   const [appState, appActions] = useAppState()
-  const [modalState, modalActions] = useModalState(appState.deckList)
+  const [filterState, filterActions] = useFilterState()
+  const filteredDeckList = useMemo(
+    () => filterDeckList(appState.deckList, filterState.filterText),
+    [appState.deckList, filterState.filterText]
+  )
+  const [modalState, modalActions] = useModalState(filteredDeckList)
   const [viewSettings, viewSettingsActions] = useViewSettings()
   const { loadDeckList, saveDeckList } = useLocalStorage()
   const { handleSubmit, handleUpdateDeck, handleRemoveDeck, handleClearAll } =
@@ -30,6 +37,14 @@ function App() {
     handleRemoveDeck,
   ])
   const memoizedHandleClearAll = useCallback(handleClearAll, [handleClearAll])
+
+  const handleDeckNameClick = useCallback(
+    (deckName: string) => {
+      filterActions.setFilterText(deckName)
+      viewSettingsActions.setActiveTab('deckList')
+    },
+    [filterActions, viewSettingsActions]
+  )
 
   // 初期化時にlocalStorageからデータを読み込む
   useEffect(() => {
@@ -90,7 +105,10 @@ function App() {
 
         {viewSettings.activeTab === 'deckList' && (
           <DeckList
-            deckList={appState.deckList}
+            deckList={filteredDeckList}
+            totalDeckCount={appState.deckList.length}
+            filterState={filterState}
+            filterActions={filterActions}
             modalActions={modalActions}
             onUpdateDeck={memoizedHandleUpdateDeck}
             onRemove={memoizedHandleRemoveDeck}
@@ -101,7 +119,10 @@ function App() {
 
         {viewSettings.activeTab === 'summary' &&
           appState.deckList.length > 0 && (
-            <DeckNameSummary deckList={appState.deckList} />
+            <DeckNameSummary
+              deckList={filteredDeckList}
+              onDeckNameClick={handleDeckNameClick}
+            />
           )}
 
         {appState.deckList.length === 0 && <EmptyState />}
@@ -110,8 +131,8 @@ function App() {
           modalState={modalState}
           modalActions={modalActions}
           onUpdateDeck={memoizedHandleUpdateDeck}
-          hasMultipleDecks={appState.deckList.length > 1}
-          totalDecks={appState.deckList.length}
+          hasMultipleDecks={filteredDeckList.length > 1}
+          totalDecks={filteredDeckList.length}
         />
       </div>
 

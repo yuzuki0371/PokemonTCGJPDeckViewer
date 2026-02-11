@@ -77,6 +77,20 @@ export const generateDeckListTsv = (deckList: DeckData[]): string => {
     .join('\n')
 }
 
+// デッキリストのフィルタリング
+export const filterDeckList = (
+  deckList: DeckData[],
+  filterText: string
+): DeckData[] => {
+  const trimmed = filterText.trim().toLowerCase()
+  if (!trimmed) return deckList
+  return deckList.filter((deck) => {
+    const playerName = (deck.playerName || '').toLowerCase()
+    const deckName = (deck.deckName || '').toLowerCase()
+    return playerName.includes(trimmed) || deckName.includes(trimmed)
+  })
+}
+
 // デッキ名集計
 export const aggregateDeckNames = (
   deckList: DeckData[]

@@ -27,6 +27,9 @@ export {
   isNetworkError,
 } from './error'
 
+// フィルター関連
+export type { FilterState, FilterActions } from './filter'
+
 // 表示設定関連
 export type {
   ViewMode,
