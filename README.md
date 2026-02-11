@@ -1,7 +1,17 @@
 # PokemonTCGJPDeckViewer
 
+[![CI](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/ci.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/ci.yml)
 [![Deploy to GitHub Pages](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml)
+[![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fpokemontcgjpdeckviewer.pages.dev&label=Cloudflare%20Pages)](https://pokemontcgjpdeckviewer.pages.dev)
+
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=5%2E9&color=3178C6&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/static/v1?label=Node%2Ejs&message=24&color=339933&logo=nodedotjs&logoColor=white)
+
 ![GitHub License](https://img.shields.io/github/license/yuzuki0371/PokemonTCGJPDeckViewer)
+![GitHub last commit](https://img.shields.io/github/last-commit/yuzuki0371/PokemonTCGJPDeckViewer)
+![GitHub repo size](https://img.shields.io/github/repo-size/yuzuki0371/PokemonTCGJPDeckViewer)
 
 ポケモンカードゲームのデッキコードを入力して、公式サイトのデッキレシピ画像を表示するWebアプリケーションです。
 
