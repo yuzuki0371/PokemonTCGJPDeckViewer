@@ -20,10 +20,12 @@ export const ImageModal = ({
   modalActions,
   onUpdateDeck,
   hasMultipleDecks,
-  totalDecks
+  totalDecks,
 }: ImageModalProps) => {
   const [imageError, setImageError] = useState(false)
-  const [editingField, setEditingField] = useState<EditableFieldName | null>(null)
+  const [editingField, setEditingField] = useState<EditableFieldName | null>(
+    null
+  )
   const [editValue, setEditValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -43,11 +45,14 @@ export const ImageModal = ({
   }, [editingField])
 
   // バックドロップクリックハンドラー
-  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      modalActions.closeModal();
-    }
-  }, [modalActions]);
+  const handleBackdropClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        modalActions.closeModal()
+      }
+    },
+    [modalActions]
+  )
 
   const handleImageError = useCallback(() => {
     setImageError(true)
@@ -63,32 +68,46 @@ export const ImageModal = ({
     setImageError(false)
   }, [modalActions])
 
-  const startEditing = useCallback((field: EditableFieldName) => {
-    if (!modalState.enlargedImage) return
-    setEditingField(field)
-    setEditValue(modalState.enlargedImage[field] || '')
-  }, [modalState.enlargedImage])
+  const startEditing = useCallback(
+    (field: EditableFieldName) => {
+      if (!modalState.enlargedImage) return
+      setEditingField(field)
+      setEditValue(modalState.enlargedImage[field] || '')
+    },
+    [modalState.enlargedImage]
+  )
 
   const saveEdit = useCallback(() => {
     if (editingField && modalState.enlargedImage) {
       const trimmed = editValue.trim()
-      onUpdateDeck(modalState.enlargedImage.deckId, { [editingField]: trimmed || undefined })
+      onUpdateDeck(modalState.enlargedImage.deckId, {
+        [editingField]: trimmed || undefined,
+      })
       modalActions.updateModalImage({ [editingField]: trimmed || undefined })
       setEditingField(null)
     }
-  }, [editingField, editValue, modalState.enlargedImage, onUpdateDeck, modalActions])
+  }, [
+    editingField,
+    editValue,
+    modalState.enlargedImage,
+    onUpdateDeck,
+    modalActions,
+  ])
 
   const cancelEdit = useCallback(() => {
     setEditingField(null)
   }, [])
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      saveEdit()
-    } else if (e.key === 'Escape') {
-      cancelEdit()
-    }
-  }, [saveEdit, cancelEdit])
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        saveEdit()
+      } else if (e.key === 'Escape') {
+        cancelEdit()
+      }
+    },
+    [saveEdit, cancelEdit]
+  )
 
   const renderEditableField = (
     field: EditableFieldName,
@@ -131,7 +150,9 @@ export const ImageModal = ({
         className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
         onClick={() => startEditing(field)}
       >
-        <span className={`${textClass} text-gray-400 italic`}>{placeholder}</span>
+        <span className={`${textClass} text-gray-400 italic`}>
+          {placeholder}
+        </span>
       </div>
     )
   }
@@ -279,7 +300,9 @@ export const ImageModal = ({
             <div className="text-sm">
               デッキコード:{' '}
               <a
-                href={generateDeckUrls(modalState.enlargedImage.deckCode).confirm}
+                href={
+                  generateDeckUrls(modalState.enlargedImage.deckCode).confirm
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono text-blue-300 hover:text-blue-100 hover:underline"

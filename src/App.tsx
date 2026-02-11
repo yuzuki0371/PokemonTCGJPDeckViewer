@@ -1,46 +1,45 @@
-import { useEffect, useCallback } from "react";
-import { useFormState } from "./hooks/useFormState";
-import { useAppState } from "./hooks/useAppState";
-import { useModalState } from "./hooks/useModalState";
-import { useLocalStorage } from "./hooks/useLocalStorage";
-import { useDeckManager } from "./hooks/useDeckManager";
-import { useViewSettings } from "./hooks/useViewSettings";
-import { FormInput } from "./components/FormInput";
-import { ImageModal } from "./components/ImageModal";
-import { DeckList } from "./components/DeckList";
-import { DeckNameSummary } from "./components/DeckNameSummary";
-import { EmptyState } from "./components/EmptyState";
-import { Footer } from "./components/Footer";
-import type { TabMode } from "./types";
+import { useEffect, useCallback } from 'react'
+import { useFormState } from './hooks/useFormState'
+import { useAppState } from './hooks/useAppState'
+import { useModalState } from './hooks/useModalState'
+import { useLocalStorage } from './hooks/useLocalStorage'
+import { useDeckManager } from './hooks/useDeckManager'
+import { useViewSettings } from './hooks/useViewSettings'
+import { FormInput } from './components/FormInput'
+import { ImageModal } from './components/ImageModal'
+import { DeckList } from './components/DeckList'
+import { DeckNameSummary } from './components/DeckNameSummary'
+import { EmptyState } from './components/EmptyState'
+import { Footer } from './components/Footer'
+import type { TabMode } from './types'
 
 function App() {
-  const [formState, formActions] = useFormState();
-  const [appState, appActions] = useAppState();
-  const [modalState, modalActions] = useModalState(appState.deckList);
-  const [viewSettings, viewSettingsActions] = useViewSettings();
-  const { loadDeckList, saveDeckList } = useLocalStorage();
-  const { handleSubmit, handleUpdateDeck, handleRemoveDeck, handleClearAll } = useDeckManager(
-    appState,
-    appActions,
-    formState,
-    formActions,
-    saveDeckList
-  );
+  const [formState, formActions] = useFormState()
+  const [appState, appActions] = useAppState()
+  const [modalState, modalActions] = useModalState(appState.deckList)
+  const [viewSettings, viewSettingsActions] = useViewSettings()
+  const { loadDeckList, saveDeckList } = useLocalStorage()
+  const { handleSubmit, handleUpdateDeck, handleRemoveDeck, handleClearAll } =
+    useDeckManager(appState, appActions, formState, formActions, saveDeckList)
 
   // コールバックをuseCallbackでラップして最適化
-  const memoizedHandleUpdateDeck = useCallback(handleUpdateDeck, [handleUpdateDeck]);
-  const memoizedHandleRemoveDeck = useCallback(handleRemoveDeck, [handleRemoveDeck]);
-  const memoizedHandleClearAll = useCallback(handleClearAll, [handleClearAll]);
+  const memoizedHandleUpdateDeck = useCallback(handleUpdateDeck, [
+    handleUpdateDeck,
+  ])
+  const memoizedHandleRemoveDeck = useCallback(handleRemoveDeck, [
+    handleRemoveDeck,
+  ])
+  const memoizedHandleClearAll = useCallback(handleClearAll, [handleClearAll])
 
   // 初期化時にlocalStorageからデータを読み込む
   useEffect(() => {
-    const { data, error } = loadDeckList();
-    appActions.setDeckList(data);
+    const { data, error } = loadDeckList()
+    appActions.setDeckList(data)
     if (error) {
-      appActions.setError(error.message);
+      appActions.setError(error.message)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
@@ -69,10 +68,10 @@ function App() {
         {appState.deckList.length > 0 && (
           <div className="mb-4">
             <div className="flex items-center gap-1 border-b border-gray-200">
-              {([
+              {[
                 { key: 'deckList' as TabMode, label: 'デッキ一覧' },
                 { key: 'summary' as TabMode, label: 'デッキ集計' },
-              ]).map(({ key, label }) => (
+              ].map(({ key, label }) => (
                 <button
                   key={key}
                   onClick={() => viewSettingsActions.setActiveTab(key)}
@@ -100,9 +99,10 @@ function App() {
           />
         )}
 
-        {viewSettings.activeTab === 'summary' && appState.deckList.length > 0 && (
-          <DeckNameSummary deckList={appState.deckList} />
-        )}
+        {viewSettings.activeTab === 'summary' &&
+          appState.deckList.length > 0 && (
+            <DeckNameSummary deckList={appState.deckList} />
+          )}
 
         {appState.deckList.length === 0 && <EmptyState />}
 
@@ -117,7 +117,7 @@ function App() {
 
       <Footer />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

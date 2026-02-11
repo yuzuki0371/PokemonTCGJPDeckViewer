@@ -5,9 +5,9 @@ interface EmptyStateProps {
   icon?: React.ReactNode
 }
 
-const EmptyStateComponent = ({ 
-  message = "デッキコードを入力してデッキレシピを追加してください",
-  icon
+const EmptyStateComponent = ({
+  message = 'デッキコードを入力してデッキレシピを追加してください',
+  icon,
 }: EmptyStateProps) => {
   const defaultIcon = (
     <svg
@@ -28,12 +28,8 @@ const EmptyStateComponent = ({
 
   return (
     <div className="text-center py-12">
-      <div className="text-gray-400 mb-4">
-        {icon || defaultIcon}
-      </div>
-      <p className="text-gray-500 text-lg">
-        {message}
-      </p>
+      <div className="text-gray-400 mb-4">{icon || defaultIcon}</div>
+      <p className="text-gray-500 text-lg">{message}</p>
     </div>
   )
 }
