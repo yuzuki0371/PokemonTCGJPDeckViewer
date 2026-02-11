@@ -1,5 +1,11 @@
 import { useState, useRef, useEffect, memo, useCallback } from 'react'
-import type { DeckData, ModalActions, ViewMode, CardSize, AppActions } from '../types'
+import type {
+  DeckData,
+  ModalActions,
+  ViewMode,
+  CardSize,
+  AppActions,
+} from '../types'
 import { generateDeckUrls } from '../constants'
 
 interface DeckCardProps {
@@ -14,9 +20,18 @@ interface DeckCardProps {
 
 type EditableFieldName = 'playerName' | 'deckName'
 
-const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemove, viewMode }: DeckCardProps) => {
+const DeckCardComponent = ({
+  deck,
+  deckList,
+  modalActions,
+  onUpdateDeck,
+  onRemove,
+  viewMode,
+}: DeckCardProps) => {
   const [imageError, setImageError] = useState(false)
-  const [editingField, setEditingField] = useState<EditableFieldName | null>(null)
+  const [editingField, setEditingField] = useState<EditableFieldName | null>(
+    null
+  )
   const [editValue, setEditValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -31,18 +46,21 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
   }, [])
 
   const handleImageClick = useCallback(() => {
-    const index = deckList.findIndex((d) => d.id === deck.id);
-    modalActions.openModal(deck, index);
+    const index = deckList.findIndex((d) => d.id === deck.id)
+    modalActions.openModal(deck, index)
   }, [deck, deckList, modalActions])
 
   const handleRemoveClick = useCallback(() => {
     onRemove(deck.id)
   }, [deck.id, onRemove])
 
-  const startEditing = useCallback((field: EditableFieldName) => {
-    setEditingField(field)
-    setEditValue(deck[field] || '')
-  }, [deck])
+  const startEditing = useCallback(
+    (field: EditableFieldName) => {
+      setEditingField(field)
+      setEditValue(deck[field] || '')
+    },
+    [deck]
+  )
 
   const saveEdit = useCallback(() => {
     if (editingField) {
@@ -56,13 +74,16 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
     setEditingField(null)
   }, [])
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      saveEdit()
-    } else if (e.key === 'Escape') {
-      cancelEdit()
-    }
-  }, [saveEdit, cancelEdit])
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        saveEdit()
+      } else if (e.key === 'Escape') {
+        cancelEdit()
+      }
+    },
+    [saveEdit, cancelEdit]
+  )
 
   // 編集可能フィールドの表示
   const renderEditableField = (
@@ -108,9 +129,7 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
         className={`${containerClass} cursor-pointer hover:bg-gray-50 rounded px-1 -mx-1 transition-colors`}
         onClick={() => startEditing(field)}
       >
-        <div className={`${textClass} text-gray-300 italic`}>
-          {placeholder}
-        </div>
+        <div className={`${textClass} text-gray-300 italic`}>{placeholder}</div>
       </div>
     )
   }
@@ -222,9 +241,7 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
           </div>
 
           {/* 削除ボタン */}
-          <div className="flex justify-end mt-2">
-            {renderDeleteButton('')}
-          </div>
+          <div className="flex justify-end mt-2">{renderDeleteButton('')}</div>
         </div>
       </div>
     )
@@ -289,5 +306,5 @@ export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
     prevProps.onRemove === nextProps.onRemove &&
     prevProps.viewMode === nextProps.viewMode &&
     prevProps.cardSize === nextProps.cardSize
-  );
-});
+  )
+})

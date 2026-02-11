@@ -5,19 +5,19 @@ interface FormInputProps {
   // フォーム状態
   formState: FormState
   formActions: FormActions
-  
+
   // UI状態
   loading: boolean
   error: string | null
   processingProgress: { current: number; total: number } | null
-  
+
   // アプリケーション状態操作
   appActions: Pick<AppActions, 'setError'>
-  
+
   // イベントハンドラー
   onSubmit: (e: React.FormEvent) => void
   onClearAll: () => void
-  
+
   // 条件
   hasDecks: boolean
 }
@@ -31,19 +31,18 @@ export const FormInput = ({
   appActions,
   onSubmit,
   onClearAll,
-  hasDecks
+  hasDecks,
 }: FormInputProps) => {
-  
   // モード切り替えハンドラー
   const handleSingleModeSwitch = useCallback(() => {
-    formActions.setSingleMode();
-    appActions.setError(null);
-  }, [formActions, appActions]);
+    formActions.setSingleMode()
+    appActions.setError(null)
+  }, [formActions, appActions])
 
   const handleBulkModeSwitch = useCallback(() => {
-    formActions.setBulkMode();
-    appActions.setError(null);
-  }, [formActions, appActions]);
+    formActions.setBulkMode()
+    appActions.setError(null)
+  }, [formActions, appActions])
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
@@ -53,8 +52,8 @@ export const FormInput = ({
             onClick={handleSingleModeSwitch}
             className={`px-4 py-2 rounded-md transition-colors ${
               !formState.isBulkMode
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
             単体入力
@@ -64,8 +63,8 @@ export const FormInput = ({
             onClick={handleBulkModeSwitch}
             className={`px-4 py-2 rounded-md transition-colors ${
               formState.isBulkMode
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
             一括入力
@@ -87,7 +86,9 @@ export const FormInput = ({
                 type="text"
                 id="playerName"
                 value={formState.singleMode.playerName}
-                onChange={(e) => formActions.updateSingleForm("playerName", e.target.value)}
+                onChange={(e) =>
+                  formActions.updateSingleForm('playerName', e.target.value)
+                }
                 placeholder="プレイヤー名を入力してください"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -103,7 +104,9 @@ export const FormInput = ({
                 type="text"
                 id="deckName"
                 value={formState.singleMode.deckName}
-                onChange={(e) => formActions.updateSingleForm("deckName", e.target.value)}
+                onChange={(e) =>
+                  formActions.updateSingleForm('deckName', e.target.value)
+                }
                 placeholder="デッキ名を入力してください"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -119,7 +122,9 @@ export const FormInput = ({
                 type="text"
                 id="deckCode"
                 value={formState.singleMode.deckCode}
-                onChange={(e) => formActions.updateSingleForm("deckCode", e.target.value)}
+                onChange={(e) =>
+                  formActions.updateSingleForm('deckCode', e.target.value)
+                }
                 placeholder="デッキコードを入力してください"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -137,7 +142,9 @@ export const FormInput = ({
               id="bulkInput"
               value={formState.bulkMode.input}
               onChange={(e) => formActions.updateBulkInput(e.target.value)}
-              placeholder={"Excelからコピー＆ペーストできます\n\n例（3列：プレイヤー名・デッキコード・デッキ名）：\n田中太郎\tABC123\tピカチュウex\n佐藤花子\tDEF456\tリザードン\n\n例（2列：プレイヤー名・デッキコード）：\n田中太郎\tABC123\n佐藤花子\tDEF456\n\n例（手入力）：\n田中太郎 ABC123 ピカチュウex\nGHI789（デッキコードのみ）"}
+              placeholder={
+                'Excelからコピー＆ペーストできます\n\n例（3列：プレイヤー名・デッキコード・デッキ名）：\n田中太郎\tABC123\tピカチュウex\n佐藤花子\tDEF456\tリザードン\n\n例（2列：プレイヤー名・デッキコード）：\n田中太郎\tABC123\n佐藤花子\tDEF456\n\n例（手入力）：\n田中太郎 ABC123 ピカチュウex\nGHI789（デッキコードのみ）'
+              }
               rows={10}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical font-mono text-sm"
             />
@@ -147,25 +154,24 @@ export const FormInput = ({
                 Excelの「プレイヤー名」「デッキコード」「デッキ名」の2〜3列をコピー＆ペーストできます
               </p>
               <p>
-                ※
-                手入力の場合はスペース、カンマ、セミコロンで区切ってください
+                ※ 手入力の場合はスペース、カンマ、セミコロンで区切ってください
               </p>
-              <p>※ デッキコードのみ、またはプレイヤー名＋デッキコードの入力も可能です</p>
+              <p>
+                ※
+                デッキコードのみ、またはプレイヤー名＋デッキコードの入力も可能です
+              </p>
             </div>
           </div>
         )}
-        
-        {error && (
-          <div className="text-red-600 text-sm">{error}</div>
-        )}
+
+        {error && <div className="text-red-600 text-sm">{error}</div>}
 
         {processingProgress && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm text-gray-600">
               <span>処理中...</span>
               <span>
-                {processingProgress.current} /{" "}
-                {processingProgress.total}
+                {processingProgress.current} / {processingProgress.total}
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -173,8 +179,7 @@ export const FormInput = ({
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{
                   width: `${
-                    (processingProgress.current /
-                      processingProgress.total) *
+                    (processingProgress.current / processingProgress.total) *
                     100
                   }%`,
                 }}
@@ -191,13 +196,13 @@ export const FormInput = ({
           >
             {loading
               ? formState.isBulkMode
-                ? "一括追加中..."
-                : "追加中..."
+                ? '一括追加中...'
+                : '追加中...'
               : formState.isBulkMode
-              ? "デッキレシピを一括追加"
-              : "デッキレシピを追加"}
+                ? 'デッキレシピを一括追加'
+                : 'デッキレシピを追加'}
           </button>
-          
+
           {hasDecks && (
             <button
               type="button"

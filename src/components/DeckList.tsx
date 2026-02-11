@@ -1,5 +1,11 @@
 import { useState, useCallback } from 'react'
-import type { DeckData, ModalActions, ViewSettings, ViewSettingsActions, AppActions } from '../types'
+import type {
+  DeckData,
+  ModalActions,
+  ViewSettings,
+  ViewSettingsActions,
+  AppActions,
+} from '../types'
 import { DeckCard } from './DeckCard'
 import { ViewToggle } from './ViewToggle'
 import { GRID_SIZE_CLASSES, LIST_LAYOUT_CLASS } from '../constants'
@@ -20,7 +26,7 @@ export const DeckList = ({
   onUpdateDeck,
   onRemove,
   viewSettings,
-  viewSettingsActions
+  viewSettingsActions,
 }: DeckListProps) => {
   const [copied, setCopied] = useState(false)
 
@@ -36,9 +42,10 @@ export const DeckList = ({
   }
 
   // レイアウトクラスの決定
-  const layoutClasses = viewSettings.viewMode === 'grid'
-    ? `grid gap-4 ${GRID_SIZE_CLASSES[viewSettings.cardSize]}`
-    : LIST_LAYOUT_CLASS
+  const layoutClasses =
+    viewSettings.viewMode === 'grid'
+      ? `grid gap-4 ${GRID_SIZE_CLASSES[viewSettings.cardSize]}`
+      : LIST_LAYOUT_CLASS
 
   return (
     <div className="mb-6">

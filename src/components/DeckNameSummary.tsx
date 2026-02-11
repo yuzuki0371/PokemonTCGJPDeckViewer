@@ -15,15 +15,26 @@ export const DeckNameSummary = ({ deckList }: DeckNameSummaryProps) => {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="text-left px-4 py-3 text-sm font-semibold text-gray-700">デッキ名</th>
-              <th className="text-right px-4 py-3 text-sm font-semibold text-gray-700 w-24">件数</th>
-              <th className="text-right px-4 py-3 text-sm font-semibold text-gray-700 w-24">割合</th>
+              <th className="text-left px-4 py-3 text-sm font-semibold text-gray-700">
+                デッキ名
+              </th>
+              <th className="text-right px-4 py-3 text-sm font-semibold text-gray-700 w-24">
+                件数
+              </th>
+              <th className="text-right px-4 py-3 text-sm font-semibold text-gray-700 w-24">
+                割合
+              </th>
             </tr>
           </thead>
           <tbody>
             {summaryItems.map((item) => (
-              <tr key={item.deckName} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className={`px-4 py-3 text-sm ${item.deckName === '未設定' ? 'text-gray-400 italic' : 'text-gray-800'}`}>
+              <tr
+                key={item.deckName}
+                className="border-b border-gray-100 hover:bg-gray-50"
+              >
+                <td
+                  className={`px-4 py-3 text-sm ${item.deckName === '未設定' ? 'text-gray-400 italic' : 'text-gray-800'}`}
+                >
                   {item.deckName}
                 </td>
                 <td className="text-right px-4 py-3 text-sm text-gray-700 font-medium">
@@ -37,11 +48,15 @@ export const DeckNameSummary = ({ deckList }: DeckNameSummaryProps) => {
           </tbody>
           <tfoot>
             <tr className="bg-gray-50 border-t border-gray-200">
-              <td className="px-4 py-3 text-sm font-semibold text-gray-700">合計</td>
+              <td className="px-4 py-3 text-sm font-semibold text-gray-700">
+                合計
+              </td>
               <td className="text-right px-4 py-3 text-sm font-semibold text-gray-700">
                 {deckList.length}
               </td>
-              <td className="text-right px-4 py-3 text-sm text-gray-500">100%</td>
+              <td className="text-right px-4 py-3 text-sm text-gray-500">
+                100%
+              </td>
             </tr>
           </tfoot>
         </table>

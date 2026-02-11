@@ -1,16 +1,16 @@
-import { memo } from 'react';
-import type { ViewSettings, ViewSettingsActions, CardSize } from '../types';
+import { memo } from 'react'
+import type { ViewSettings, ViewSettingsActions, CardSize } from '../types'
 
 interface ViewToggleProps {
-  settings: ViewSettings;
-  actions: ViewSettingsActions;
+  settings: ViewSettings
+  actions: ViewSettingsActions
 }
 
 const sizeLabels: Record<CardSize, string> = {
   small: '小',
   medium: '中',
-  large: '大'
-};
+  large: '大',
+}
 
 const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
   return (
@@ -26,7 +26,12 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
           }`}
           title="グリッド表示"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -44,7 +49,12 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
           }`}
           title="リスト表示"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -75,7 +85,7 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export const ViewToggle = memo(ViewToggleComponent);
+export const ViewToggle = memo(ViewToggleComponent)
