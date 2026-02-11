@@ -20,19 +20,24 @@
 - React 19 + TypeScript
 - Vite (開発・ビルドツール)
 - Tailwind CSS (スタイリング)
+- ESLint + Prettier (コード品質・フォーマット)
+- mise (Node.jsバージョン管理)
 - GitHub Pages (デプロイ)
 
 ## セットアップ
 
 ### 前提条件
 
-Node.js 18以上が必要です。
+- [mise](https://mise.jdx.dev/) （Node.jsバージョン管理）
+
+Node.jsのバージョンは`.mise.toml`で管理しています。miseをインストール済みであれば、プロジェクトディレクトリに入ると自動的に適切なバージョンが使用されます。
 
 ### インストール
 
 ```bash
 git clone https://github.com/yuzuki0371/PokemonTCGJPDeckViewer.git
 cd PokemonTCGJPDeckViewer
+mise install   # Node.jsの指定バージョンをインストール
 npm install
 ```
 
@@ -50,6 +55,8 @@ npm run dev
 
 - `npm run build` - 本番用ビルド
 - `npm run lint` - ESLintによるコード検査
+- `npm run format` - Prettierによるコードフォーマット
+- `npm run format:check` - フォーマットのチェック
 - `npm run preview` - ビルド後のプレビュー
 
 ## 使用方法
