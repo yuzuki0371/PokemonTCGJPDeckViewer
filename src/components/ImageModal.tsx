@@ -77,6 +77,20 @@ export const ImageModal = ({
     [modalState.enlargedImage]
   )
 
+  // Enterキーでデッキ名編集を開始
+  useEffect(() => {
+    const handleEnterKey = (e: KeyboardEvent) => {
+      if (!modalState.enlargedImage) return
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
+      if (e.key === 'Enter') {
+        startEditing('deckName')
+      }
+    }
+    document.addEventListener('keydown', handleEnterKey)
+    return () => document.removeEventListener('keydown', handleEnterKey)
+  }, [modalState.enlargedImage, startEditing])
+
   const saveEdit = useCallback(() => {
     if (editingField && modalState.enlargedImage) {
       const trimmed = editValue.trim()
@@ -314,7 +328,7 @@ export const ImageModal = ({
             {/* キーボードショートカット表示 */}
             {hasMultipleDecks && (
               <div className="text-xs text-gray-400 mt-2">
-                ↑↓ または ←→ で画像切替、ESC で閉じる
+                ↑↓ または ←→ で画像切替、Enter でデッキ名編集、ESC で閉じる
               </div>
             )}
           </div>
