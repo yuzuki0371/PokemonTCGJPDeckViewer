@@ -1,8 +1,8 @@
 export interface FilterState {
-  filterText: string
+  filterText: string;
 }
 
 export interface FilterActions {
-  setFilterText: (text: string) => void
-  clearFilter: () => void
+  setFilterText: (text: string) => void;
+  clearFilter: () => void;
 }
