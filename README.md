@@ -1,7 +1,17 @@
 # PokemonTCGJPDeckViewer
 
+[![CI](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/ci.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/ci.yml)
 [![Deploy to GitHub Pages](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml)
+[![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fpokemontcgjpdeckviewer.pages.dev&label=Cloudflare%20Pages)](https://pokemontcgjpdeckviewer.pages.dev)
+
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=5%2E9&color=3178C6&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/static/v1?label=Node%2Ejs&message=24&color=339933&logo=nodedotjs&logoColor=white)
+
 ![GitHub License](https://img.shields.io/github/license/yuzuki0371/PokemonTCGJPDeckViewer)
+![GitHub last commit](https://img.shields.io/github/last-commit/yuzuki0371/PokemonTCGJPDeckViewer)
+![GitHub repo size](https://img.shields.io/github/repo-size/yuzuki0371/PokemonTCGJPDeckViewer)
 
 ポケモンカードゲームのデッキコードを入力して、公式サイトのデッキレシピ画像を表示するWebアプリケーションです。
 
@@ -12,8 +22,11 @@
   - Excel形式（タブ区切り）でのコピー＆ペーストに対応
   - カンマ、セミコロン、スペース、改行区切りに対応
   - プレイヤー名も同時に入力可能
+- **フィルター検索**: プレイヤー名・デッキ名でデッキ一覧をリアルタイム絞り込み
+- **デッキ集計**: デッキ名ごとの件数・割合を集計表示、デッキ名クリックで一覧をフィルター
 - **レスポンシブ表示**: デバイスサイズに応じてグリッド表示を調整
-- **画像拡大表示**: クリックで画像を拡大、矢印キーで画像間を移動
+- **インライン編集**: プレイヤー名・デッキ名をクリックしてその場で編集、デッキ名は既存名のオートコンプリート候補付き
+- **画像拡大表示**: クリックで画像を拡大、矢印キーで画像間を移動、Enterキーでデッキ名編集
 
 ## 技術スタック
 
@@ -91,9 +104,17 @@ npm run dev
 - 大画面 (≥ 1280px): 4列
 - 超大画面 (≥ 1536px): 5列
 
-## デプロイ
+## CI / デプロイ
 
-このプロジェクトはGitHub Actionsを使用してGitHub Pagesに自動デプロイされます。
+このプロジェクトはGitHub Actionsを使用してCI（コード品質チェック）と自動デプロイを行います。
+
+### CI（プルリクエスト時）
+
+`main`ブランチへのプルリクエスト時に以下のチェックが自動実行されます：
+
+1. ESLintによるコード検査（`npm run lint`）
+2. Prettierによるフォーマットチェック（`npm run format:check`）
+3. TypeScriptの型チェック（`tsc -b`）
 
 ### 自動デプロイ
 

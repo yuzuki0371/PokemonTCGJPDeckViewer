@@ -15,7 +15,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run format:check` - フォーマットチェック（CI向け）
 - `npm run preview` - ビルド後のプレビュー
 
-Node.jsバージョンは`.mise.toml`で管理（mise使用）。デプロイはmainブランチへのプッシュでGitHub Actionsが自動実行（`jdx/mise-action`で`.mise.toml`のNode.jsバージョンを使用、`npm ci` → `npm run build` → GitHub Pages）。
+Node.jsバージョンは`.mise.toml`で管理（mise使用）。
+
+### GitHub Actions
+- **CI** (`ci.yml`): mainへのPR時に自動実行。`npm run lint` → `npm run format:check` → `tsc -b`（lint・フォーマット・型チェック）
+- **Deploy** (`deploy.yml`): mainブランチへのpush時に自動実行。`npm ci` → `npm run build` → GitHub Pagesへデプロイ
+
+両ワークフローとも`jdx/mise-action`で`.mise.toml`のNode.jsバージョンを使用。
 
 ## Architecture
 
@@ -37,6 +43,7 @@ User Input (Forms)
   → useDeckManager (バリデーション + ビジネスロジック)
   → useAppState (状態更新)
   → useLocalStorage (永続化)
+  → filterDeckList (useFilterStateによるフィルタリング)
   → Component re-renders
 ```
 
@@ -46,6 +53,7 @@ User Input (Forms)
 - `useFormState` - フォーム入力状態（単体/一括モード、playerName/deckName/deckCode）
 - `useModalState` - モーダル表示状態、ナビゲーション、`updateModalImage`でモーダル内編集対応
 - `useViewSettings` - 表示設定（グリッド/リスト、カードサイズ、タブ切り替え）+ localStorage永続化
+- `useFilterState` - フィルターテキスト状態管理。App.tsxで`filterDeckList()`と組み合わせてデッキ一覧をフィルタリング
 - `useDeckManager` - デッキ追加・更新・削除の全操作を集約。`handleUpdateDeck`でインライン編集の永続化を担当
 - `useLocalStorage` - localStorage操作、Date型のシリアライズ対応
 
@@ -65,7 +73,10 @@ User Input (Forms)
 App.tsxで「デッキ一覧」と「デッキ集計」のタブ切り替えUI。`ViewSettings.activeTab`（`TabMode = 'deckList' | 'summary'`）で管理し、localStorageに永続化。デッキがある場合のみタブ表示。
 
 ### Deck Name Summary
-`DeckNameSummary`コンポーネントがデッキ名ごとの集計テーブルを表示。`aggregateDeckNames()`（`src/utils/deckUtils.ts`）で件数・割合(%)を算出。デッキ名未設定は「未設定」にまとめ、件数降順ソート。
+`DeckNameSummary`コンポーネントがデッキ名ごとの集計テーブルを表示。`aggregateDeckNames()`（`src/utils/deckUtils.ts`）で件数・割合(%)を算出。デッキ名未設定は「未設定」にまとめ、件数降順ソート。デッキ名クリックでフィルターテキストにセットしデッキ一覧タブに切り替え（「未設定」はクリック対象外）。
+
+### Filter
+`DeckList`コンポーネント内にフィルターテキストボックスを配置。`filterDeckList()`（`src/utils/deckUtils.ts`）でプレイヤー名・デッキ名の大文字小文字無視の部分一致フィルタリング。フィルタリング結果は`DeckList`、`DeckNameSummary`、`ImageModal`で共有（App.tsxの`filteredDeckList`）。
 
 ### Clipboard Export
 `generateDeckListTsv()`でデッキ一覧をタブ区切りテキストに変換し、クリップボードにコピー。Excelにそのまま貼り付け可能。列順は一括入力と同じ（プレイヤー名/デッキコード/デッキ名）。
@@ -74,7 +85,9 @@ App.tsxで「デッキ一覧」と「デッキ集計」のタブ切り替えUI�
 DeckCardとImageModalでプレイヤー名・デッキ名のインライン編集が可能:
 - クリックで編集モード開始、Enter/blurで保存、Escapeでキャンセル
 - 空欄時はプレースホルダー表示（クリックで入力開始）
+- モーダル表示中はEnterキーでデッキ名編集を開始可能
 - モーダル編集中はキーボードショートカット（矢印キー/ESC）を無効化（`useModalState`内でINPUT/TEXTAREA検出）
+- モーダルでのデッキ名編集時にオートコンプリート候補を表示（`aggregateDeckNames()`で件数降順、最大10件）。↑↓キーで選択、Enter/クリックで確定
 
 ### Error Handling
 - 型付き`AppError`オブジェクト（`ErrorType` enum: NETWORK_ERROR, STORAGE_ERROR, VALIDATION_ERROR等）

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import type { DeckData, AppState, AppActions } from '../types'
+import { useState } from "react";
+import type { DeckData, AppState, AppActions } from "../types";
 
 const initialAppState: AppState = {
   deckList: [],
@@ -8,80 +8,75 @@ const initialAppState: AppState = {
     error: null,
     processingProgress: null,
   },
-}
+};
 
 export const useAppState = (): [AppState, AppActions] => {
-  const [appState, setAppState] = useState<AppState>(initialAppState)
+  const [appState, setAppState] = useState<AppState>(initialAppState);
 
   const setDeckList = (decks: DeckData[]) => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
       deckList: decks,
-    }))
-  }
+    }));
+  };
 
   const addDecks = (decks: DeckData[]) => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
       deckList: [...decks, ...prev.deckList],
-    }))
-  }
+    }));
+  };
 
   const removeDeck = (id: string) => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
-      deckList: prev.deckList.filter((deck) => deck.id !== id),
-    }))
-  }
+      deckList: prev.deckList.filter(deck => deck.id !== id),
+    }));
+  };
 
-  const updateDeck = (
-    id: string,
-    updates: Partial<Pick<DeckData, 'playerName' | 'deckName'>>
-  ) => {
-    setAppState((prev) => ({
+  const updateDeck = (id: string, updates: Partial<Pick<DeckData, "playerName" | "deckName">>) => {
+    setAppState(prev => ({
       ...prev,
-      deckList: prev.deckList.map((deck) =>
-        deck.id === id ? { ...deck, ...updates } : deck
-      ),
-    }))
-  }
+      deckList: prev.deckList.map(deck => (deck.id === id ? { ...deck, ...updates } : deck)),
+    }));
+  };
 
   const clearAll = () => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
       deckList: [],
-    }))
-  }
+    }));
+  };
 
   const setLoading = (loading: boolean) => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
       ui: {
         ...prev.ui,
         loading,
       },
-    }))
-  }
+    }));
+  };
 
   const setError = (error: string | null) => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
       ui: {
         ...prev.ui,
         error,
       },
-    }))
-  }
+    }));
+  };
 
   const setProgress = (progress: { current: number; total: number } | null) => {
-    setAppState((prev) => ({
+    setAppState(prev => ({
       ...prev,
       ui: {
         ...prev.ui,
         processingProgress: progress,
       },
-    }))
-  }
+    }));
+  };
 
   const actions: AppActions = {
     setDeckList,
@@ -92,7 +87,7 @@ export const useAppState = (): [AppState, AppActions] => {
     setLoading,
     setError,
     setProgress,
-  }
+  };
 
-  return [appState, actions]
-}
+  return [appState, actions];
+};

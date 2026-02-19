@@ -6,14 +6,14 @@ export const UI_CONFIG = {
 
   // レスポンシブグリッドの設定
   GRID_BREAKPOINTS: {
-    MOBILE: 'grid-cols-1',
-    SMALL_TABLET: 'sm:grid-cols-1',
-    TABLET: 'md:grid-cols-2',
-    SMALL_PC: 'lg:grid-cols-3',
-    MEDIUM_PC: 'xl:grid-cols-4',
-    LARGE_PC: '2xl:grid-cols-5',
+    MOBILE: "grid-cols-1",
+    SMALL_TABLET: "sm:grid-cols-1",
+    TABLET: "md:grid-cols-2",
+    SMALL_PC: "lg:grid-cols-3",
+    MEDIUM_PC: "xl:grid-cols-4",
+    LARGE_PC: "2xl:grid-cols-5",
   },
-} as const
+} as const;
 
 // グリッドクラス名の組み合わせ
 export const GRID_CLASSES = [
@@ -23,4 +23,4 @@ export const GRID_CLASSES = [
   UI_CONFIG.GRID_BREAKPOINTS.SMALL_PC,
   UI_CONFIG.GRID_BREAKPOINTS.MEDIUM_PC,
   UI_CONFIG.GRID_BREAKPOINTS.LARGE_PC,
-].join(' ')
+].join(" ");

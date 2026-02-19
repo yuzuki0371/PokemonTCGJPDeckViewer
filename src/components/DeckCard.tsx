@@ -1,89 +1,74 @@
-import { useState, useRef, useEffect, memo, useCallback } from 'react'
-import type {
-  DeckData,
-  ModalActions,
-  ViewMode,
-  CardSize,
-  AppActions,
-} from '../types'
-import { generateDeckUrls } from '../constants'
+import { useState, useRef, useEffect, memo, useCallback } from "react";
+import type { DeckData, ModalActions, ViewMode, CardSize, AppActions } from "../types";
+import { generateDeckUrls } from "../constants";
 
 interface DeckCardProps {
-  deck: DeckData
-  deckList: DeckData[]
-  modalActions: ModalActions
-  onUpdateDeck: AppActions['updateDeck']
-  onRemove: (id: string) => void
-  viewMode: ViewMode
-  cardSize: CardSize
+  deck: DeckData;
+  deckList: DeckData[];
+  modalActions: ModalActions;
+  onUpdateDeck: AppActions["updateDeck"];
+  onRemove: (id: string) => void;
+  viewMode: ViewMode;
+  cardSize: CardSize;
 }
 
-type EditableFieldName = 'playerName' | 'deckName'
+type EditableFieldName = "playerName" | "deckName";
 
-const DeckCardComponent = ({
-  deck,
-  deckList,
-  modalActions,
-  onUpdateDeck,
-  onRemove,
-  viewMode,
-}: DeckCardProps) => {
-  const [imageError, setImageError] = useState(false)
-  const [editingField, setEditingField] = useState<EditableFieldName | null>(
-    null
-  )
-  const [editValue, setEditValue] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
+const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemove, viewMode }: DeckCardProps) => {
+  const [imageError, setImageError] = useState(false);
+  const [editingField, setEditingField] = useState<EditableFieldName | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (editingField && inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus();
     }
-  }, [editingField])
+  }, [editingField]);
 
   const handleImageError = useCallback(() => {
-    setImageError(true)
-  }, [])
+    setImageError(true);
+  }, []);
 
   const handleImageClick = useCallback(() => {
-    const index = deckList.findIndex((d) => d.id === deck.id)
-    modalActions.openModal(deck, index)
-  }, [deck, deckList, modalActions])
+    const index = deckList.findIndex(d => d.id === deck.id);
+    modalActions.openModal(deck, index);
+  }, [deck, deckList, modalActions]);
 
   const handleRemoveClick = useCallback(() => {
-    onRemove(deck.id)
-  }, [deck.id, onRemove])
+    onRemove(deck.id);
+  }, [deck.id, onRemove]);
 
   const startEditing = useCallback(
     (field: EditableFieldName) => {
-      setEditingField(field)
-      setEditValue(deck[field] || '')
+      setEditingField(field);
+      setEditValue(deck[field] || "");
     },
     [deck]
-  )
+  );
 
   const saveEdit = useCallback(() => {
     if (editingField) {
-      const trimmed = editValue.trim()
-      onUpdateDeck(deck.id, { [editingField]: trimmed || undefined })
-      setEditingField(null)
+      const trimmed = editValue.trim();
+      onUpdateDeck(deck.id, { [editingField]: trimmed || undefined });
+      setEditingField(null);
     }
-  }, [editingField, editValue, deck.id, onUpdateDeck])
+  }, [editingField, editValue, deck.id, onUpdateDeck]);
 
   const cancelEdit = useCallback(() => {
-    setEditingField(null)
-  }, [])
+    setEditingField(null);
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        saveEdit()
-      } else if (e.key === 'Escape') {
-        cancelEdit()
+      if (e.key === "Enter") {
+        saveEdit();
+      } else if (e.key === "Escape") {
+        cancelEdit();
       }
     },
     [saveEdit, cancelEdit]
-  )
+  );
 
   // 編集可能フィールドの表示
   const renderEditableField = (
@@ -100,14 +85,14 @@ const DeckCardComponent = ({
             ref={inputRef}
             type="text"
             value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
+            onChange={e => setEditValue(e.target.value)}
             onBlur={saveEdit}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className={`${textClass} w-full bg-blue-50 border border-blue-300 rounded px-1 py-0.5 outline-none focus:ring-1 focus:ring-blue-500`}
           />
         </div>
-      )
+      );
     }
 
     if (value) {
@@ -121,7 +106,7 @@ const DeckCardComponent = ({
             {value}
           </div>
         </div>
-      )
+      );
     }
 
     return (
@@ -131,8 +116,8 @@ const DeckCardComponent = ({
       >
         <div className={`${textClass} text-gray-300 italic`}>{placeholder}</div>
       </div>
-    )
-  }
+    );
+  };
 
   // 画像表示部分（共通）
   const renderImage = (className: string) => {
@@ -145,21 +130,16 @@ const DeckCardComponent = ({
           onClick={handleImageClick}
           onError={handleImageError}
         />
-      )
+      );
     }
     return (
       <div
         className={`${className} bg-gray-100 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity`}
-        style={{ minHeight: viewMode === 'list' ? '100%' : '150px' }}
+        style={{ minHeight: viewMode === "list" ? "100%" : "150px" }}
         onClick={handleImageClick}
       >
         <div className="text-center text-gray-500">
-          <svg
-            className="mx-auto h-8 w-8 text-gray-400 mb-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -170,8 +150,8 @@ const DeckCardComponent = ({
           <p className="text-xs">読み込み失敗</p>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   // 削除ボタン（共通）
   const renderDeleteButton = (positionClass: string) => (
@@ -180,51 +160,33 @@ const DeckCardComponent = ({
       className={`${positionClass} bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors shadow-md`}
       title="削除"
     >
-      <svg
-        className="w-3 h-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M6 18L18 6M6 6l12 12"
-        />
+      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
-  )
+  );
 
   // リスト表示
-  if (viewMode === 'list') {
+  if (viewMode === "list") {
     return (
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-row overflow-hidden">
         {/* 左: サムネイル画像 */}
-        <div className="relative w-48 flex-shrink-0">
-          {renderImage('w-full h-full object-cover')}
-        </div>
+        <div className="relative w-48 flex-shrink-0">{renderImage("w-full h-full object-cover")}</div>
 
         {/* 右: 情報表示エリア */}
         <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
           <div className="flex-1">
             {renderEditableField(
-              'playerName',
+              "playerName",
               deck.playerName,
-              'プレイヤー名を追加',
-              'text-base font-semibold text-gray-800',
-              'mb-1'
+              "プレイヤー名を追加",
+              "text-base font-semibold text-gray-800",
+              "mb-1"
             )}
-            {renderEditableField(
-              'deckName',
-              deck.deckName,
-              'デッキ名を追加',
-              'text-sm text-gray-700',
-              'mb-2'
-            )}
+            {renderEditableField("deckName", deck.deckName, "デッキ名を追加", "text-sm text-gray-700", "mb-2")}
             <div className="text-sm text-gray-600 mb-1">
               <span className="truncate" title={deck.code}>
-                コード:{' '}
+                コード:{" "}
                 <a
                   href={generateDeckUrls(deck.code).confirm}
                   target="_blank"
@@ -235,44 +197,36 @@ const DeckCardComponent = ({
                 </a>
               </span>
             </div>
-            <div className="text-sm text-gray-400">
-              {deck.addedAt.toLocaleDateString('ja-JP')}
-            </div>
+            <div className="text-sm text-gray-400">{deck.addedAt.toLocaleDateString("ja-JP")}</div>
           </div>
 
           {/* 削除ボタン */}
-          <div className="flex justify-end mt-2">{renderDeleteButton('')}</div>
+          <div className="flex justify-end mt-2">{renderDeleteButton("")}</div>
         </div>
       </div>
-    )
+    );
   }
 
   // グリッド表示（既存レイアウト）
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
       <div className="relative">
-        {renderImage('w-full h-auto')}
-        {renderDeleteButton('absolute top-1 right-1')}
+        {renderImage("w-full h-auto")}
+        {renderDeleteButton("absolute top-1 right-1")}
       </div>
 
       <div className="p-3">
         {renderEditableField(
-          'playerName',
+          "playerName",
           deck.playerName,
-          'プレイヤー名を追加',
-          'text-sm font-semibold text-gray-800',
-          'mb-1'
+          "プレイヤー名を追加",
+          "text-sm font-semibold text-gray-800",
+          "mb-1"
         )}
-        {renderEditableField(
-          'deckName',
-          deck.deckName,
-          'デッキ名を追加',
-          'text-xs text-gray-700',
-          'mb-1'
-        )}
+        {renderEditableField("deckName", deck.deckName, "デッキ名を追加", "text-xs text-gray-700", "mb-1")}
         <div className="text-xs text-gray-600 mb-1">
           <p className="truncate" title={deck.code}>
-            コード:{' '}
+            コード:{" "}
             <a
               href={generateDeckUrls(deck.code).confirm}
               target="_blank"
@@ -283,13 +237,11 @@ const DeckCardComponent = ({
             </a>
           </p>
         </div>
-        <div className="text-xs text-gray-400">
-          {deck.addedAt.toLocaleDateString('ja-JP')}
-        </div>
+        <div className="text-xs text-gray-400">{deck.addedAt.toLocaleDateString("ja-JP")}</div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // React.memo で最適化し、propsの変更時のみ再レンダリング
 export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
@@ -301,10 +253,11 @@ export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
     prevProps.deck.deckName === nextProps.deck.deckName &&
     prevProps.deck.imageUrl === nextProps.deck.imageUrl &&
     prevProps.deck.addedAt.getTime() === nextProps.deck.addedAt.getTime() &&
+    prevProps.deckList === nextProps.deckList &&
     prevProps.modalActions === nextProps.modalActions &&
     prevProps.onUpdateDeck === nextProps.onUpdateDeck &&
     prevProps.onRemove === nextProps.onRemove &&
     prevProps.viewMode === nextProps.viewMode &&
     prevProps.cardSize === nextProps.cardSize
-  )
-})
+  );
+});
