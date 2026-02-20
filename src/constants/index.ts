@@ -1,5 +1,5 @@
 // Pokemon Card 公式サイトのURL定数
-export const POKEMON_CARD_URLS = {
+const POKEMON_CARD_URLS = {
   DECK_VIEW: "https://www.pokemon-card.com/deck/deckView.php/deckID/",
   DECK_CONFIRM: "https://www.pokemon-card.com/deck/confirm.html/deckID/",
 } as const;
@@ -16,10 +16,10 @@ export const generateDeckUrls = (deckCode: string) => ({
 });
 
 // メッセージ定数のre-export
-export { ERROR_MESSAGES, SUCCESS_MESSAGES, UI_MESSAGES } from "./messages";
+export { ERROR_MESSAGES, UI_MESSAGES } from "./messages";
 
 // UI設定定数のre-export
-export { UI_CONFIG, GRID_CLASSES } from "./ui";
+export { UI_CONFIG } from "./ui";
 
 // 表示設定定数のre-export
 export { GRID_SIZE_CLASSES, LIST_LAYOUT_CLASS, VIEW_SETTINGS_STORAGE_KEY, DEFAULT_VIEW_SETTINGS } from "./viewSettings";

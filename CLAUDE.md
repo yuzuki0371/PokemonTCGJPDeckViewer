@@ -8,18 +8,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Key Commands
 
-- `npm run dev` - 開発サーバー起動 (http://localhost:5173/PokemonTCGJPDeckViewer/)
-- `npm run build` - 本番ビルド (TypeScript compile + Vite build)
-- `npm run lint` - ESLintチェック
-- `npm run format` - Prettierでコードフォーマット
-- `npm run format:check` - フォーマットチェック（CI向け）
-- `npm run preview` - ビルド後のプレビュー
+- `pnpm dev` - 開発サーバー起動 (http://localhost:5173/PokemonTCGJPDeckViewer/)
+- `pnpm build` - 本番ビルド (TypeScript compile + Vite build)
+- `pnpm lint` - ESLintチェック
+- `pnpm format` - Prettierでコードフォーマット
+- `pnpm format:check` - フォーマットチェック（CI向け）
+- `pnpm preview` - ビルド後のプレビュー
+- `pnpm typecheck` - 型チェック（`tsc --noEmit`）
 
 Node.jsバージョンは`.mise.toml`で管理（mise使用）。
 
 ### GitHub Actions
-- **CI** (`ci.yml`): mainへのPR時に自動実行。`npm run lint` → `npm run format:check` → `tsc -b`（lint・フォーマット・型チェック）
-- **Deploy** (`deploy.yml`): mainブランチへのpush時に自動実行。`npm ci` → `npm run build` → GitHub Pagesへデプロイ
+- **CI** (`ci.yml`): mainへのPR時に自動実行。`pnpm lint` → `pnpm format:check` → `tsc -b`（lint・フォーマット・型チェック）
+- **Deploy** (`deploy.yml`): mainブランチへのpush時に自動実行。`pnpm install` → `pnpm build` → GitHub Pagesへデプロイ
 
 両ワークフローとも`jdx/mise-action`で`.mise.toml`のNode.jsバージョンを使用。
 
@@ -89,6 +90,10 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
 - モーダル編集中はキーボードショートカット（矢印キー/ESC）を無効化（`useModalState`内でINPUT/TEXTAREA検出）
 - モーダルでのデッキ名編集時にオートコンプリート候補を表示（`aggregateDeckNames()`で件数降順、最大10件）。↑↓キーで選択、Enter/クリックで確定
 
+#### サブコンポーネント構成
+- `DeckCard.tsx`: `EditableField`（インライン編集フィールド）/ `DeckImage`（デッキ画像表示）/ `DeleteButton`（削除ボタン）を同ファイル内サブコンポーネントとして定義
+- `ImageModal.tsx`: `EditableModalField`（モーダル内インライン編集フィールド）/ `ModalInfoPanel`（デッキ情報パネル）を同ファイル内サブコンポーネントとして定義
+
 ### Error Handling
 - 型付き`AppError`オブジェクト（`ErrorType` enum: NETWORK_ERROR, STORAGE_ERROR, VALIDATION_ERROR等）
 - `createAppError()`, `isQuotaExceededError()`, `isNetworkError()`ヘルパー
@@ -113,3 +118,5 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
 - **新しいhook** → `[State, Actions]`タプルを返すパターンに従う
 - **コンポーネント最適化** → presentationalコンポーネントは`React.memo()`、イベントハンドラーは`useCallback()`を使用
 - **useEffect内でのsetState** → ESLintルール`react-hooks/set-state-in-effect`で禁止。refベースのパターンで代替
+- **クリック可能な非ボタン要素** → `role="button"` / `tabIndex={0}` / `onKeyDown`（Enter/Space）を付与してアクセシビリティを確保
+- **render* インライン関数** → コンポーネント外の名前付きコンポーネントに分離（React reconciliationの安定性のため）

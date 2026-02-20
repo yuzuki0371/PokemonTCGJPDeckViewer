@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { generateDeckUrls } from "../constants";
-import type { ModalState, ModalActions, AppActions, DeckData } from "../types";
+import type { ModalState, ModalActions, AppActions, DeckData, DeckNameSummaryItem } from "../types";
 import { aggregateDeckNames } from "../utils/deckUtils";
 
 type EditableFieldName = "playerName" | "deckName";
@@ -18,6 +18,223 @@ interface ImageModalProps {
   // デッキ名候補用
   deckList: DeckData[];
 }
+
+// --- Sub-components ---
+
+interface EditableModalFieldProps {
+  field: EditableFieldName;
+  value: string | undefined;
+  placeholder: string;
+  textClass: string;
+  containerClass: string;
+  isEditing: boolean;
+  editValue: string;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  suggestions: DeckNameSummaryItem[];
+  selectedSuggestionIndex: number;
+  suggestionListRef: React.RefObject<HTMLUListElement | null>;
+  onStartEditing: () => void;
+  onChange: (v: string) => void;
+  onBlur: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  onSuggestionSelect: (name: string) => void;
+}
+
+const EditableModalField = ({
+  field,
+  value,
+  placeholder,
+  textClass,
+  containerClass,
+  isEditing,
+  editValue,
+  inputRef,
+  suggestions,
+  selectedSuggestionIndex,
+  suggestionListRef,
+  onStartEditing,
+  onChange,
+  onBlur,
+  onKeyDown,
+  onSuggestionSelect,
+}: EditableModalFieldProps) => {
+  const handleKeyActivate = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onStartEditing();
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className={`${containerClass} relative`}>
+        <input
+          ref={inputRef}
+          type="text"
+          value={editValue}
+          onChange={e => onChange(e.target.value)}
+          onBlur={onBlur}
+          onKeyDown={onKeyDown}
+          placeholder={placeholder}
+          className={`${textClass} bg-white/20 border border-white/40 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-blue-300 text-white placeholder-gray-400 w-64 max-w-full`}
+        />
+        {field === "deckName" && suggestions.length > 0 && (
+          <ul
+            ref={suggestionListRef}
+            className="absolute left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded shadow-lg z-20 max-h-40 overflow-y-auto"
+          >
+            {suggestions.map((item, i) => (
+              <li
+                key={item.deckName}
+                className={`px-3 py-1.5 text-sm cursor-pointer flex justify-between items-center ${
+                  i === selectedSuggestionIndex ? "bg-blue-600 text-white" : "text-gray-200 hover:bg-gray-700"
+                }`}
+                onMouseDown={e => {
+                  e.preventDefault();
+                  onSuggestionSelect(item.deckName);
+                }}
+              >
+                <span>{item.deckName}</span>
+                <span className="text-xs text-gray-400 ml-2">{item.count}件</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
+  if (value) {
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
+        onClick={onStartEditing}
+        onKeyDown={handleKeyActivate}
+        title="クリックして編集"
+      >
+        <span className={textClass}>{value}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
+      onClick={onStartEditing}
+      onKeyDown={handleKeyActivate}
+    >
+      <span className={`${textClass} text-gray-400 italic`}>{placeholder}</span>
+    </div>
+  );
+};
+
+// --- Info panel sub-component ---
+
+interface ModalInfoPanelProps {
+  deckCode: string;
+  playerName: string | undefined;
+  deckName: string | undefined;
+  index: number;
+  hasMultipleDecks: boolean;
+  totalDecks: number;
+  editingField: EditableFieldName | null;
+  editValue: string;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  suggestions: DeckNameSummaryItem[];
+  selectedSuggestionIndex: number;
+  suggestionListRef: React.RefObject<HTMLUListElement | null>;
+  onStartEditing: (field: EditableFieldName) => void;
+  onChange: (v: string) => void;
+  onBlur: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  onSuggestionSelect: (name: string) => void;
+}
+
+const ModalInfoPanel = ({
+  deckCode,
+  playerName,
+  deckName,
+  index,
+  hasMultipleDecks,
+  totalDecks,
+  editingField,
+  editValue,
+  inputRef,
+  suggestions,
+  selectedSuggestionIndex,
+  suggestionListRef,
+  onStartEditing,
+  onChange,
+  onBlur,
+  onKeyDown,
+  onSuggestionSelect,
+}: ModalInfoPanelProps) => (
+  <div className="bg-gray-900 text-white p-4 rounded-b-lg flex-shrink-0">
+    <div className="text-center">
+      {hasMultipleDecks && (
+        <div className="text-xs text-gray-300 mb-2">
+          {index + 1} / {totalDecks}
+        </div>
+      )}
+      <EditableModalField
+        field="playerName"
+        value={playerName}
+        placeholder="プレイヤー名を追加"
+        textClass="text-lg font-semibold"
+        containerClass="mb-1"
+        isEditing={editingField === "playerName"}
+        editValue={editValue}
+        inputRef={inputRef}
+        suggestions={suggestions}
+        selectedSuggestionIndex={selectedSuggestionIndex}
+        suggestionListRef={suggestionListRef}
+        onStartEditing={() => onStartEditing("playerName")}
+        onChange={onChange}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        onSuggestionSelect={onSuggestionSelect}
+      />
+      <EditableModalField
+        field="deckName"
+        value={deckName}
+        placeholder="デッキ名を追加"
+        textClass="text-sm text-gray-200"
+        containerClass="mb-1"
+        isEditing={editingField === "deckName"}
+        editValue={editValue}
+        inputRef={inputRef}
+        suggestions={suggestions}
+        selectedSuggestionIndex={selectedSuggestionIndex}
+        suggestionListRef={suggestionListRef}
+        onStartEditing={() => onStartEditing("deckName")}
+        onChange={onChange}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        onSuggestionSelect={onSuggestionSelect}
+      />
+      <div className="text-sm">
+        デッキコード:{" "}
+        <a
+          href={generateDeckUrls(deckCode).confirm}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-blue-300 hover:text-blue-100 hover:underline"
+        >
+          {deckCode}
+        </a>
+      </div>
+      {hasMultipleDecks && (
+        <div className="text-xs text-gray-400 mt-2">↑↓ または ←→ で画像切替、Enter でデッキ名編集、ESC で閉じる</div>
+      )}
+    </div>
+  </div>
+);
+
+// --- Main component ---
 
 export const ImageModal = ({
   modalState,
@@ -61,6 +278,15 @@ export const ImageModal = ({
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) {
+        modalActions.closeModal();
+      }
+    },
+    [modalActions]
+  );
+
+  const handleBackdropKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Escape") {
         modalActions.closeModal();
       }
     },
@@ -160,77 +386,15 @@ export const ImageModal = ({
     [saveEdit, cancelEdit, editingField, suggestions, selectedSuggestionIndex]
   );
 
-  const renderEditableField = (
-    field: EditableFieldName,
-    value: string | undefined,
-    placeholder: string,
-    textClass: string,
-    containerClass: string
-  ) => {
-    if (editingField === field) {
-      return (
-        <div className={`${containerClass} relative`}>
-          <input
-            ref={inputRef}
-            type="text"
-            value={editValue}
-            onChange={e => {
-              setEditValue(e.target.value);
-              setSelectedSuggestionIndex(-1);
-            }}
-            onBlur={saveEdit}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            className={`${textClass} bg-white/20 border border-white/40 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-blue-300 text-white placeholder-gray-400 w-64 max-w-full`}
-          />
-          {field === "deckName" && suggestions.length > 0 && (
-            <ul
-              ref={suggestionListRef}
-              className="absolute left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded shadow-lg z-20 max-h-40 overflow-y-auto"
-            >
-              {suggestions.map((item, i) => (
-                <li
-                  key={item.deckName}
-                  className={`px-3 py-1.5 text-sm cursor-pointer flex justify-between items-center ${
-                    i === selectedSuggestionIndex ? "bg-blue-600 text-white" : "text-gray-200 hover:bg-gray-700"
-                  }`}
-                  onMouseDown={e => {
-                    e.preventDefault();
-                    setEditValue(item.deckName);
-                    setSelectedSuggestionIndex(-1);
-                  }}
-                >
-                  <span>{item.deckName}</span>
-                  <span className="text-xs text-gray-400 ml-2">{item.count}件</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      );
-    }
+  const handleEditValueChange = useCallback((v: string) => {
+    setEditValue(v);
+    setSelectedSuggestionIndex(-1);
+  }, []);
 
-    if (value) {
-      return (
-        <div
-          className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
-          onClick={() => startEditing(field)}
-          title="クリックして編集"
-        >
-          <span className={textClass}>{value}</span>
-        </div>
-      );
-    }
-
-    return (
-      <div
-        className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
-        onClick={() => startEditing(field)}
-      >
-        <span className={`${textClass} text-gray-400 italic`}>{placeholder}</span>
-      </div>
-    );
-  };
+  const handleSuggestionSelect = useCallback((name: string) => {
+    setEditValue(name);
+    setSelectedSuggestionIndex(-1);
+  }, []);
 
   if (!modalState.enlargedImage) {
     return null;
@@ -238,8 +402,12 @@ export const ImageModal = ({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="デッキ詳細"
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
+      onKeyDown={handleBackdropKeyDown}
     >
       <div className="relative flex flex-col max-w-4xl max-h-full">
         {/* 閉じるボタン */}
@@ -311,54 +479,25 @@ export const ImageModal = ({
         )}
 
         {/* 情報表示エリア */}
-        <div className="bg-gray-900 text-white p-4 rounded-b-lg flex-shrink-0">
-          <div className="text-center">
-            {/* 現在位置表示 */}
-            {hasMultipleDecks && (
-              <div className="text-xs text-gray-300 mb-2">
-                {modalState.enlargedImage.index + 1} / {totalDecks}
-              </div>
-            )}
-
-            {/* プレイヤー名 */}
-            {renderEditableField(
-              "playerName",
-              modalState.enlargedImage.playerName,
-              "プレイヤー名を追加",
-              "text-lg font-semibold",
-              "mb-1"
-            )}
-
-            {/* デッキ名 */}
-            {renderEditableField(
-              "deckName",
-              modalState.enlargedImage.deckName,
-              "デッキ名を追加",
-              "text-sm text-gray-200",
-              "mb-1"
-            )}
-
-            {/* デッキコード */}
-            <div className="text-sm">
-              デッキコード:{" "}
-              <a
-                href={generateDeckUrls(modalState.enlargedImage.deckCode).confirm}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-blue-300 hover:text-blue-100 hover:underline"
-              >
-                {modalState.enlargedImage.deckCode}
-              </a>
-            </div>
-
-            {/* キーボードショートカット表示 */}
-            {hasMultipleDecks && (
-              <div className="text-xs text-gray-400 mt-2">
-                ↑↓ または ←→ で画像切替、Enter でデッキ名編集、ESC で閉じる
-              </div>
-            )}
-          </div>
-        </div>
+        <ModalInfoPanel
+          deckCode={modalState.enlargedImage.deckCode}
+          playerName={modalState.enlargedImage.playerName}
+          deckName={modalState.enlargedImage.deckName}
+          index={modalState.enlargedImage.index}
+          hasMultipleDecks={hasMultipleDecks}
+          totalDecks={totalDecks}
+          editingField={editingField}
+          editValue={editValue}
+          inputRef={inputRef}
+          suggestions={suggestions}
+          selectedSuggestionIndex={selectedSuggestionIndex}
+          suggestionListRef={suggestionListRef}
+          onStartEditing={startEditing}
+          onChange={handleEditValueChange}
+          onBlur={saveEdit}
+          onKeyDown={handleKeyDown}
+          onSuggestionSelect={handleSuggestionSelect}
+        />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
 export type { DeckData, ParsedLine, BulkProcessResult, DeckNameSummaryItem } from "./deck";
 
 // UI状態関連
-export type { UIState, AppState, AppActions } from "./ui";
+export type { AppState, AppActions } from "./ui";
 
 // フォーム関連
 export type { FormState, FormActions } from "./form";

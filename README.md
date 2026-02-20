@@ -8,6 +8,7 @@
 ![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=5%2E9&color=3178C6&logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
 ![Node.js](https://img.shields.io/static/v1?label=Node%2Ejs&message=24&color=339933&logo=nodedotjs&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-10-FF5500?logo=pnpm&logoColor=white)
 
 ![GitHub License](https://img.shields.io/github/license/yuzuki0371/PokemonTCGJPDeckViewer)
 ![GitHub last commit](https://img.shields.io/github/last-commit/yuzuki0371/PokemonTCGJPDeckViewer)
@@ -34,6 +35,7 @@
 - Vite (開発・ビルドツール)
 - Tailwind CSS (スタイリング)
 - ESLint + Prettier (コード品質・フォーマット)
+- pnpm (パッケージマネージャー)
 - mise (Node.jsバージョン管理)
 - GitHub Pages (デプロイ)
 
@@ -42,8 +44,9 @@
 ### 前提条件
 
 - [mise](https://mise.jdx.dev/) （Node.jsバージョン管理）
+- [pnpm](https://pnpm.io/) （パッケージマネージャー）
 
-Node.jsのバージョンは`.mise.toml`で管理しています。miseをインストール済みであれば、プロジェクトディレクトリに入ると自動的に適切なバージョンが使用されます。
+Node.jsのバージョンは`mise.toml`で管理しています。miseをインストール済みであれば、プロジェクトディレクトリに入ると自動的に適切なバージョンが使用されます。
 
 ### インストール
 
@@ -51,7 +54,7 @@ Node.jsのバージョンは`.mise.toml`で管理しています。miseをイン
 git clone https://github.com/yuzuki0371/PokemonTCGJPDeckViewer.git
 cd PokemonTCGJPDeckViewer
 mise install   # Node.jsの指定バージョンをインストール
-npm install
+pnpm install
 ```
 
 ## 開発
@@ -59,18 +62,19 @@ npm install
 ### 開発サーバーの起動
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ブラウザで `http://localhost:5173` を開いてアプリケーションにアクセスできます。
 
 ### その他のコマンド
 
-- `npm run build` - 本番用ビルド
-- `npm run lint` - ESLintによるコード検査
-- `npm run format` - Prettierによるコードフォーマット
-- `npm run format:check` - フォーマットのチェック
-- `npm run preview` - ビルド後のプレビュー
+- `pnpm build` - 本番用ビルド
+- `pnpm lint` - ESLintによるコード検査
+- `pnpm format` - Prettierによるコードフォーマット
+- `pnpm format:check` - フォーマットのチェック
+- `pnpm preview` - ビルド後のプレビュー
+- `pnpm typecheck` - TypeScriptの型チェック
 
 ## 使用方法
 
@@ -112,9 +116,9 @@ npm run dev
 
 `main`ブランチへのプルリクエスト時に以下のチェックが自動実行されます：
 
-1. ESLintによるコード検査（`npm run lint`）
-2. Prettierによるフォーマットチェック（`npm run format:check`）
-3. TypeScriptの型チェック（`tsc -b`）
+1. ESLintによるコード検査（`pnpm lint`）
+2. Prettierによるフォーマットチェック（`pnpm format:check`）
+3. TypeScriptの型チェック（`pnpm typecheck`）
 
 ### 自動デプロイ
 
