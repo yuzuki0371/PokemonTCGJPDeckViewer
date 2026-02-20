@@ -40,7 +40,10 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "minimatch@<10.2.1": ">=10.2.1"
+    }
   },
   "prettier": "@yuzuki0371/prettier-config"
 }
