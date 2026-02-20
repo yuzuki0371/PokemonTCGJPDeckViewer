@@ -26,13 +26,6 @@ export const ERROR_MESSAGES = {
   VALIDATION_INVALID_FORMAT: "入力形式が正しくありません",
 } as const;
 
-// 成功メッセージ
-export const SUCCESS_MESSAGES = {
-  DECK_ADDED: "デッキレシピを追加しました",
-  DECKS_BULK_ADDED: "デッキレシピを一括追加しました",
-  ALL_DECKS_CLEARED: "すべてのデッキをクリアしました",
-} as const;
-
 // UI メッセージ
 export const UI_MESSAGES = {
   LOADING_SINGLE: "追加中...",
