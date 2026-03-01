@@ -54,7 +54,7 @@ function App() {
     if (error) {
       appActions.setError(error.message);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
