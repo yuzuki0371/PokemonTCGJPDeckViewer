@@ -1,16 +1,15 @@
 {
   "name": "pokemon-deck-viewer",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.30.1",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "format": "prettier --write 'src/**/*.{ts,tsx,css}' '*.{js,ts,json,html}'",
-    "format:check": "prettier --check 'src/**/*.{ts,tsx,css}' '*.{js,ts,json,html}'",
+    "typecheck": "tsgo --noEmit",
+    "lint": "oxlint --type-aware .",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -18,25 +17,21 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.3",
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@typescript/native-preview": "latest",
     "@vitejs/plugin-react": "^5.1.4",
-    "@yuzuki0371/prettier-config": "^1.0.0",
     "autoprefixer": "^10.4.27",
-    "eslint": "^9.39.3",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.4.0",
+    "oxfmt": "latest",
+    "oxlint": "latest",
+    "oxlint-tsgolint": "latest",
     "postcss": "^8.5.6",
-    "prettier": "^3.8.1",
     "tailwindcss": "^3.4.19",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"
   },
+  "packageManager": "pnpm@10.30.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
@@ -45,6 +40,5 @@
       "minimatch@<10.2.1": "==10.2.1",
       "ajv@<6.14.0": "==6.14.0"
     }
-  },
-  "prettier": "@yuzuki0371/prettier-config"
+  }
 }

@@ -19,6 +19,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Node.jsバージョンは`.mise.toml`で管理（mise使用）。
 
 ### GitHub Actions
+
 - **CI** (`ci.yml`): mainへのPR時に自動実行。`pnpm lint` → `pnpm format:check` → `tsc -b`（lint・フォーマット・型チェック）
 - **Deploy** (`deploy.yml`): mainブランチへのpush時に自動実行。`pnpm install` → `pnpm build` → GitHub Pagesへデプロイ
 
@@ -27,6 +28,7 @@ Node.jsバージョンは`.mise.toml`で管理（mise使用）。
 ## Architecture
 
 ### Layered Architecture
+
 ```
 View Layer (src/App.tsx, src/components/)
     ↓
@@ -38,6 +40,7 @@ Browser APIs (localStorage, window events)
 ```
 
 ### Data Flow
+
 ```
 User Input (Forms)
   → useFormState (入力状態管理)
@@ -49,7 +52,9 @@ User Input (Forms)
 ```
 
 ### Hooks Pattern
+
 全てのhooksは `[State, Actions]` タプルを返す設計パターンに従う:
+
 - `useAppState` - アプリ全体の状態（デッキリスト、UI状態）。`updateDeck`でインライン編集対応
 - `useFormState` - フォーム入力状態（単体/一括モード、playerName/deckName/deckCode）
 - `useModalState` - モーダル表示状態、ナビゲーション、`updateModalImage`でモーダル内編集対応
@@ -59,31 +64,41 @@ User Input (Forms)
 - `useLocalStorage` - localStorage操作、Date型のシリアライズ対応
 
 ### URL Generation
+
 デッキコードからポケモンカード公式URLを生成（`generateDeckUrls()`）:
+
 - View URL: `deck/deckView.php/deckID/{deckCode}` (画像表示用)
 - Details URL: `deck/confirm.html/deckID/{deckCode}` (外部リンク用)
 
 ### Bulk Input Parsing
+
 `parseBulkInputLine()`が以下の形式に対応：
+
 - 3列: `プレイヤー名\tデッキコード\tデッキ名` (Excel 3列対応)
 - 2列: `プレイヤー名\tデッキコード` (Excel 2列対応)
 - 1列: デッキコードのみ
 - 区切り文字: タブ/カンマ/セミコロン/スペース
 
 ### Tab Navigation
+
 App.tsxで「デッキ一覧」と「デッキ集計」のタブ切り替えUI。`ViewSettings.activeTab`（`TabMode = 'deckList' | 'summary'`）で管理し、localStorageに永続化。デッキがある場合のみタブ表示。
 
 ### Deck Name Summary
+
 `DeckNameSummary`コンポーネントがデッキ名ごとの集計テーブルを表示。`aggregateDeckNames()`（`src/utils/deckUtils.ts`）で件数・割合(%)を算出。デッキ名未設定は「未設定」にまとめ、件数降順ソート。デッキ名クリックでフィルターテキストにセットしデッキ一覧タブに切り替え（「未設定」はクリック対象外）。
 
 ### Filter
+
 `DeckList`コンポーネント内にフィルターテキストボックスを配置。`filterDeckList()`（`src/utils/deckUtils.ts`）でプレイヤー名・デッキ名の大文字小文字無視の部分一致フィルタリング。フィルタリング結果は`DeckList`、`DeckNameSummary`、`ImageModal`で共有（App.tsxの`filteredDeckList`）。
 
 ### Clipboard Export
+
 `generateDeckListTsv()`でデッキ一覧をタブ区切りテキストに変換し、クリップボードにコピー。Excelにそのまま貼り付け可能。列順は一括入力と同じ（プレイヤー名/デッキコード/デッキ名）。
 
 ### Inline Editing
+
 DeckCardとImageModalでプレイヤー名・デッキ名のインライン編集が可能:
+
 - クリックで編集モード開始、Enter/blurで保存、Escapeでキャンセル
 - 空欄時はプレースホルダー表示（クリックで入力開始）
 - モーダル表示中はEnterキーでデッキ名編集を開始可能
@@ -91,10 +106,12 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
 - モーダルでのデッキ名編集時にオートコンプリート候補を表示（`aggregateDeckNames()`で件数降順、最大10件）。↑↓キーで選択、Enter/クリックで確定
 
 #### サブコンポーネント構成
+
 - `DeckCard.tsx`: `EditableField`（インライン編集フィールド）/ `DeckImage`（デッキ画像表示）/ `DeleteButton`（削除ボタン）を同ファイル内サブコンポーネントとして定義
 - `ImageModal.tsx`: `EditableModalField`（モーダル内インライン編集フィールド）/ `ModalInfoPanel`（デッキ情報パネル）を同ファイル内サブコンポーネントとして定義
 
 ### Error Handling
+
 - 型付き`AppError`オブジェクト（`ErrorType` enum: NETWORK_ERROR, STORAGE_ERROR, VALIDATION_ERROR等）
 - `createAppError()`, `isQuotaExceededError()`, `isNetworkError()`ヘルパー
 - エラーメッセージは`src/constants/messages.ts`の`ERROR_MESSAGES`で一元管理
@@ -119,4 +136,4 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
 - **コンポーネント最適化** → presentationalコンポーネントは`React.memo()`、イベントハンドラーは`useCallback()`を使用
 - **useEffect内でのsetState** → ESLintルール`react-hooks/set-state-in-effect`で禁止。refベースのパターンで代替
 - **クリック可能な非ボタン要素** → `role="button"` / `tabIndex={0}` / `onKeyDown`（Enter/Space）を付与してアクセシビリティを確保
-- **render* インライン関数** → コンポーネント外の名前付きコンポーネントに分離（React reconciliationの安定性のため）
+- **render\* インライン関数** → コンポーネント外の名前付きコンポーネントに分離（React reconciliationの安定性のため）
