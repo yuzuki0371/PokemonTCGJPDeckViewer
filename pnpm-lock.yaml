@@ -25,7 +25,7 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
       '@typescript/native-preview':
-        specifier: latest
+        specifier: 7.0.0-dev.20260301.1
         version: 7.0.0-dev.20260301.1
       '@vitejs/plugin-react':
         specifier: ^5.1.4
@@ -34,19 +34,19 @@ importers:
         specifier: ^10.4.27
         version: 10.4.27(postcss@8.5.6)
       lefthook:
-        specifier: latest
+        specifier: ^2.1.1
         version: 2.1.1
       node:
         specifier: runtime:^24.14.0
         version: runtime:24.14.0
       oxfmt:
-        specifier: latest
+        specifier: ^0.35.0
         version: 0.35.0
       oxlint:
-        specifier: latest
+        specifier: ^1.50.0
         version: 1.50.0(oxlint-tsgolint@0.15.0)
       oxlint-tsgolint:
-        specifier: latest
+        specifier: ^0.15.0
         version: 0.15.0
       postcss:
         specifier: ^8.5.6
