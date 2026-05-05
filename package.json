@@ -23,7 +23,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260504.1",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.5.0",
     "lefthook": "^2.1.6",
     "oxfmt": "^0.47.0",
@@ -32,7 +32,7 @@
     "postcss": "^8.5.13",
     "tailwindcss": "^3.4.19",
     "typescript": "~6.0.3",
-    "vite": "^7.3.1"
+    "vite": "^8.0.10"
   },
   "devEngines": {
     "runtime": {
