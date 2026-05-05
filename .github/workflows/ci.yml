@@ -27,4 +27,4 @@ jobs:
         run: pnpm format:check
 
       - name: Lint & type check
-        run: pnpm check
+        run: pnpm lint
