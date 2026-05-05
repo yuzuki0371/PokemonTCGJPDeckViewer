@@ -8,5 +8,9 @@
   "rules": {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
+  },
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
   }
 }

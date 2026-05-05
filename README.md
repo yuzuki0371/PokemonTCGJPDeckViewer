@@ -5,10 +5,10 @@
 [![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fpokemontcgjpdeckviewer.pages.dev&label=Cloudflare%20Pages)](https://pokemontcgjpdeckviewer.pages.dev)
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=5%2E9&color=3178C6&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=6%2E0&color=3178C6&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![Node.js](https://img.shields.io/static/v1?label=Node%2Ejs&message=24&color=339933&logo=nodedotjs&logoColor=white)
-![pnpm](https://img.shields.io/badge/pnpm-10-FF5500?logo=pnpm&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-11-FF5500?logo=pnpm&logoColor=white)
 
 ![GitHub License](https://img.shields.io/github/license/yuzuki0371/PokemonTCGJPDeckViewer)
 ![GitHub last commit](https://img.shields.io/github/last-commit/yuzuki0371/PokemonTCGJPDeckViewer)
