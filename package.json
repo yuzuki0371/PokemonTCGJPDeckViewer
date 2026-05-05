@@ -7,10 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsgo --noEmit",
-    "lint": "oxlint --type-aware .",
-    "check": "oxlint -—type-aware -—type-check",
-    "format": "oxfmt --write .",
-    "format:check": "oxfmt --check .",
+    "lint": "oxlint",
+    "format": "oxfmt --write",
+    "format:check": "oxfmt --check",
     "preview": "vite preview",
     "prepare": "lefthook install"
   },
