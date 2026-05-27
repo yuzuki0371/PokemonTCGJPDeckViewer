@@ -1,7 +1,6 @@
 # PokemonTCGJPDeckViewer
 
 [![CI](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/ci.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/ci.yml)
-[![Deploy to GitHub Pages](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml/badge.svg)](https://github.com/yuzuki0371/PokemonTCGJPDeckViewer/actions/workflows/deploy.yml)
 [![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fpokemontcgjpdeckviewer.pages.dev&label=Cloudflare%20Pages)](https://pokemontcgjpdeckviewer.pages.dev)
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
@@ -34,26 +33,22 @@
 - React 19 + TypeScript
 - Vite (開発・ビルドツール)
 - Tailwind CSS (スタイリング)
-- ESLint + Prettier (コード品質・フォーマット)
+- oxlint + oxfmt (コード品質・フォーマット)
 - pnpm (パッケージマネージャー)
-- mise (Node.jsバージョン管理)
-- GitHub Pages (デプロイ)
+- Cloudflare Pages (デプロイ)
 
 ## セットアップ
 
 ### 前提条件
 
-- [mise](https://mise.jdx.dev/) （Node.jsバージョン管理）
+- Node.js 24（`.node-version` で指定。[fnm](https://github.com/Schniz/fnm) や [nvm](https://github.com/nvm-sh/nvm) などのバージョンマネージャーを推奨）
 - [pnpm](https://pnpm.io/) （パッケージマネージャー）
-
-Node.jsのバージョンは`mise.toml`で管理しています。miseをインストール済みであれば、プロジェクトディレクトリに入ると自動的に適切なバージョンが使用されます。
 
 ### インストール
 
 ```bash
 git clone https://github.com/yuzuki0371/PokemonTCGJPDeckViewer.git
 cd PokemonTCGJPDeckViewer
-mise install   # Node.jsの指定バージョンをインストール
 pnpm install
 ```
 
@@ -70,8 +65,8 @@ pnpm dev
 ### その他のコマンド
 
 - `pnpm build` - 本番用ビルド
-- `pnpm lint` - ESLintによるコード検査
-- `pnpm format` - Prettierによるコードフォーマット
+- `pnpm lint` - oxlintによるコード検査（型チェック含む）
+- `pnpm format` - oxfmtによるコードフォーマット
 - `pnpm format:check` - フォーマットのチェック
 - `pnpm preview` - ビルド後のプレビュー
 - `pnpm typecheck` - TypeScriptの型チェック
@@ -110,32 +105,22 @@ pnpm dev
 
 ## CI / デプロイ
 
-このプロジェクトはGitHub Actionsを使用してCI（コード品質チェック）と自動デプロイを行います。
-
 ### CI（プルリクエスト時）
 
-`main`ブランチへのプルリクエスト時に以下のチェックが自動実行されます：
+`main`ブランチへのプルリクエスト時にGitHub Actionsで以下のチェックが自動実行されます：
 
-1. ESLintによるコード検査（`pnpm lint`）
-2. Prettierによるフォーマットチェック（`pnpm format:check`）
-3. TypeScriptの型チェック（`pnpm typecheck`）
+1. oxfmtによるフォーマットチェック（`pnpm format:check`）
+2. oxlintによるコード検査・型チェック（`pnpm lint`）
 
 ### 自動デプロイ
 
-- `main`ブランチにプッシュすると自動的にビルドとデプロイが実行されます
-- GitHub Actionsワークフローが以下の処理を行います：
-  1. 依存関係のインストール
-  2. TypeScriptコンパイルとViteビルド
-  3. GitHub Pagesへのデプロイ
+Cloudflare PagesのGitHub直接連携により、`main`ブランチへのプッシュ時にCloudflareが自動でビルド・デプロイします。
 
-### 手動デプロイ
-
-GitHub Actionsのワークフロー画面から手動でデプロイを実行することも可能です。
-
-### 初回セットアップ
-
-1. GitHubリポジトリの設定で「Pages」を選択
-2. Source を「GitHub Actions」に設定
+| 設定項目          | 値           |
+| ----------------- | ------------ |
+| ビルドコマンド    | `pnpm build` |
+| 出力ディレクトリ  | `dist`       |
+| Node.jsバージョン | `24`         |
 
 ## ライセンス
 
