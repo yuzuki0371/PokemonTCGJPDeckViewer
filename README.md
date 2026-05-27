@@ -33,9 +33,8 @@
 - React 19 + TypeScript
 - Vite (開発・ビルドツール)
 - Tailwind CSS (スタイリング)
-- ESLint + Prettier (コード品質・フォーマット)
+- oxlint + oxfmt (コード品質・フォーマット)
 - pnpm (パッケージマネージャー)
-- .node-version (Node.jsバージョン管理)
 - Cloudflare Pages (デプロイ)
 
 ## セットアップ
@@ -66,8 +65,8 @@ pnpm dev
 ### その他のコマンド
 
 - `pnpm build` - 本番用ビルド
-- `pnpm lint` - ESLintによるコード検査
-- `pnpm format` - Prettierによるコードフォーマット
+- `pnpm lint` - oxlintによるコード検査（型チェック含む）
+- `pnpm format` - oxfmtによるコードフォーマット
 - `pnpm format:check` - フォーマットのチェック
 - `pnpm preview` - ビルド後のプレビュー
 - `pnpm typecheck` - TypeScriptの型チェック
@@ -110,9 +109,8 @@ pnpm dev
 
 `main`ブランチへのプルリクエスト時にGitHub Actionsで以下のチェックが自動実行されます：
 
-1. ESLintによるコード検査（`pnpm lint`）
-2. Prettierによるフォーマットチェック（`pnpm format:check`）
-3. TypeScriptの型チェック（`pnpm typecheck`）
+1. oxfmtによるフォーマットチェック（`pnpm format:check`）
+2. oxlintによるコード検査・型チェック（`pnpm lint`）
 
 ### 自動デプロイ
 
