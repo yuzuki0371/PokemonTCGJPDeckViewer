@@ -14,12 +14,12 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
-    "react": "^19.2.5",
-    "react-dom": "19.2.5"
+    "react": "^19.2.6",
+    "react-dom": "19.2.6"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260504.1",
     "@vitejs/plugin-react": "^6.0.1",
