@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm preview` - ビルド後のプレビュー
 - `pnpm typecheck` - 型チェック（`tsc --noEmit`）
 
-Node.jsバージョンは`.mise.toml`で管理（mise使用）。
+Node.jsバージョンは`.node-version`で管理。
 
 ### GitHub Actions
 
