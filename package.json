@@ -36,12 +36,12 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "^24.14.0",
+      "version": "^24.0.0",
       "onFail": "download"
     }
   },
   "engines": {
-    "node": "^24.14.0"
+    "node": "^24.0.0"
   },
   "packageManager": "pnpm@11.0.5"
 }
