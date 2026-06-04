@@ -13,6 +13,7 @@ import { DeckList } from "./components/DeckList";
 import { DeckNameSummary } from "./components/DeckNameSummary";
 import { EmptyState } from "./components/EmptyState";
 import { Footer } from "./components/Footer";
+import { ScrollToTopButton } from "./components/ScrollToTopButton";
 import type { TabMode } from "./types";
 
 function App() {
@@ -131,6 +132,7 @@ function App() {
       </div>
 
       <Footer />
+      <ScrollToTopButton />
     </div>
   );
 }
