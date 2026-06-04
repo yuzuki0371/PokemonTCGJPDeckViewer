@@ -87,6 +87,7 @@ function App() {
               ].map(({ key, label }) => (
                 <button
                   key={key}
+                  type="button"
                   onClick={() => viewSettingsActions.setActiveTab(key)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                     viewSettings.activeTab === key

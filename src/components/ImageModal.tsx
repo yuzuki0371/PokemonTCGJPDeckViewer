@@ -412,8 +412,10 @@ export const ImageModal = ({
       <div className="relative flex flex-col max-w-4xl max-h-full">
         {/* 閉じるボタン */}
         <button
+          type="button"
           onClick={modalActions.closeModal}
           className="absolute top-2 right-2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
+          aria-label="閉じる"
           title="閉じる (ESC)"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -424,8 +426,10 @@ export const ImageModal = ({
         {/* 前の画像ボタン */}
         {hasMultipleDecks && (
           <button
+            type="button"
             onClick={handlePrevClick}
             className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
+            aria-label="前の画像"
             title="前の画像 (↑ / ←)"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -437,8 +441,10 @@ export const ImageModal = ({
         {/* 次の画像ボタン */}
         {hasMultipleDecks && (
           <button
+            type="button"
             onClick={handleNextClick}
             className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
+            aria-label="次の画像"
             title="次の画像 (↓ / →)"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

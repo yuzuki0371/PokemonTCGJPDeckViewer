@@ -18,10 +18,12 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
       {/* グリッド/リスト切り替えボタン */}
       <div className="flex rounded-lg border border-gray-300 overflow-hidden">
         <button
+          type="button"
           onClick={() => actions.setViewMode("grid")}
           className={`p-2 transition-colors ${
             settings.viewMode === "grid" ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
           }`}
+          aria-label="グリッド表示"
           title="グリッド表示"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,10 +36,12 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => actions.setViewMode("list")}
           className={`p-2 transition-colors ${
             settings.viewMode === "list" ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
           }`}
+          aria-label="リスト表示"
           title="リスト表示"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,6 +56,7 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
           {(["small", "medium", "large"] as const).map(size => (
             <button
               key={size}
+              type="button"
               onClick={() => actions.setCardSize(size)}
               className={`px-3 py-1.5 text-sm transition-colors ${
                 settings.cardSize === size ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
