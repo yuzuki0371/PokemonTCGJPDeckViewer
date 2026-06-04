@@ -173,7 +173,7 @@ const ModalInfoPanel = ({
   onKeyDown,
   onSuggestionSelect,
 }: ModalInfoPanelProps) => (
-  <div className="bg-gray-900 text-white p-4 rounded-b-lg flex-shrink-0">
+  <div className="bg-gray-900 text-white p-4 rounded-b-lg shrink-0">
     <div className="text-center">
       {hasMultipleDecks && (
         <div className="text-xs text-gray-300 mb-2">
@@ -405,7 +405,7 @@ export const ImageModal = ({
       role="dialog"
       aria-modal="true"
       aria-label="デッキ詳細"
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
       onKeyDown={handleBackdropKeyDown}
     >
@@ -452,7 +452,7 @@ export const ImageModal = ({
           <img
             src={modalState.enlargedImage.url}
             alt={`デッキコード: ${modalState.enlargedImage.deckCode}`}
-            className="max-w-full object-contain rounded-t-lg shadow-2xl min-h-0 flex-shrink"
+            className="max-w-full object-contain rounded-t-lg shadow-2xl min-h-0 shrink"
             onError={handleImageError}
           />
         ) : (

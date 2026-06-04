@@ -232,7 +232,7 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
     return (
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-row overflow-hidden">
         {/* 左: サムネイル画像 */}
-        <div className="relative w-48 flex-shrink-0">
+        <div className="relative w-48 shrink-0">
           <DeckImage
             imageUrl={deck.imageUrl}
             deckCode={deck.code}
