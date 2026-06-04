@@ -31,6 +31,7 @@ jobs:
 
   react-doctor:
     runs-on: ubuntu-latest
+    needs: check
     permissions:
       contents: read
       pull-requests: write
@@ -43,5 +44,5 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           diff: ${{ github.base_ref }}
-          fail-on: error
+          fail-on: warning
           annotations: true
