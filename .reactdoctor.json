@@ -1,8 +1,0 @@
-{
-  "rules": {
-    "exhaustive-deps": "off",
-    "async-await-in-loop": "off",
-    "prefer-html-dialog": "off",
-    "no-multi-comp": "off"
-  }
-}
