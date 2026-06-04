@@ -81,6 +81,7 @@ export const DeckList = ({
       <div className="relative mb-4">
         <input
           type="text"
+          aria-label="デッキをフィルター"
           value={filterState.filterText}
           onChange={e => filterActions.setFilterText(e.target.value)}
           placeholder={UI_MESSAGES.FILTER_PLACEHOLDER}

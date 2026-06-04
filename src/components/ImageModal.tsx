@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
 import { generateDeckUrls } from "../constants";
 import type { ModalState, ModalActions, AppActions, DeckData, DeckNameSummaryItem } from "../types";
 import { aggregateDeckNames } from "../utils/deckUtils";
@@ -58,19 +58,13 @@ const EditableModalField = ({
   onKeyDown,
   onSuggestionSelect,
 }: EditableModalFieldProps) => {
-  const handleKeyActivate = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onStartEditing();
-    }
-  };
-
   if (isEditing) {
     return (
       <div className={`${containerClass} relative`}>
         <input
           ref={inputRef}
           type="text"
+          aria-label={placeholder}
           value={editValue}
           onChange={e => onChange(e.target.value)}
           onBlur={onBlur}
@@ -84,18 +78,20 @@ const EditableModalField = ({
             className="absolute left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded shadow-lg z-20 max-h-40 overflow-y-auto"
           >
             {suggestions.map((item, i) => (
-              <li
-                key={item.deckName}
-                className={`px-3 py-1.5 text-sm cursor-pointer flex justify-between items-center ${
-                  i === selectedSuggestionIndex ? "bg-blue-600 text-white" : "text-gray-200 hover:bg-gray-700"
-                }`}
-                onMouseDown={e => {
-                  e.preventDefault();
-                  onSuggestionSelect(item.deckName);
-                }}
-              >
-                <span>{item.deckName}</span>
-                <span className="text-xs text-gray-400 ml-2">{item.count}件</span>
+              <li key={item.deckName}>
+                <button
+                  type="button"
+                  className={`w-full text-left px-3 py-1.5 text-sm cursor-pointer flex justify-between items-center ${
+                    i === selectedSuggestionIndex ? "bg-blue-600 text-white" : "text-gray-200 hover:bg-gray-700"
+                  }`}
+                  onMouseDown={e => {
+                    e.preventDefault();
+                    onSuggestionSelect(item.deckName);
+                  }}
+                >
+                  <span>{item.deckName}</span>
+                  <span className="text-xs text-gray-400 ml-2">{item.count}件</span>
+                </button>
               </li>
             ))}
           </ul>
@@ -106,29 +102,25 @@ const EditableModalField = ({
 
   if (value) {
     return (
-      <div
-        role="button"
-        tabIndex={0}
-        className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
+      <button
+        type="button"
+        className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors text-left`}
         onClick={onStartEditing}
-        onKeyDown={handleKeyActivate}
         title="クリックして編集"
       >
         <span className={textClass}>{value}</span>
-      </div>
+      </button>
     );
   }
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors`}
+    <button
+      type="button"
+      className={`${containerClass} cursor-pointer hover:bg-white/10 rounded px-2 py-0.5 transition-colors text-left`}
       onClick={onStartEditing}
-      onKeyDown={handleKeyActivate}
     >
       <span className={`${textClass} text-gray-400 italic`}>{placeholder}</span>
-    </div>
+    </button>
   );
 };
 
@@ -250,6 +242,7 @@ export const ImageModal = ({
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionListRef = useRef<HTMLUListElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const prevDeckIdRef = useRef<string | undefined>(undefined);
   const currentDeckId = modalState.enlargedImage?.deckId;
@@ -274,24 +267,16 @@ export const ImageModal = ({
     }
   }, [selectedSuggestionIndex]);
 
-  // バックドロップクリックハンドラー
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) {
-        modalActions.closeModal();
-      }
-    },
-    [modalActions]
-  );
-
-  const handleBackdropKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Escape") {
-        modalActions.closeModal();
-      }
-    },
-    [modalActions]
-  );
+  // dialog の showModal / close 制御
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (modalState.enlargedImage) {
+      if (!dialog.open) dialog.showModal();
+    } else {
+      if (dialog.open) dialog.close();
+    }
+  }, [modalState.enlargedImage]);
 
   const handleImageError = useCallback(() => {
     setImageError(true);
@@ -396,115 +381,122 @@ export const ImageModal = ({
     setSelectedSuggestionIndex(-1);
   }, []);
 
-  if (!modalState.enlargedImage) {
-    return null;
-  }
-
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      ref={dialogRef}
       aria-label="デッキ詳細"
-      className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
-      onClick={handleBackdropClick}
-      onKeyDown={handleBackdropKeyDown}
+      className="fixed inset-0 m-0 max-w-none max-h-none w-full h-full bg-black/75 z-50 overflow-auto"
+      onClose={modalActions.closeModal}
     >
-      <div className="relative flex flex-col max-w-4xl max-h-full">
-        {/* 閉じるボタン */}
-        <button
-          type="button"
-          onClick={modalActions.closeModal}
-          className="absolute top-2 right-2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
-          aria-label="閉じる"
-          title="閉じる (ESC)"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        {/* 前の画像ボタン */}
-        {hasMultipleDecks && (
+      {modalState.enlargedImage && (
+        <>
           <button
             type="button"
-            onClick={handlePrevClick}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
-            aria-label="前の画像"
-            title="前の画像 (↑ / ←)"
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-        )}
-
-        {/* 次の画像ボタン */}
-        {hasMultipleDecks && (
-          <button
-            type="button"
-            onClick={handleNextClick}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
-            aria-label="次の画像"
-            title="次の画像 (↓ / →)"
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        )}
-
-        {/* 画像表示 */}
-        {!imageError ? (
-          <img
-            src={modalState.enlargedImage.url}
-            alt={`デッキコード: ${modalState.enlargedImage.deckCode}`}
-            className="max-w-full object-contain rounded-t-lg shadow-2xl min-h-0 shrink"
-            onError={handleImageError}
+            className="fixed inset-0 w-full h-full cursor-default"
+            onClick={modalActions.closeModal}
+            aria-label="モーダルを閉じる"
+            tabIndex={-1}
           />
-        ) : (
-          <div className="p-8 bg-gray-200 text-center text-gray-600 rounded-t-lg" style={{ minHeight: "300px" }}>
-            <div className="flex items-center justify-center h-full">
-              <div>
-                <svg
-                  className="mx-auto h-16 w-16 text-gray-400 mb-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
+          <div className="flex items-center justify-center min-h-full p-4">
+            <div className="relative flex flex-col max-w-4xl max-h-full z-10">
+              {/* 閉じるボタン */}
+              <button
+                type="button"
+                onClick={modalActions.closeModal}
+                className="absolute top-2 right-2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
+                aria-label="閉じる"
+                title="閉じる (ESC)"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <p className="text-lg">画像を読み込めませんでした</p>
-              </div>
+              </button>
+
+              {/* 前の画像ボタン */}
+              {hasMultipleDecks && (
+                <button
+                  type="button"
+                  onClick={handlePrevClick}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
+                  aria-label="前の画像"
+                  title="前の画像 (↑ / ←)"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+
+              {/* 次の画像ボタン */}
+              {hasMultipleDecks && (
+                <button
+                  type="button"
+                  onClick={handleNextClick}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full p-2 shadow-lg transition-colors z-10"
+                  aria-label="次の画像"
+                  title="次の画像 (↓ / →)"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+
+              {/* 画像表示 */}
+              {!imageError ? (
+                <img
+                  src={modalState.enlargedImage.url}
+                  alt={`デッキコード: ${modalState.enlargedImage.deckCode}`}
+                  className="max-w-full object-contain rounded-t-lg shadow-2xl min-h-0 shrink"
+                  onError={handleImageError}
+                />
+              ) : (
+                <div className="p-8 bg-gray-200 text-center text-gray-600 rounded-t-lg" style={{ minHeight: "300px" }}>
+                  <div className="flex items-center justify-center h-full">
+                    <div>
+                      <svg
+                        className="mx-auto h-16 w-16 text-gray-400 mb-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <p className="text-lg">画像を読み込めませんでした</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 情報表示エリア */}
+              <ModalInfoPanel
+                deckCode={modalState.enlargedImage.deckCode}
+                playerName={modalState.enlargedImage.playerName}
+                deckName={modalState.enlargedImage.deckName}
+                index={modalState.enlargedImage.index}
+                hasMultipleDecks={hasMultipleDecks}
+                totalDecks={totalDecks}
+                editingField={editingField}
+                editValue={editValue}
+                inputRef={inputRef}
+                suggestions={suggestions}
+                selectedSuggestionIndex={selectedSuggestionIndex}
+                suggestionListRef={suggestionListRef}
+                onStartEditing={startEditing}
+                onChange={handleEditValueChange}
+                onBlur={saveEdit}
+                onKeyDown={handleKeyDown}
+                onSuggestionSelect={handleSuggestionSelect}
+              />
             </div>
           </div>
-        )}
-
-        {/* 情報表示エリア */}
-        <ModalInfoPanel
-          deckCode={modalState.enlargedImage.deckCode}
-          playerName={modalState.enlargedImage.playerName}
-          deckName={modalState.enlargedImage.deckName}
-          index={modalState.enlargedImage.index}
-          hasMultipleDecks={hasMultipleDecks}
-          totalDecks={totalDecks}
-          editingField={editingField}
-          editValue={editValue}
-          inputRef={inputRef}
-          suggestions={suggestions}
-          selectedSuggestionIndex={selectedSuggestionIndex}
-          suggestionListRef={suggestionListRef}
-          onStartEditing={startEditing}
-          onChange={handleEditValueChange}
-          onBlur={saveEdit}
-          onKeyDown={handleKeyDown}
-          onSuggestionSelect={handleSuggestionSelect}
-        />
-      </div>
-    </div>
+        </>
+      )}
+    </dialog>
   );
 };

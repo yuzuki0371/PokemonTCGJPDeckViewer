@@ -5,9 +5,7 @@ const POKEMON_CARD_URLS = {
 } as const;
 
 // localStorage のキー定数
-export const STORAGE_KEYS = {
-  DECK_LIST: "pokemonTcgDeckList",
-} as const;
+export { STORAGE_KEYS } from "./storage";
 
 // URL生成ヘルパー関数
 export const generateDeckUrls = (deckCode: string) => ({

@@ -49,14 +49,14 @@ function App() {
   );
 
   // 初期化時にlocalStorageからデータを読み込む
+  const { setDeckList, setError } = appActions;
   useEffect(() => {
     const { data, error } = loadDeckList();
-    appActions.setDeckList(data);
+    setDeckList(data);
     if (error) {
-      appActions.setError(error.message);
+      setError(error.message);
     }
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadDeckList, setDeckList, setError]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
