@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { DeckData, ModalState, ModalActions, ModalImage } from "../types";
 
 export const useModalState = (deckList: DeckData[]): [ModalState, ModalActions] => {
@@ -86,10 +86,16 @@ export const useModalState = (deckList: DeckData[]): [ModalState, ModalActions] 
     [modalState.enlargedImage, navigateModal]
   );
 
+  const handleKeyDownRef = useRef(handleKeyDown);
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
+    handleKeyDownRef.current = handleKeyDown;
+  });
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => handleKeyDownRef.current(e);
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
 
   const updateModalImage = useCallback((updates: Partial<Pick<ModalImage, "playerName" | "deckName">>) => {
     setModalState(prev => {

@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect, memo, useCallback } from "react";
 import type { DeckData, ModalActions, ViewMode, CardSize, AppActions } from "../types";
 import { generateDeckUrls } from "../constants";
+import { EditableField } from "./EditableField";
+import { DeckImage } from "./DeckImage";
+import { DeleteButton } from "./DeleteButton";
 
 interface DeckCardProps {
   deck: DeckData;
@@ -13,164 +16,6 @@ interface DeckCardProps {
 }
 
 type EditableFieldName = "playerName" | "deckName";
-
-// --- Sub-components ---
-
-interface EditableFieldProps {
-  value: string | undefined;
-  placeholder: string;
-  textClass: string;
-  containerClass: string;
-  isEditing: boolean;
-  editValue: string;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-  onStartEditing: () => void;
-  onChange: (v: string) => void;
-  onBlur: () => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-}
-
-const EditableField = ({
-  value,
-  placeholder,
-  textClass,
-  containerClass,
-  isEditing,
-  editValue,
-  inputRef,
-  onStartEditing,
-  onChange,
-  onBlur,
-  onKeyDown,
-}: EditableFieldProps) => {
-  const handleKeyActivate = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onStartEditing();
-    }
-  };
-
-  if (isEditing) {
-    return (
-      <div className={containerClass}>
-        <input
-          ref={inputRef}
-          type="text"
-          value={editValue}
-          onChange={e => onChange(e.target.value)}
-          onBlur={onBlur}
-          onKeyDown={onKeyDown}
-          placeholder={placeholder}
-          className={`${textClass} w-full bg-blue-50 border border-blue-300 rounded px-1 py-0.5 outline-none focus:ring-1 focus:ring-blue-500`}
-        />
-      </div>
-    );
-  }
-
-  if (value) {
-    return (
-      <div
-        role="button"
-        tabIndex={0}
-        className={`${containerClass} cursor-pointer hover:bg-gray-50 rounded px-1 -mx-1 transition-colors`}
-        onClick={onStartEditing}
-        onKeyDown={handleKeyActivate}
-        title="クリックして編集"
-      >
-        <div className={`${textClass} truncate`} title={value}>
-          {value}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      className={`${containerClass} cursor-pointer hover:bg-gray-50 rounded px-1 -mx-1 transition-colors`}
-      onClick={onStartEditing}
-      onKeyDown={handleKeyActivate}
-    >
-      <div className={`${textClass} text-gray-300 italic`}>{placeholder}</div>
-    </div>
-  );
-};
-
-interface DeckImageProps {
-  imageUrl: string;
-  deckCode: string;
-  className: string;
-  viewMode: ViewMode;
-  imageError: boolean;
-  onError: () => void;
-  onClick: () => void;
-}
-
-const DeckImage = ({ imageUrl, deckCode, className, viewMode, imageError, onError, onClick }: DeckImageProps) => {
-  const handleKeyActivate = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onClick();
-    }
-  };
-
-  if (!imageError) {
-    return (
-      <img
-        src={imageUrl}
-        alt={`デッキコード: ${deckCode}`}
-        className={`${className} cursor-pointer hover:opacity-90 transition-opacity`}
-        onClick={onClick}
-        onKeyDown={handleKeyActivate}
-        onError={onError}
-        tabIndex={0}
-      />
-    );
-  }
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      className={`${className} bg-gray-100 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity`}
-      style={{ minHeight: viewMode === "list" ? "100%" : "150px" }}
-      onClick={onClick}
-      onKeyDown={handleKeyActivate}
-    >
-      <div className="text-center text-gray-500">
-        <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
-        <p className="text-xs">読み込み失敗</p>
-      </div>
-    </div>
-  );
-};
-
-interface DeleteButtonProps {
-  positionClass: string;
-  onClick: () => void;
-}
-
-const DeleteButton = ({ positionClass, onClick }: DeleteButtonProps) => (
-  <button
-    onClick={onClick}
-    className={`${positionClass} bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors shadow-md`}
-    title="削除"
-  >
-    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  </button>
-);
-
-// --- Main component ---
 
 const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemove, viewMode }: DeckCardProps) => {
   const [imageError, setImageError] = useState(false);
@@ -232,7 +77,7 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
     return (
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-row overflow-hidden">
         {/* 左: サムネイル画像 */}
-        <div className="relative w-48 flex-shrink-0">
+        <div className="relative w-48 shrink-0">
           <DeckImage
             imageUrl={deck.imageUrl}
             deckCode={deck.code}
@@ -362,7 +207,6 @@ const DeckCardComponent = ({ deck, deckList, modalActions, onUpdateDeck, onRemov
 
 // React.memo で最適化し、propsの変更時のみ再レンダリング
 export const DeckCard = memo(DeckCardComponent, (prevProps, nextProps) => {
-  // deck の内容が同じ場合は再レンダリングを防ぐ
   return (
     prevProps.deck.id === nextProps.deck.id &&
     prevProps.deck.code === nextProps.deck.code &&

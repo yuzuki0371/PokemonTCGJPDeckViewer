@@ -46,7 +46,7 @@ export const FormInput = ({
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-x-4">
           <button
             type="button"
             onClick={handleSingleModeSwitch}

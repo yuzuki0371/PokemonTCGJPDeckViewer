@@ -63,6 +63,7 @@ export const DeckList = ({
         <h2 className="text-2xl font-semibold text-gray-800">デッキレシピ一覧 {countLabel}</h2>
         <div className="flex items-center justify-between gap-2">
           <button
+            type="button"
             onClick={handleCopy}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
               copied
@@ -80,6 +81,7 @@ export const DeckList = ({
       <div className="relative mb-4">
         <input
           type="text"
+          aria-label="デッキをフィルター"
           value={filterState.filterText}
           onChange={e => filterActions.setFilterText(e.target.value)}
           placeholder={UI_MESSAGES.FILTER_PLACEHOLDER}
@@ -87,11 +89,13 @@ export const DeckList = ({
         />
         {isFiltering && (
           <button
+            type="button"
             onClick={filterActions.clearFilter}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+            aria-label="フィルターをクリア"
             title="フィルターをクリア"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>

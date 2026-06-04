@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { DeckData, AppState, AppActions } from "../types";
 
 const initialAppState: AppState = {
@@ -13,12 +13,12 @@ const initialAppState: AppState = {
 export const useAppState = (): [AppState, AppActions] => {
   const [appState, setAppState] = useState<AppState>(initialAppState);
 
-  const setDeckList = (decks: DeckData[]) => {
+  const setDeckList = useCallback((decks: DeckData[]) => {
     setAppState(prev => ({
       ...prev,
       deckList: decks,
     }));
-  };
+  }, []);
 
   const addDecks = (decks: DeckData[]) => {
     setAppState(prev => ({
@@ -58,7 +58,7 @@ export const useAppState = (): [AppState, AppActions] => {
     }));
   };
 
-  const setError = (error: string | null) => {
+  const setError = useCallback((error: string | null) => {
     setAppState(prev => ({
       ...prev,
       ui: {
@@ -66,7 +66,7 @@ export const useAppState = (): [AppState, AppActions] => {
         error,
       },
     }));
-  };
+  }, []);
 
   const setProgress = (progress: { current: number; total: number } | null) => {
     setAppState(prev => ({

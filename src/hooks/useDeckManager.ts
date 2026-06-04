@@ -1,7 +1,9 @@
-import { useCallback } from "react";
-import type { DeckData, AppState, AppActions, FormState, FormActions, BulkProcessResult, AppError } from "../types";
-import { ErrorType, createAppError, isNetworkError } from "../types";
-import { ERROR_MESSAGES, UI_CONFIG } from "../constants";
+import type { DeckData, BulkProcessResult } from "../types/deck";
+import type { AppState, AppActions } from "../types/ui";
+import type { FormState, FormActions } from "../types/form";
+import type { AppError } from "../types/error";
+import { ErrorType, createAppError, isNetworkError } from "../types/error";
+import { ERROR_MESSAGES } from "../constants/messages";
 import { parseBulkInputLine, createDeckData, generateResultMessage } from "../utils/deckUtils";
 
 export const useDeckManager = (
@@ -11,12 +13,6 @@ export const useDeckManager = (
   formActions: FormActions,
   saveDeckList: (decks: DeckData[]) => AppError | null
 ) => {
-  // 一括処理の遅延関数
-  const delayBulkProcess = useCallback(
-    () => new Promise<void>(resolve => setTimeout(resolve, UI_CONFIG.BULK_PROCESS_DELAY)),
-    []
-  );
-
   // フォーム送信のメインハンドラー
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,11 +97,6 @@ export const useDeckManager = (
         const newDeck = createDeckData(parsed.code, parsed.playerName, parsed.deckName);
         if (newDeck) {
           result.newDecks.push(newDeck);
-        }
-
-        // 処理間隔を設ける（UI更新のため）
-        if (i < lines.length - 1) {
-          await delayBulkProcess();
         }
       }
 

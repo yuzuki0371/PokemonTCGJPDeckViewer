@@ -16,8 +16,7 @@ updates:
       - dependency-name: "vite"
       - dependency-name: "@vitejs/*"
       - dependency-name: "tailwindcss"
-      - dependency-name: "autoprefixer"
-      - dependency-name: "postcss"
+      - dependency-name: "@tailwindcss/*"
     assignees:
       - yuzuki0371
     labels:
@@ -42,5 +41,18 @@ updates:
       tailwind:
         patterns:
           - "tailwindcss"
-          - "autoprefixer"
-          - "postcss"
+          - "@tailwindcss/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Tokyo
+    assignees:
+      - yuzuki0371
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore

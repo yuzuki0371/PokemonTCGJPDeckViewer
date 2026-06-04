@@ -13,6 +13,7 @@ import { DeckList } from "./components/DeckList";
 import { DeckNameSummary } from "./components/DeckNameSummary";
 import { EmptyState } from "./components/EmptyState";
 import { Footer } from "./components/Footer";
+import { ScrollToTopButton } from "./components/ScrollToTopButton";
 import type { TabMode } from "./types";
 
 function App() {
@@ -48,18 +49,18 @@ function App() {
   );
 
   // 初期化時にlocalStorageからデータを読み込む
+  const { setDeckList, setError } = appActions;
   useEffect(() => {
     const { data, error } = loadDeckList();
-    appActions.setDeckList(data);
+    setDeckList(data);
     if (error) {
-      appActions.setError(error.message);
+      setError(error.message);
     }
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadDeckList, setDeckList, setError]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
-      <div className="container mx-auto px-4 max-w-7xl py-8 flex-grow">
+      <div className="container mx-auto px-4 max-w-7xl py-8 grow">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">ポケモンカード デッキビューアー</h1>
           <p className="text-gray-600">デッキコードを入力してデッキレシピの画像を表示します</p>
@@ -86,6 +87,7 @@ function App() {
               ].map(({ key, label }) => (
                 <button
                   key={key}
+                  type="button"
                   onClick={() => viewSettingsActions.setActiveTab(key)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                     viewSettings.activeTab === key
@@ -131,6 +133,7 @@ function App() {
       </div>
 
       <Footer />
+      <ScrollToTopButton />
     </div>
   );
 }

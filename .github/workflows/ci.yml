@@ -28,3 +28,27 @@ jobs:
 
       - name: Lint & type check
         run: pnpm lint
+
+  react-doctor:
+    runs-on: ubuntu-latest
+    needs: check
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read Node.js version
+        id: node-version
+        run: echo "version=$(cat .node-version)" >> $GITHUB_OUTPUT
+
+      - uses: millionco/react-doctor@b612664043a9be414166e3c6a69b355e39a8dcf4 # v1.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          fail-on: warning
+          comment: true
+          annotations: true
+          node-version: ${{ steps.node-version.outputs.version }}
