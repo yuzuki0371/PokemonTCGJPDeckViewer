@@ -1,25 +1,25 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect } from "react";
+import { UI_CONFIG } from "../constants";
 
-const ScrollToTopButtonComponent = () => {
+export const ScrollToTopButton = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > 300);
+      setVisible(prev => {
+        const next = window.scrollY > UI_CONFIG.SCROLL_TO_TOP_THRESHOLD;
+        return prev === next ? prev : next;
+      });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   if (!visible) return null;
 
   return (
     <button
-      onClick={scrollToTop}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className="fixed bottom-6 right-6 z-50 rounded-full bg-blue-500 p-3 text-white shadow-lg transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
       aria-label="ページトップへ戻る"
     >
@@ -32,5 +32,3 @@ const ScrollToTopButtonComponent = () => {
     </button>
   );
 };
-
-export const ScrollToTopButton = memo(ScrollToTopButtonComponent);

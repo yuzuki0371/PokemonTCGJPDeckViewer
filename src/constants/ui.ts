@@ -4,6 +4,9 @@ export const UI_CONFIG = {
   // 一括処理の進捗更新間隔（ミリ秒）
   BULK_PROCESS_DELAY: 100,
 
+  // ページトップへ戻るボタンを表示するスクロール閾値（px）
+  SCROLL_TO_TOP_THRESHOLD: 300,
+
   // レスポンシブグリッドの設定
   GRID_BREAKPOINTS: {
     MOBILE: "grid-cols-1",
