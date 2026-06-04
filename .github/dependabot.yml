@@ -16,8 +16,7 @@ updates:
       - dependency-name: "vite"
       - dependency-name: "@vitejs/*"
       - dependency-name: "tailwindcss"
-      - dependency-name: "autoprefixer"
-      - dependency-name: "postcss"
+      - dependency-name: "@tailwindcss/*"
     assignees:
       - yuzuki0371
     labels:
@@ -42,5 +41,4 @@ updates:
       tailwind:
         patterns:
           - "tailwindcss"
-          - "autoprefixer"
-          - "postcss"
+          - "@tailwindcss/*"
