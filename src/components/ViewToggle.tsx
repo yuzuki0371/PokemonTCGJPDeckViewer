@@ -26,7 +26,7 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
           aria-label="グリッド表示"
           title="グリッド表示"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -44,7 +44,7 @@ const ViewToggleComponent = ({ settings, actions }: ViewToggleProps) => {
           aria-label="リスト表示"
           title="リスト表示"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>

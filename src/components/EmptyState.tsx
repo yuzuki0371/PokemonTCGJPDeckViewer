@@ -10,7 +10,7 @@ const EmptyStateComponent = ({
   icon,
 }: EmptyStateProps) => {
   const defaultIcon = (
-    <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+    <svg className="mx-auto size-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -46,7 +46,7 @@ export const DeckImage = ({
       aria-label="デッキ画像を拡大表示（読み込み失敗）"
     >
       <div className="text-center text-gray-500">
-        <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="mx-auto size-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

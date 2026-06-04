@@ -407,7 +407,7 @@ export const ImageModal = ({
                 aria-label="閉じる"
                 title="閉じる (ESC)"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -421,7 +421,7 @@ export const ImageModal = ({
                   aria-label="前の画像"
                   title="前の画像 (↑ / ←)"
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
@@ -436,7 +436,7 @@ export const ImageModal = ({
                   aria-label="次の画像"
                   title="次の画像 (↓ / →)"
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
@@ -455,7 +455,7 @@ export const ImageModal = ({
                   <div className="flex items-center justify-center h-full">
                     <div>
                       <svg
-                        className="mx-auto h-16 w-16 text-gray-400 mb-4"
+                        className="mx-auto size-16 text-gray-400 mb-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
