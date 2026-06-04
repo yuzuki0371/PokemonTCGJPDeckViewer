@@ -42,3 +42,17 @@ updates:
         patterns:
           - "tailwindcss"
           - "@tailwindcss/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Tokyo
+    assignees:
+      - yuzuki0371
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore

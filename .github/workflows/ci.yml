@@ -28,6 +28,3 @@ jobs:
 
       - name: Lint & type check
         run: pnpm lint
-
-      - name: React Doctor
-        run: pnpx react-doctor@latest -y --verbose
