@@ -46,3 +46,4 @@ jobs:
           diff: ${{ github.base_ref }}
           fail-on: warning
           annotations: true
+          node-version: 24
