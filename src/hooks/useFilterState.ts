@@ -3,6 +3,7 @@ import type { FilterState, FilterActions } from "../types";
 
 export const useFilterState = (): [FilterState, FilterActions] => {
   const [filterText, setFilterTextState] = useState("");
+  const [exactMatch, setExactMatch] = useState(false);
 
   const setFilterText = useCallback((text: string) => {
     setFilterTextState(text);
@@ -10,10 +11,15 @@ export const useFilterState = (): [FilterState, FilterActions] => {
 
   const clearFilter = useCallback(() => {
     setFilterTextState("");
+    setExactMatch(false);
   }, []);
 
-  const state: FilterState = { filterText };
-  const actions: FilterActions = { setFilterText, clearFilter };
+  const toggleExactMatch = useCallback(() => {
+    setExactMatch(prev => !prev);
+  }, []);
+
+  const state: FilterState = { filterText, exactMatch };
+  const actions: FilterActions = { setFilterText, setExactMatch, clearFilter, toggleExactMatch };
 
   return [state, actions];
 };
