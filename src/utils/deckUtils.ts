@@ -65,13 +65,14 @@ export const generateDeckListTsv = (deckList: DeckData[]): string => {
 };
 
 // デッキリストのフィルタリング
-export const filterDeckList = (deckList: DeckData[], filterText: string): DeckData[] => {
+export const filterDeckList = (deckList: DeckData[], filterText: string, exactMatch: boolean = false): DeckData[] => {
   const trimmed = filterText.trim().toLowerCase();
   if (!trimmed) return deckList;
   return deckList.filter(deck => {
     const playerName = (deck.playerName || "").toLowerCase();
     const deckName = (deck.deckName || "").toLowerCase();
-    return playerName.includes(trimmed) || deckName.includes(trimmed);
+    const deckNameMatches = exactMatch ? deckName === trimmed : deckName.includes(trimmed);
+    return playerName.includes(trimmed) || deckNameMatches;
   });
 };
 

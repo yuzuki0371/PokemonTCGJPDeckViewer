@@ -21,8 +21,8 @@ function App() {
   const [appState, appActions] = useAppState();
   const [filterState, filterActions] = useFilterState();
   const filteredDeckList = useMemo(
-    () => filterDeckList(appState.deckList, filterState.filterText),
-    [appState.deckList, filterState.filterText]
+    () => filterDeckList(appState.deckList, filterState.filterText, filterState.exactMatch),
+    [appState.deckList, filterState.filterText, filterState.exactMatch]
   );
   const [modalState, modalActions] = useModalState(filteredDeckList);
   const [viewSettings, viewSettingsActions] = useViewSettings();

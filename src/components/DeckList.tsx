@@ -78,28 +78,42 @@ export const DeckList = ({
         </div>
       </div>
 
-      <div className="relative mb-4">
-        <input
-          type="text"
-          aria-label="デッキをフィルター"
-          value={filterState.filterText}
-          onChange={e => filterActions.setFilterText(e.target.value)}
-          placeholder={UI_MESSAGES.FILTER_PLACEHOLDER}
-          className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-        />
-        {isFiltering && (
-          <button
-            type="button"
-            onClick={filterActions.clearFilter}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
-            aria-label="フィルターをクリア"
-            title="フィルターをクリア"
-          >
-            <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        )}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            aria-label="デッキをフィルター"
+            value={filterState.filterText}
+            onChange={e => filterActions.setFilterText(e.target.value)}
+            placeholder={UI_MESSAGES.FILTER_PLACEHOLDER}
+            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+          />
+          {isFiltering && (
+            <button
+              type="button"
+              onClick={filterActions.clearFilter}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+              aria-label="フィルターをクリア"
+              title="フィルターをクリア"
+            >
+              <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={filterActions.toggleExactMatch}
+          className={`shrink-0 px-3 py-2 text-sm rounded-lg border transition-colors ${
+            filterState.exactMatch
+              ? "bg-blue-100 text-blue-700 border-blue-300"
+              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+          }`}
+          title={filterState.exactMatch ? "部分一致に切り替え" : "完全一致に切り替え"}
+        >
+          {filterState.exactMatch ? "完全一致" : "部分一致"}
+        </button>
       </div>
 
       {deckList.length === 0 ? (
