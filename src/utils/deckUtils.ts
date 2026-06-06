@@ -69,10 +69,12 @@ export const filterDeckList = (deckList: DeckData[], filterText: string, exactMa
   const trimmed = filterText.trim().toLowerCase();
   if (!trimmed) return deckList;
   return deckList.filter(deck => {
-    const playerName = (deck.playerName || "").toLowerCase();
-    const deckName = (deck.deckName || "").toLowerCase();
-    const deckNameMatches = exactMatch ? deckName === trimmed : deckName.includes(trimmed);
-    return playerName.includes(trimmed) || deckNameMatches;
+    const playerName = (deck.playerName || "").trim().toLowerCase();
+    const deckName = (deck.deckName || "").trim().toLowerCase();
+    if (exactMatch) {
+      return playerName === trimmed || deckName === trimmed;
+    }
+    return playerName.includes(trimmed) || deckName.includes(trimmed);
   });
 };
 

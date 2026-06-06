@@ -11,6 +11,7 @@ export const useFilterState = (): [FilterState, FilterActions] => {
 
   const clearFilter = useCallback(() => {
     setFilterTextState("");
+    setExactMatch(false);
   }, []);
 
   const toggleExactMatch = useCallback(() => {
@@ -18,7 +19,7 @@ export const useFilterState = (): [FilterState, FilterActions] => {
   }, []);
 
   const state: FilterState = { filterText, exactMatch };
-  const actions: FilterActions = { setFilterText, clearFilter, toggleExactMatch };
+  const actions: FilterActions = { setFilterText, setExactMatch, clearFilter, toggleExactMatch };
 
   return [state, actions];
 };

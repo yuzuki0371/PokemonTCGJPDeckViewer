@@ -51,6 +51,7 @@ export const DeckList = ({
   }
 
   const isFiltering = filterState.filterText.trim() !== "";
+  const showClearButton = isFiltering || filterState.exactMatch;
   const countLabel = isFiltering ? `(${deckList.length}/${totalDeckCount}件)` : `(${totalDeckCount}件)`;
 
   // レイアウトクラスの決定
@@ -88,7 +89,7 @@ export const DeckList = ({
             placeholder={UI_MESSAGES.FILTER_PLACEHOLDER}
             className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
           />
-          {isFiltering && (
+          {showClearButton && (
             <button
               type="button"
               onClick={filterActions.clearFilter}
@@ -105,6 +106,7 @@ export const DeckList = ({
         <button
           type="button"
           onClick={filterActions.toggleExactMatch}
+          aria-pressed={filterState.exactMatch}
           className={`shrink-0 px-3 py-2 text-sm rounded-lg border transition-colors ${
             filterState.exactMatch
               ? "bg-blue-100 text-blue-700 border-blue-300"

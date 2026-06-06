@@ -43,6 +43,7 @@ function App() {
   const handleDeckNameClick = useCallback(
     (deckName: string) => {
       filterActions.setFilterText(deckName);
+      filterActions.setExactMatch(true);
       viewSettingsActions.setActiveTab("deckList");
     },
     [filterActions, viewSettingsActions]
