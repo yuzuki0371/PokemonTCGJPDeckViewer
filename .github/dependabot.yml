@@ -42,6 +42,8 @@ updates:
         patterns:
           - "tailwindcss"
           - "@tailwindcss/*"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: github-actions
     directory: /
@@ -56,3 +58,5 @@ updates:
       - dependencies
     commit-message:
       prefix: chore
+    cooldown:
+      default-days: 7
