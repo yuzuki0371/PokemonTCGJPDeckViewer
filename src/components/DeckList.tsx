@@ -85,7 +85,7 @@ export const DeckList = ({
           value={filterState.filterText}
           onChange={e => filterActions.setFilterText(e.target.value)}
           placeholder={UI_MESSAGES.FILTER_PLACEHOLDER}
-          className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+          className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
         />
         {isFiltering && (
           <button

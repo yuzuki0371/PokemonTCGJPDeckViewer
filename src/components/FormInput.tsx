@@ -81,7 +81,7 @@ export const FormInput = ({
                 value={formState.singleMode.playerName}
                 onChange={e => formActions.updateSingleForm("playerName", e.target.value)}
                 placeholder="プレイヤー名を入力してください"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -94,7 +94,7 @@ export const FormInput = ({
                 value={formState.singleMode.deckName}
                 onChange={e => formActions.updateSingleForm("deckName", e.target.value)}
                 placeholder="デッキ名を入力してください"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -107,7 +107,7 @@ export const FormInput = ({
                 value={formState.singleMode.deckCode}
                 onChange={e => formActions.updateSingleForm("deckCode", e.target.value)}
                 placeholder="デッキコードを入力してください"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -124,7 +124,7 @@ export const FormInput = ({
                 "Excelからコピー＆ペーストできます\n\n例（3列：プレイヤー名・デッキコード・デッキ名）：\n田中太郎\tABC123\tピカチュウex\n佐藤花子\tDEF456\tリザードン\n\n例（2列：プレイヤー名・デッキコード）：\n田中太郎\tABC123\n佐藤花子\tDEF456\n\n例（手入力）：\n田中太郎 ABC123 ピカチュウex\nGHI789（デッキコードのみ）"
               }
               rows={10}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical font-mono text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical font-mono text-sm"
             />
             <div className="mt-2 text-sm text-gray-500 space-y-1">
               <p>※ Excelの「プレイヤー名」「デッキコード」「デッキ名」の2〜3列をコピー＆ペーストできます</p>
