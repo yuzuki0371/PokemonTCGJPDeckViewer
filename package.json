@@ -12,7 +12,7 @@
     "format:check": "oxfmt --check",
     "preview": "vite preview",
     "prepare": "lefthook install",
-    "doctor": "pnpx react-doctor@latest -y"
+    "doctor": "bunx react-doctor@latest -y"
   },
   "dependencies": {
     "react": "^19.2.6",

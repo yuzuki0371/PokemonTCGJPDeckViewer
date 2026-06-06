@@ -1,6 +1,4 @@
 allowBuilds:
   lefthook: true
 minimumReleaseAge: 10080
-minimumReleaseAgeExclude: [react-doctor]
 trustPolicy: no-downgrade
-trustPolicyIgnoreAfter: 20160
