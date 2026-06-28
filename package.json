@@ -15,13 +15,13 @@
     "doctor": "bunx react-doctor@latest -y"
   },
   "dependencies": {
-    "react": "^19.2.6",
-    "react-dom": "19.2.6"
+    "react": "^19.2.7",
+    "react-dom": "19.2.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.1",
     "@types/node": "^24.0.0",
-    "@types/react": "^19.2.15",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260504.1",
     "@vitejs/plugin-react": "^6.0.2",
