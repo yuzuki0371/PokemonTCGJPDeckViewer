@@ -52,6 +52,8 @@ updates:
       day: monday
       time: "09:00"
       timezone: Asia/Tokyo
+    allow:
+      - dependency-name: "millionco/react-doctor"
     assignees:
       - yuzuki0371
     labels:
