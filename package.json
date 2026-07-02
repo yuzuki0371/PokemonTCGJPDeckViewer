@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "format": "oxfmt --write",
     "format:check": "oxfmt --check",
@@ -23,14 +23,13 @@
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "7.0.0-dev.20260504.1",
     "@vitejs/plugin-react": "^6.0.2",
     "lefthook": "^2.1.6",
     "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
     "oxlint-tsgolint": "^0.22.1",
     "tailwindcss": "^4.3.1",
-    "typescript": "~6.0.3",
+    "typescript": "7.0.1-rc",
     "vite": "^8.0.16"
   },
   "devEngines": {
