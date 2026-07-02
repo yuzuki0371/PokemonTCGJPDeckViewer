@@ -34,7 +34,7 @@ importers:
         specifier: ^2.1.9
         version: 2.1.9
       node:
-        specifier: runtime:^24.18.0
+        specifier: runtime:^24.0.0
         version: runtime:24.18.0
       oxfmt:
         specifier: ^0.56.0
