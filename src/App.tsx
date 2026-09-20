@@ -35,11 +35,6 @@ function App() {
     saveDeckList
   );
 
-  // コールバックをuseCallbackでラップして最適化
-  const memoizedHandleUpdateDeck = useCallback(handleUpdateDeck, [handleUpdateDeck]);
-  const memoizedHandleRemoveDeck = useCallback(handleRemoveDeck, [handleRemoveDeck]);
-  const memoizedHandleClearAll = useCallback(handleClearAll, [handleClearAll]);
-
   const handleDeckNameClick = useCallback(
     (deckName: string) => {
       filterActions.setFilterText(deckName);
@@ -75,7 +70,7 @@ function App() {
           processingProgress={appState.ui.processingProgress}
           appActions={appActions}
           onSubmit={handleSubmit}
-          onClearAll={memoizedHandleClearAll}
+          onClearAll={handleClearAll}
           hasDecks={appState.deckList.length > 0}
         />
 
@@ -110,8 +105,8 @@ function App() {
             filterState={filterState}
             filterActions={filterActions}
             modalActions={modalActions}
-            onUpdateDeck={memoizedHandleUpdateDeck}
-            onRemove={memoizedHandleRemoveDeck}
+            onUpdateDeck={handleUpdateDeck}
+            onRemove={handleRemoveDeck}
             viewSettings={viewSettings}
             viewSettingsActions={viewSettingsActions}
           />
@@ -126,7 +121,7 @@ function App() {
         <ImageModal
           modalState={modalState}
           modalActions={modalActions}
-          onUpdateDeck={memoizedHandleUpdateDeck}
+          onUpdateDeck={handleUpdateDeck}
           hasMultipleDecks={filteredDeckList.length > 1}
           totalDecks={filteredDeckList.length}
           deckList={appState.deckList}

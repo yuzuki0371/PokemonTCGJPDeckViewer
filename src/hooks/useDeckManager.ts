@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import type { DeckData, BulkProcessResult } from "../types/deck";
 import type { AppState, AppActions } from "../types/ui";
 import type { FormState, FormActions } from "../types/form";
@@ -131,28 +132,34 @@ export const useDeckManager = (
   };
 
   // デッキ更新処理
-  const handleUpdateDeck = (id: string, updates: Partial<Pick<DeckData, "playerName" | "deckName">>) => {
-    appActions.updateDeck(id, updates);
-    const updatedList = appState.deckList.map(deck => (deck.id === id ? { ...deck, ...updates } : deck));
-    const saveError = saveDeckList(updatedList);
-    if (saveError) {
-      appActions.setError(saveError.message);
-    }
-  };
+  const handleUpdateDeck = useCallback(
+    (id: string, updates: Partial<Pick<DeckData, "playerName" | "deckName">>) => {
+      appActions.updateDeck(id, updates);
+      const updatedList = appState.deckList.map(deck => (deck.id === id ? { ...deck, ...updates } : deck));
+      const saveError = saveDeckList(updatedList);
+      if (saveError) {
+        appActions.setError(saveError.message);
+      }
+    },
+    [appActions, appState.deckList, saveDeckList]
+  );
 
   // デッキ削除処理
-  const handleRemoveDeck = (id: string) => {
-    appActions.removeDeck(id);
-    // 状態更新後の最新リストを使用
-    const updatedList = appState.deckList.filter(deck => deck.id !== id);
-    const saveError = saveDeckList(updatedList);
-    if (saveError) {
-      appActions.setError(saveError.message);
-    }
-  };
+  const handleRemoveDeck = useCallback(
+    (id: string) => {
+      appActions.removeDeck(id);
+      // 状態更新後の最新リストを使用
+      const updatedList = appState.deckList.filter(deck => deck.id !== id);
+      const saveError = saveDeckList(updatedList);
+      if (saveError) {
+        appActions.setError(saveError.message);
+      }
+    },
+    [appActions, appState.deckList, saveDeckList]
+  );
 
   // 全削除処理
-  const handleClearAll = () => {
+  const handleClearAll = useCallback(() => {
     appActions.clearAll();
     const saveError = saveDeckList([]);
     if (saveError) {
@@ -161,7 +168,7 @@ export const useDeckManager = (
       formActions.resetForm();
       appActions.setError(null);
     }
-  };
+  }, [appActions, formActions, saveDeckList]);
 
   return {
     handleSubmit,
