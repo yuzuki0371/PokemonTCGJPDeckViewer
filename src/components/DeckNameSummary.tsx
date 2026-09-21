@@ -31,22 +31,37 @@ export const DeckNameSummary = ({ deckList, onDeckNameClick }: DeckNameSummaryPr
             </tr>
           </thead>
           <tbody>
-            {summaryItems.map(item => (
-              <tr key={item.deckName} className="border-b border-gray-100 hover:bg-gray-50">
-                <td
-                  className={`px-4 py-3 text-sm ${
-                    item.deckName === "未設定"
-                      ? "text-gray-400 italic"
-                      : "text-gray-800 cursor-pointer hover:text-blue-600 hover:underline"
-                  }`}
-                  onClick={() => handleClick(item.deckName)}
-                >
-                  {item.deckName}
-                </td>
-                <td className="text-right px-4 py-3 text-sm text-gray-700 font-medium">{item.count}</td>
-                <td className="text-right px-4 py-3 text-sm text-gray-500">{item.percentage}%</td>
-              </tr>
-            ))}
+            {summaryItems.map(item => {
+              const isClickable = item.deckName !== "未設定";
+              return (
+                <tr key={item.deckName} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td
+                    className={`px-4 py-3 text-sm ${
+                      isClickable
+                        ? "text-gray-800 cursor-pointer hover:text-blue-600 hover:underline"
+                        : "text-gray-400 italic"
+                    }`}
+                    {...(isClickable
+                      ? {
+                          role: "button" as const,
+                          tabIndex: 0,
+                          onClick: () => handleClick(item.deckName),
+                          onKeyDown: (e: React.KeyboardEvent<HTMLTableCellElement>) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleClick(item.deckName);
+                            }
+                          },
+                        }
+                      : {})}
+                  >
+                    {item.deckName}
+                  </td>
+                  <td className="text-right px-4 py-3 text-sm text-gray-700 font-medium">{item.count}</td>
+                  <td className="text-right px-4 py-3 text-sm text-gray-500">{item.percentage}%</td>
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot>
             <tr className="bg-gray-50 border-t border-gray-200">
