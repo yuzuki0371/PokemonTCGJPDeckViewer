@@ -244,10 +244,10 @@ export const ImageModal = ({
   const suggestionListRef = useRef<HTMLUListElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const prevDeckIdRef = useRef<string | undefined>(undefined);
+  const [prevDeckId, setPrevDeckId] = useState<string | undefined>(undefined);
   const currentDeckId = modalState.enlargedImage?.deckId;
-  if (currentDeckId !== prevDeckIdRef.current) {
-    prevDeckIdRef.current = currentDeckId;
+  if (currentDeckId !== prevDeckId) {
+    setPrevDeckId(currentDeckId);
     if (editingField !== null) {
       setEditingField(null);
     }
