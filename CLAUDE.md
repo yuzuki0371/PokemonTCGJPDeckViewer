@@ -134,6 +134,7 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
   - **Vite**: Base path `/`（Cloudflare Pages用）。プラグインは`lazyPlugins()`でラップ
   - **lint**（`vite.config.ts`の`lint`）: react + typescript プラグイン、型チェック有効（typeCheck: true）
   - **fmt**（`vite.config.ts`の`fmt`）: printWidth 120 などのフォーマット設定
+  - **Git hooks**: `vp hooks`で管理。pre-commit（`.vite-hooks/pre-commit`）で`vp staged`を実行し、`vite.config.ts`の`staged`に従いステージ済みファイルのフォーマットのみチェック。`prepare`スクリプト（`vp config`）でインストールされる。一時的にスキップする場合は`VP_GIT_HOOKS=0`
 - **pnpm**（`pnpm-workspace.yaml`）:
   - `catalog`で`vite`（`@voidzero-dev/vite-plus-core`のエイリアス）と`vite-plus`のバージョンを一元管理。両者は必ず同じバージョンにそろえる
   - `overrides`の`vite@*: "catalog:"`で依存先のviteもvite-plus-coreに統一

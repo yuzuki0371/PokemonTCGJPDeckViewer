@@ -33,6 +33,9 @@ export default defineConfig({
       },
     ],
   },
+  staged: {
+    "*": "vp fmt --check --no-error-on-unmatched-pattern",
+  },
   plugins: lazyPlugins(() => [react(), tailwindcss()]),
   base: "/",
 });
