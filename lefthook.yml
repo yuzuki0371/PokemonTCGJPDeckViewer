@@ -1,4 +1,0 @@
-pre-commit:
-  commands:
-    format-check:
-      run: pnpm format:check

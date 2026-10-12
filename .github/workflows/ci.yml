@@ -27,11 +27,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Format check
-        run: pnpm format:check
-
-      - name: Lint & type check
-        run: pnpm lint
+      - name: Format, lint & type check
+        run: pnpm check
 
   react-doctor:
     runs-on: ubuntu-latest

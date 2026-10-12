@@ -4,10 +4,10 @@
 [![Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Fpokemontcgjpdeckviewer.pages.dev&label=Cloudflare%20Pages)](https://pokemontcgjpdeckviewer.pages.dev)
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=6%2E0&color=3178C6&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/static/v1?label=TypeScript&message=7%2E0&color=3178C6&logo=typescript&logoColor=white)
+![Vite+](https://img.shields.io/badge/Vite%2B-1-646CFF?logo=vite&logoColor=white)
 ![Node.js](https://img.shields.io/static/v1?label=Node%2Ejs&message=24&color=339933&logo=nodedotjs&logoColor=white)
-![pnpm](https://img.shields.io/badge/pnpm-11-FF5500?logo=pnpm&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-12-FF5500?logo=pnpm&logoColor=white)
 
 ![GitHub License](https://img.shields.io/github/license/yuzuki0371/PokemonTCGJPDeckViewer)
 ![GitHub last commit](https://img.shields.io/github/last-commit/yuzuki0371/PokemonTCGJPDeckViewer)
@@ -32,9 +32,8 @@
 ## 技術スタック
 
 - React 19 + TypeScript
-- Vite (開発・ビルドツール)
+- [Vite+](https://viteplus.dev/) (開発・ビルド・lint・フォーマットの統合ツールチェーン。Vite / Oxlint / Oxfmt を同梱)
 - Tailwind CSS v4 (スタイリング)
-- oxlint + oxfmt (コード品質・フォーマット)
 - pnpm (パッケージマネージャー)
 - Cloudflare Pages (デプロイ)
 
@@ -66,8 +65,9 @@ pnpm dev
 ### その他のコマンド
 
 - `pnpm build` - 本番用ビルド
-- `pnpm lint` - oxlintによるコード検査（型チェック含む）
-- `pnpm format` - oxfmtによるコードフォーマット
+- `pnpm check` - フォーマット・コード検査・型チェックを一括実行
+- `pnpm lint` - コード検査（型チェック含む）
+- `pnpm format` - コードフォーマット
 - `pnpm format:check` - フォーマットのチェック
 - `pnpm preview` - ビルド後のプレビュー
 - `pnpm typecheck` - TypeScriptの型チェック
@@ -111,8 +111,8 @@ pnpm dev
 
 `main`ブランチへのプルリクエスト時にGitHub Actionsで以下のチェックが自動実行されます：
 
-1. oxfmtによるフォーマットチェック（`pnpm format:check`）
-2. oxlintによるコード検査・型チェック（`pnpm lint`）
+1. Vite+によるフォーマット・コード検査・型チェック（`pnpm check`）
+2. react-doctorによるReactアンチパターン検出
 
 ### 自動デプロイ
 

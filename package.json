@@ -4,14 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vp dev",
+    "build": "vp build",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint",
-    "format": "oxfmt --write",
-    "format:check": "oxfmt --check",
-    "preview": "vite preview",
-    "prepare": "lefthook install",
+    "lint": "vp lint",
+    "format": "vp fmt --write",
+    "format:check": "vp fmt --check",
+    "check": "vp check",
+    "preview": "vp preview",
+    "prepare": "vp config",
     "doctor": "bunx react-doctor@latest -y"
   },
   "dependencies": {
@@ -24,13 +25,10 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "lefthook": "^2.1.12",
-    "oxfmt": "^0.67.0",
-    "oxlint": "^1.82.0",
-    "oxlint-tsgolint": "^7.0.2001",
     "tailwindcss": "^4.3.3",
     "typescript": "7.0.2",
-    "vite": "^8.3.0"
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   },
   "devEngines": {
     "runtime": {
