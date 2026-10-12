@@ -10,6 +10,7 @@
     "lint": "vp lint",
     "format": "vp fmt --write",
     "format:check": "vp fmt --check",
+    "check": "vp check",
     "preview": "vp preview",
     "prepare": "lefthook install",
     "doctor": "bunx react-doctor@latest -y"
