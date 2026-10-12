@@ -4,24 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ポケモンカードゲームのデッキコードを入力し、公式サイトのデッキレシピ画像を表示するReact 19 + TypeScript + Viteアプリケーション。単体入力とExcelコピー対応の一括入力をサポート。
+ポケモンカードゲームのデッキコードを入力し、公式サイトのデッキレシピ画像を表示するReact 19 + TypeScript + Vite+アプリケーション。単体入力とExcelコピー対応の一括入力をサポート。
 
 ## Key Commands
 
 - `pnpm dev` - 開発サーバー起動 (http://localhost:5173/)
-- `pnpm build` - 本番ビルド (TypeScript compile + Vite build)
-- `pnpm lint` - oxlintチェック
-- `pnpm format` - oxfmtでコードフォーマット
-- `pnpm format:check` - フォーマットチェック（CI向け）
+- `pnpm build` - 本番ビルド（`vp build`）
+- `pnpm check` - フォーマット・lint・型チェックを一括実行（`vp check`、CI向け）
+- `pnpm lint` - lint + 型チェック（`vp lint`）
+- `pnpm format` - コードフォーマット（`vp fmt --write`）
+- `pnpm format:check` - フォーマットチェック（`vp fmt --check`）
 - `pnpm preview` - ビルド後のプレビュー
-- `pnpm typecheck` - 型チェック（`tsgo --noEmit`）
+- `pnpm typecheck` - TypeScriptの型チェック（`tsc --noEmit`）
 - `pnpm doctor` - react-doctorでReactアンチパターン検出（`bunx react-doctor@latest -y`）
 
 Node.jsバージョンは`.node-version`で管理。
 
 ### GitHub Actions
 
-- **CI** (`ci.yml`): mainへのPR時に自動実行。`pnpm format:check` → `pnpm lint`（フォーマット・lint・型チェック）
+- **CI** (`ci.yml`): mainへのPR時に自動実行。`pnpm check`（フォーマット・lint・型チェック）→ react-doctor
 
 ### Deploy
 
@@ -129,11 +130,17 @@ DeckCardとImageModalでプレイヤー名・デッキ名のインライン編�
 
 ## Configuration Notes
 
-- **Vite**: Base path `/`（Cloudflare Pages用）
+- **Vite+**: Vite / Oxlint / Oxfmt を統合したツールチェーン（`vite-plus`、CLIは`vp`）。設定は`vite.config.ts`に集約し、`defineConfig`は`vite-plus`からimportする
+  - **Vite**: Base path `/`（Cloudflare Pages用）。プラグインは`lazyPlugins()`でラップ
+  - **lint**（`vite.config.ts`の`lint`）: react + typescript プラグイン、型チェック有効（typeCheck: true）
+  - **fmt**（`vite.config.ts`の`fmt`）: printWidth 120 などのフォーマット設定
+- **pnpm**（`pnpm-workspace.yaml`）:
+  - `catalog`で`vite`（`@voidzero-dev/vite-plus-core`のエイリアス）と`vite-plus`のバージョンを一元管理。両者は必ず同じバージョンにそろえる
+  - `overrides`の`vite@*: "catalog:"`で依存先のviteもvite-plus-coreに統一
+  - `peerDependencyRules.allowedVersions`でvite-plus-core 1.xのみ許可。Vite+のメジャー更新時は合わせて更新する
+  - `minimumReleaseAge`（7日）を設定。公開直後のバージョンはインストールできない
 - **Tailwind CSS v4**: Viteプラグイン（`@tailwindcss/vite`）経由で設定。`postcss.config.js`・`tailwind.config.js`不要
 - **TypeScript**: ES2022ターゲット、strictモード
-- **oxlint**: Linter（`.oxlintrc.json`）、react + typescript プラグイン、型チェック有効（typeCheck: true）
-- **oxfmt**: コードフォーマッター（`.oxfmtrc.json`）
 - **Node.js**: `.node-version`でバージョン管理
 - **localStorage keys**: `pokemonTcgDeckList`（デッキリスト）、`pokemonTcgViewSettings`（表示設定）
 
