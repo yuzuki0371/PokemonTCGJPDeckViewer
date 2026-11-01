@@ -2,7 +2,7 @@ minimumReleaseAge: 10080
 trustPolicy: no-downgrade
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@1.0.0
-  vite-plus: 1.0.0
+  vite-plus: 1.4.0
 overrides:
   vite@*: "catalog:"
 peerDependencyRules:
