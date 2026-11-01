@@ -46,7 +46,7 @@ jobs:
         id: node-version
         run: echo "version=$(cat .node-version)" >> $GITHUB_OUTPUT
 
-      - uses: millionco/react-doctor@013f7373f91a3b9e68bd1dc7d4d354f4b041b117 # v2.2.9
+      - uses: millionco/react-doctor@695e46eee203a5d1855020191aa7e9c010a1250e # v2.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
