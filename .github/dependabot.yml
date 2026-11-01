@@ -13,7 +13,6 @@ updates:
       - dependency-name: "react-dom"
       - dependency-name: "@types/react"
       - dependency-name: "@types/react-dom"
-      - dependency-name: "vite"
       - dependency-name: "vite-plus"
       - dependency-name: "@vitejs/*"
       - dependency-name: "tailwindcss"
@@ -37,7 +36,6 @@ updates:
           - "@types/react-dom"
       vite:
         patterns:
-          - "vite"
           - "vite-plus"
           - "@vitejs/*"
       tailwind:
